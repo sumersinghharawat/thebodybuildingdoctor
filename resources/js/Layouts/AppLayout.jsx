@@ -17,7 +17,7 @@ export default function AppLayout({ children }) {
                 </div>
                 {user && (
                     <nav className="flex-1 space-y-1 px-4 py-4 text-sm">
-                        <NavItem href="/dashboard" label="News & Articles" />
+                        <NavItem href="/dashboard" label="Mentorship" />
                         <NavItem href="/learn" label="Courses" />
                         {isAdmin && (
                             <>
@@ -65,7 +65,7 @@ export default function AppLayout({ children }) {
                 </header>
                 {mobileOpen && (
                     <nav className="space-y-1 border-b border-slate-800 p-4 text-sm md:hidden">
-                        <NavItem href="/dashboard" label="News & Articles" onNavigate={() => setMobileOpen(false)} />
+                        <NavItem href="/dashboard" label="Mentorship" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/learn" label="Courses" onNavigate={() => setMobileOpen(false)} />
                         {isAdmin && (
                             <NavItem href="/dashboard/courses" label="Admin" onNavigate={() => setMobileOpen(false)} />

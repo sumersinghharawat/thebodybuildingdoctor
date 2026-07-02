@@ -41,10 +41,7 @@ export function formatDuration(seconds) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-export function formatPrice(cents) {
-    if (cents === 0) return 'Free';
-    return `€${(cents / 100).toFixed(0)}`;
-}
+export { formatPrice } from '@/lib/format';
 
 export function fetchCourses() {
     return adminFetch('/api/admin/courses');

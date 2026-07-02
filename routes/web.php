@@ -3,12 +3,14 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AdminPageController;
 use App\Http\Controllers\Web\BlogPageController;
+use App\Http\Controllers\Web\CoursesPageController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\LandingController;
 use App\Http\Controllers\Web\LearnPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
+Route::get('/courses', CoursesPageController::class)->name('courses.index');
 Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inquiries.store');
 
 Route::middleware(['auth', 'app.access'])->group(function () {

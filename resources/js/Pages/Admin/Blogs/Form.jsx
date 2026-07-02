@@ -59,7 +59,7 @@ export default function BlogForm({ blogId }) {
     }
 
     return (
-        <AdminShell title={isEdit ? 'Edit article' : 'New article'}>
+        <AdminShell title={isEdit ? 'Edit mentorship content' : 'New mentorship content'}>
             <Head title="Blog" />
             <form onSubmit={handleSubmit} className="card-surface max-w-3xl space-y-4 p-6">
                 {error && <p className="text-sm text-red-300">{error}</p>}

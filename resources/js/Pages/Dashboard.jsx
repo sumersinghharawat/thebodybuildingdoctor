@@ -4,16 +4,16 @@ import { Head, Link } from '@inertiajs/react';
 export default function Dashboard({ blogs = [], isAdmin }) {
     return (
         <AppLayout>
-            <Head title="News & Articles" />
+            <Head title="Mentorship" />
             <div className="mx-auto max-w-6xl space-y-6 p-6 md:p-8">
                 <header className="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold">News & Articles</h1>
-                        <p className="mt-1 text-sm text-slate-400">Training content and updates for members.</p>
+                        <h1 className="text-2xl font-bold">Mentorship</h1>
+                        <p className="mt-1 text-sm text-slate-400">Member mentorship lectures, case labs, and coaching content.</p>
                     </div>
                     {isAdmin && (
                         <Link href={route('admin.blogs.create')} className="btn-primary">
-                            New article
+                            New content
                         </Link>
                     )}
                 </header>
@@ -36,7 +36,7 @@ export default function Dashboard({ blogs = [], isAdmin }) {
                     ))}
                 </div>
 
-                {blogs.length === 0 && <p className="text-sm text-slate-400">No articles published yet.</p>}
+                {blogs.length === 0 && <p className="text-sm text-slate-400">No mentorship content published yet.</p>}
             </div>
         </AppLayout>
     );

@@ -7,7 +7,7 @@ export default function BlogShow({ blog }) {
             <Head title={blog.title} />
             <article className="mx-auto max-w-3xl space-y-6 overflow-hidden p-6 md:p-8">
                 <Link href={route('dashboard')} className="text-sm text-slate-400 hover:text-white">
-                    ← Back to articles
+                    ← Back to mentorship
                 </Link>
                 {blog.thumbnailUrl && (
                     <img src={blog.thumbnailUrl} alt="" className="aspect-video w-full rounded-xl object-cover" />

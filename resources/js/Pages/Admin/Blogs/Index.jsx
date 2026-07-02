@@ -24,7 +24,7 @@ export default function BlogsIndex() {
             title="Blogs"
             actions={
                 <Link href={route('admin.blogs.create')} className="btn-primary">
-                    New article
+                    New mentorship content
                 </Link>
             }
         >

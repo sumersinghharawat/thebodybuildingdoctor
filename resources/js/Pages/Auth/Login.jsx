@@ -26,7 +26,7 @@ export default function Login({ status, canResetPassword }) {
 
             <div className="mb-6 text-center">
                 <h1 className="text-xl font-semibold">Member login</h1>
-                <p className="mt-1 text-sm text-slate-400">Sign in to access courses and articles.</p>
+                <p className="mt-1 text-sm text-slate-400">Sign in to access courses and mentorship.</p>
             </div>
 
             {status && <div className="mb-4 text-sm font-medium text-emerald-400">{status}</div>}

@@ -14,16 +14,19 @@ class LandingController extends Controller
 {
     public function __invoke()
     {
-        $courses = Course::query()
-            ->where('published', true)
-            ->orderBy('sort_order')
+        $query = Course::query()->where('published', true)->orderBy('sort_order');
+        $totalCourseCount = (clone $query)->count();
+
+        $courses = $query
             ->limit(6)
             ->get()
             ->map->toPublicArray();
 
         return Inertia::render('Landing', [
             'courses' => $courses,
+            'totalCourseCount' => $totalCourseCount,
             'siteName' => config('app.name', 'The Bodybuilding Doctor'),
+            'androidPlayStoreUrl' => config('marketing.android_play_store_url'),
         ]);
     }
 
