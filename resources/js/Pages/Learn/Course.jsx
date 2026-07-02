@@ -1,3 +1,4 @@
+import PdfDownloadLink from '@/Components/PdfDownloadLink';
 import AppLayout from '@/Layouts/AppLayout';
 import { Head, Link } from '@inertiajs/react';
 
@@ -18,6 +19,8 @@ export default function LearnCourse({ course, enrolled, lessons }) {
                 ) : (
                     <p className="text-sm text-slate-400">{course.description}</p>
                 )}
+
+                <PdfDownloadLink url={course.pdfUrl} label="Download course PDF" />
 
                 {!enrolled && (
                     <p className="text-sm text-slate-400">

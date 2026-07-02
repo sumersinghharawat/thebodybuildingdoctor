@@ -1,5 +1,6 @@
 import AdminShell from '@/Components/Admin/AdminShell';
 import LessonManager from '@/Components/Admin/LessonManager';
+import PdfUploadField from '@/Components/Admin/PdfUploadField';
 import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
 import { createCourse, fetchCourse, updateCourse, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
@@ -17,6 +18,7 @@ export default function CourseForm({ courseId }) {
         description: '',
         descriptionHtml: '',
         thumbnailUrl: '',
+        pdfUrl: '',
         instructorName: 'The Bodybuilding Doctor',
         level: 'beginner',
         category: 'Training',
@@ -36,6 +38,7 @@ export default function CourseForm({ courseId }) {
                     description: data.course.description,
                     descriptionHtml: data.course.descriptionHtml || data.course.description || '',
                     thumbnailUrl: data.course.thumbnailUrl || '',
+                    pdfUrl: data.course.pdfUrl || '',
                     instructorName: data.course.instructorName || '',
                     level: data.course.level,
                     category: data.course.category,
@@ -137,6 +140,12 @@ export default function CourseForm({ courseId }) {
                             <input className="input-dark" value={form.thumbnailUrl} onChange={(e) => updateField('thumbnailUrl', e.target.value)} />
                             <input type="file" accept="image/*" className="mt-2 text-sm" onChange={(e) => e.target.files?.[0] && handleThumbnail(e.target.files[0])} />
                         </div>
+                        <PdfUploadField
+                            label="Course PDF"
+                            value={form.pdfUrl}
+                            onChange={(value) => updateField('pdfUrl', value)}
+                            folder="courses"
+                        />
                         <label className="flex items-center gap-2 text-sm">
                             <input type="checkbox" checked={form.published} onChange={(e) => updateField('published', e.target.checked)} />
                             Published

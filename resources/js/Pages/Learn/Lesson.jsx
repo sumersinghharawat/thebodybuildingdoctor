@@ -1,4 +1,5 @@
 import LessonVideoPlayer from '@/Components/LessonVideoPlayer';
+import PdfDownloadLink from '@/Components/PdfDownloadLink';
 import AppLayout from '@/Layouts/AppLayout';
 import { Head, Link } from '@inertiajs/react';
 
@@ -16,6 +17,8 @@ export default function LearnLesson({ course, lesson, prevLesson, nextLesson }) 
                 <h1 className="text-2xl font-bold">{lesson.title}</h1>
 
                 <LessonVideoPlayer courseId={course.id} lessonId={lesson.id} title={lesson.title} />
+
+                <PdfDownloadLink url={lesson.pdfUrl} label="Download lesson PDF" />
 
                 {lesson.contentHtml && (
                     <div

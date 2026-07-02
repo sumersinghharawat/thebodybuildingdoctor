@@ -1,4 +1,5 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import PdfUploadField from '@/Components/Admin/PdfUploadField';
 import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
 import { createMentorship, fetchMentorshipItem, updateMentorship, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
@@ -12,6 +13,7 @@ export default function MentorshipForm({ mentorshipId }) {
         excerpt: '',
         contentHtml: '',
         thumbnailUrl: '',
+        pdfUrl: '',
         authorName: 'The Bodybuilding Doctor',
         published: false,
         order: 0,
@@ -29,6 +31,7 @@ export default function MentorshipForm({ mentorshipId }) {
                 excerpt: item.excerpt,
                 contentHtml: item.contentHtml,
                 thumbnailUrl: item.thumbnailUrl || '',
+                pdfUrl: item.pdfUrl || '',
                 authorName: item.authorName,
                 published: item.published,
                 order: item.order,
@@ -100,6 +103,12 @@ export default function MentorshipForm({ mentorshipId }) {
                     <input className="input-dark" value={form.thumbnailUrl} onChange={(e) => setForm((p) => ({ ...p, thumbnailUrl: e.target.value }))} />
                     <input type="file" accept="image/*" className="mt-2 text-sm" onChange={(e) => e.target.files?.[0] && handleThumbnail(e.target.files[0])} />
                 </div>
+                <PdfUploadField
+                    label="Mentorship PDF"
+                    value={form.pdfUrl}
+                    onChange={(value) => setForm((p) => ({ ...p, pdfUrl: value }))}
+                    folder="mentorship"
+                />
                 <label className="flex items-center gap-2 text-sm">
                     <input type="checkbox" checked={form.published} onChange={(e) => setForm((p) => ({ ...p, published: e.target.checked }))} />
                     Published

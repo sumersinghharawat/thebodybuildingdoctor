@@ -1,4 +1,5 @@
 import AppLayout from '@/Layouts/AppLayout';
+import PdfDownloadLink from '@/Components/PdfDownloadLink';
 import { Head, Link } from '@inertiajs/react';
 
 export default function MentorshipShow({ mentorship }) {
@@ -19,6 +20,7 @@ export default function MentorshipShow({ mentorship }) {
                         {mentorship.publishedAt ? ` · ${new Date(mentorship.publishedAt).toLocaleDateString()}` : ''}
                     </p>
                 </header>
+                <PdfDownloadLink url={mentorship.pdfUrl} label="Download PDF" />
                 <div
                     className="rich-content"
                     dangerouslySetInnerHTML={{ __html: mentorship.contentHtml }}

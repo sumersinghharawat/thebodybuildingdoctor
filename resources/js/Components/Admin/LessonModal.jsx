@@ -1,4 +1,5 @@
 import Modal from '@/Components/Modal';
+import PdfUploadField from '@/Components/Admin/PdfUploadField';
 import { useEffect, useState } from 'react';
 
 const emptyLesson = {
@@ -7,6 +8,7 @@ const emptyLesson = {
     durationSec: 0,
     freePreview: false,
     contentHtml: '',
+    pdfUrl: '',
 };
 
 export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
@@ -23,6 +25,7 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
                           durationSec: lesson.durationSec ?? 0,
                           freePreview: Boolean(lesson.freePreview),
                           contentHtml: lesson.contentHtml ?? '',
+                          pdfUrl: lesson.pdfUrl ?? '',
                       }
                     : emptyLesson,
             );
@@ -103,6 +106,13 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
                         placeholder="Optional lesson notes, embeds, or rich text HTML"
                     />
                 </div>
+
+                <PdfUploadField
+                    label="Lesson PDF"
+                    value={form.pdfUrl}
+                    onChange={(value) => updateField('pdfUrl', value)}
+                    folder="courses"
+                />
 
                 <label className="flex items-center gap-2 text-sm">
                     <input

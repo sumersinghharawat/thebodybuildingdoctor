@@ -248,6 +248,29 @@ export function updateInquiry(id, body) {
     });
 }
 
+export async function uploadPdf(file, folder) {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('folder', folder === 'mentorship' ? 'mentorship' : folder);
+
+    const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'X-XSRF-TOKEN': getCsrfToken(),
+            Accept: 'application/json',
+        },
+        body: form,
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        throw new Error(data.message || 'PDF upload failed');
+    }
+
+    return data;
+}
+
 export async function uploadThumbnail(file, folder) {
     const form = new FormData();
     form.append('file', file);

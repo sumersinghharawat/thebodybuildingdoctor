@@ -87,6 +87,7 @@ class LessonController extends Controller
             'contentHtml' => ['nullable', 'string'],
             'freePreview' => ['nullable', 'boolean'],
             'thumbnailUrl' => ['nullable', 'string'],
+            'pdfUrl' => ['nullable', 'string', 'max:500'],
         ]);
 
         return [
@@ -98,6 +99,7 @@ class LessonController extends Controller
             'content_html' => $data['contentHtml'] ?? null,
             'free_preview' => $data['freePreview'] ?? false,
             'thumbnail_url' => $data['thumbnailUrl'] ?? null,
+            'pdf_url' => $data['pdfUrl'] ?? '',
         ];
     }
 }

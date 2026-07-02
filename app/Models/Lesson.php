@@ -22,6 +22,7 @@ class Lesson extends Model
         'content_html',
         'free_preview',
         'thumbnail_url',
+        'pdf_url',
     ];
 
     protected function casts(): array
@@ -51,6 +52,7 @@ class Lesson extends Model
             'contentHtml' => $this->content_html,
             'freePreview' => $this->free_preview,
             'thumbnailUrl' => $this->thumbnail_url,
+            'pdfUrl' => $this->pdf_url,
         ];
     }
 
