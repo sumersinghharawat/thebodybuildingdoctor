@@ -2,9 +2,9 @@ import CourseCard from '@/Components/Marketing/CourseCard';
 import MarketingLayout from '@/Layouts/MarketingLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function CoursesIndex({ courses = [], siteName }) {
+export default function CoursesIndex({ courses = [], siteName, appSection }) {
     return (
-        <MarketingLayout>
+        <MarketingLayout showAppLink={appSection?.enabled !== false}>
             <Head title={`Courses · ${siteName}`} />
 
             <section className="space-y-8 py-12">

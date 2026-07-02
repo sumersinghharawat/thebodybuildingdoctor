@@ -10,7 +10,14 @@ export default function LearnCourse({ course, enrolled, lessons }) {
                     ← All courses
                 </Link>
                 <h1 className="text-2xl font-bold">{course.title}</h1>
-                <p className="text-slate-400 text-sm">{course.description}</p>
+                {course.descriptionHtml ? (
+                    <div
+                        className="rich-content text-sm text-slate-400"
+                        dangerouslySetInnerHTML={{ __html: course.descriptionHtml }}
+                    />
+                ) : (
+                    <p className="text-sm text-slate-400">{course.description}</p>
+                )}
 
                 {!enrolled && (
                     <p className="text-sm text-slate-400">

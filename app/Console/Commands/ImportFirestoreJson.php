@@ -9,7 +9,7 @@ class ImportFirestoreJson extends Command
 {
     protected $signature = 'import:firestore-json {path : Path to export JSON file}';
 
-    protected $description = 'Import courses, lessons, blogs, enrollments, users from a Firestore/Mongo JSON export';
+    protected $description = 'Import courses, lessons, mentorship, enrollments, users from a Firestore/Mongo JSON export';
 
     public function handle(): int
     {

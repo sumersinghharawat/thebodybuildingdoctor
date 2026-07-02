@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 
-export default function MarketingLayout({ children }) {
+export default function MarketingLayout({ children, showAppLink = true }) {
     const home = route('home');
 
     return (
@@ -17,9 +17,11 @@ export default function MarketingLayout({ children }) {
                         <a href={`${home}#mentorship`} className="text-slate-300 hover:text-white">
                             Mentorship
                         </a>
-                        <a href={`${home}#app`} className="text-slate-300 hover:text-white">
-                            App
-                        </a>
+                        {showAppLink && (
+                            <a href={`${home}#app`} className="text-slate-300 hover:text-white">
+                                App
+                            </a>
+                        )}
                         <a href={`${home}#apply`} className="text-slate-300 hover:text-white">
                             Apply
                         </a>

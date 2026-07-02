@@ -6,17 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Inertia\Inertia;
 
-class BlogPageController extends Controller
+class MentorshipPageController extends Controller
 {
     public function show(string $slug)
     {
-        $blog = Blog::query()
+        $mentorship = Blog::query()
             ->where('published', true)
             ->where('slug', $slug)
             ->firstOrFail();
 
-        return Inertia::render('Blog/Show', [
-            'blog' => $blog->toPublicArray(),
+        return Inertia::render('Mentorship/Show', [
+            'mentorship' => $mentorship->toPublicArray(),
         ]);
     }
 }

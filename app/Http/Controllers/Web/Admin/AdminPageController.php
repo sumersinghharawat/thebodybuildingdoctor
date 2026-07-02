@@ -47,34 +47,34 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/Enrollments/Form', ['uid' => $uid, 'courseId' => $courseId]);
     }
 
-    public function blogsIndex()
+    public function mentorshipIndex()
     {
-        return Inertia::render('Admin/Blogs/Index');
+        return Inertia::render('Admin/Mentorship/Index');
     }
 
-    public function blogsCreate()
+    public function mentorshipCreate()
     {
-        return Inertia::render('Admin/Blogs/Form', ['blogId' => null]);
+        return Inertia::render('Admin/Mentorship/Form', ['mentorshipId' => null]);
     }
 
-    public function blogsEdit(string $id)
+    public function mentorshipEdit(string $id)
     {
-        return Inertia::render('Admin/Blogs/Form', ['blogId' => $id]);
+        return Inertia::render('Admin/Mentorship/Form', ['mentorshipId' => $id]);
     }
 
-    public function blogAccessIndex()
+    public function mentorshipAccessIndex()
     {
-        return Inertia::render('Admin/BlogAccess/Index');
+        return Inertia::render('Admin/MentorshipAccess/Index');
     }
 
-    public function blogAccessCreate()
+    public function mentorshipAccessCreate()
     {
-        return Inertia::render('Admin/BlogAccess/Form', ['uid' => null]);
+        return Inertia::render('Admin/MentorshipAccess/Form', ['uid' => null]);
     }
 
-    public function blogAccessEdit(string $uid)
+    public function mentorshipAccessEdit(string $uid)
     {
-        return Inertia::render('Admin/BlogAccess/Form', ['uid' => $uid]);
+        return Inertia::render('Admin/MentorshipAccess/Form', ['uid' => $uid]);
     }
 
     public function usersIndex()
@@ -90,5 +90,10 @@ class AdminPageController extends Controller
     public function usersEdit(string $uid)
     {
         return Inertia::render('Admin/Users/Form', ['uid' => $uid]);
+    }
+
+    public function landingAppSection()
+    {
+        return Inertia::render('Admin/Landing/AppSection');
     }
 }

@@ -4,8 +4,9 @@ const links = [
     { href: '/dashboard/courses', label: 'Courses' },
     { href: '/dashboard/inquiries', label: 'Inquiries' },
     { href: '/dashboard/enrollments', label: 'Enrollments' },
-    { href: '/dashboard/blogs', label: 'Blogs' },
-    { href: '/dashboard/blog-access', label: 'Blog access' },
+    { href: '/dashboard/mentorship', label: 'Mentorship' },
+    { href: '/dashboard/mentorship-access', label: 'Mentorship access' },
+    { href: '/dashboard/landing-app', label: 'Landing app' },
     { href: '/dashboard/users', label: 'Users' },
 ];
 
@@ -18,7 +19,7 @@ export default function AdminNav() {
                 <div className="pill mb-2 w-fit">Course Admin</div>
                 <h1 className="text-2xl font-semibold text-slate-100">Manage courses & access</h1>
                 <p className="mt-1 text-sm text-slate-400">
-                    Manage users, courses, lessons, enrollments, and blogs.
+                    Manage users, courses, lessons, enrollments, and mentorship.
                 </p>
             </div>
             <nav className="flex flex-wrap gap-2">

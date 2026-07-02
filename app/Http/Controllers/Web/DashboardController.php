@@ -14,7 +14,7 @@ class DashboardController extends Controller
         $user = auth()->user();
         $roles = $user->roleList();
 
-        $blogs = Blog::query()
+        $mentorship = Blog::query()
             ->where('published', true)
             ->orderBy('sort_order')
             ->orderByDesc('published_at')
@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ->map->toPublicArray();
 
         return Inertia::render('Dashboard', [
-            'blogs' => $blogs,
+            'mentorship' => $mentorship,
             'isAdmin' => Roles::isAdmin($roles),
             'mediaChannelOnly' => Roles::isMediaChannelOnly($roles),
         ]);

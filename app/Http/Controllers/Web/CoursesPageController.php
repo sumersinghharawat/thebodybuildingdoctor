@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Support\LandingAppSection;
 use App\Models\Course;
 use Inertia\Inertia;
 
@@ -19,6 +20,7 @@ class CoursesPageController extends Controller
         return Inertia::render('Courses/Index', [
             'courses' => $courses,
             'siteName' => config('app.name', 'The Bodybuilding Doctor'),
+            'appSection' => LandingAppSection::get(),
         ]);
     }
 }

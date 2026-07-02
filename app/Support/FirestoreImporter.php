@@ -135,7 +135,7 @@ class FirestoreImporter
             Blog::query()->updateOrCreate(
                 ['id' => $id],
                 [
-                    'title' => $row['title'] ?? 'Blog',
+                    'title' => $row['title'] ?? 'Mentorship',
                     'slug' => $row['slug'] ?? Str::slug($row['title'] ?? $id),
                     'excerpt' => $row['excerpt'] ?? '',
                     'content_html' => $row['contentHtml'] ?? '',
@@ -184,7 +184,19 @@ class FirestoreImporter
             $counts['blog_access']++;
         }
 
-        return $counts;
+        $displayCounts = [
+            'users' => $counts['users'],
+            'courses' => $counts['courses'],
+            'lessons' => $counts['lessons'],
+            'enrollments' => $counts['enrollments'],
+            'mentorship' => $counts['blogs'],
+            'inquiries' => $counts['inquiries'] ?? 0,
+            'mentorship_access' => $counts['blog_access'],
+            'skipped_lessons' => $counts['skipped_lessons'] ?? 0,
+            'skipped_enrollments' => $counts['skipped_enrollments'] ?? 0,
+        ];
+
+        return $displayCounts;
     }
 
     /**

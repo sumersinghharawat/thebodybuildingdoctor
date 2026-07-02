@@ -1,5 +1,6 @@
 import AdminShell from '@/Components/Admin/AdminShell';
 import LessonManager from '@/Components/Admin/LessonManager';
+import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
 import { createCourse, fetchCourse, updateCourse, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -14,6 +15,7 @@ export default function CourseForm({ courseId }) {
         title: '',
         slug: '',
         description: '',
+        descriptionHtml: '',
         thumbnailUrl: '',
         instructorName: 'The Bodybuilding Doctor',
         level: 'beginner',
@@ -32,6 +34,7 @@ export default function CourseForm({ courseId }) {
                     title: data.course.title,
                     slug: data.course.slug,
                     description: data.course.description,
+                    descriptionHtml: data.course.descriptionHtml || data.course.description || '',
                     thumbnailUrl: data.course.thumbnailUrl || '',
                     instructorName: data.course.instructorName || '',
                     level: data.course.level,
@@ -51,14 +54,25 @@ export default function CourseForm({ courseId }) {
 
     async function handleSave(e) {
         e.preventDefault();
+        if (!htmlToPlainText(form.descriptionHtml)) {
+            setError('Description is required.');
+            return;
+        }
+
         setSaving(true);
         setError(null);
         try {
+            const payload = {
+                ...form,
+                descriptionHtml: form.descriptionHtml,
+                description: htmlToPlainText(form.descriptionHtml) || form.description,
+            };
+
             if (isEdit) {
-                await updateCourse(courseId, form);
+                await updateCourse(courseId, payload);
                 router.visit(route('admin.courses.show', courseId));
             } else {
-                const created = await createCourse(form);
+                const created = await createCourse(payload);
                 router.visit(route('admin.courses.edit', created.id));
             }
         } catch (err) {
@@ -110,7 +124,13 @@ export default function CourseForm({ courseId }) {
                         </div>
                         <div>
                             <label className="label-dark">Description</label>
-                            <textarea className="input-dark" rows={4} value={form.description} onChange={(e) => updateField('description', e.target.value)} required />
+                            <RichTextEditor
+                                value={form.descriptionHtml}
+                                onChange={(value) => updateField('descriptionHtml', value)}
+                                placeholder="Write the course overview, what members will learn, and key details…"
+                                minHeight="14rem"
+                                required
+                            />
                         </div>
                         <div>
                             <label className="label-dark">Thumbnail URL</label>

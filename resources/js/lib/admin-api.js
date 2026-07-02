@@ -170,60 +170,71 @@ export function deleteUser(uid) {
     return adminFetch(`/api/admin/users/${uid}`, { method: 'DELETE' });
 }
 
-export function fetchBlogs() {
-    return adminFetch('/api/admin/blogs');
+export function fetchMentorship() {
+    return adminFetch('/api/admin/mentorship');
 }
 
-export async function fetchBlog(id) {
-    return adminFetch(`/api/admin/blogs/${id}`);
+export async function fetchMentorshipItem(id) {
+    return adminFetch(`/api/admin/mentorship/${id}`);
 }
 
-export async function createBlog(body) {
-    const data = await adminFetch('/api/admin/blogs', {
+export async function createMentorship(body) {
+    const data = await adminFetch('/api/admin/mentorship', {
         method: 'POST',
         body: JSON.stringify(body),
     });
-    return data.blog;
+    return data.mentorship;
 }
 
-export async function updateBlog(id, body) {
-    const data = await adminFetch(`/api/admin/blogs/${id}`, {
+export async function updateMentorship(id, body) {
+    const data = await adminFetch(`/api/admin/mentorship/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(body),
     });
-    return data.blog;
+    return data.mentorship;
 }
 
-export function deleteBlog(id) {
-    return adminFetch(`/api/admin/blogs/${id}`, { method: 'DELETE' });
+export function deleteMentorship(id) {
+    return adminFetch(`/api/admin/mentorship/${id}`, { method: 'DELETE' });
 }
 
-export function fetchBlogAccessList() {
-    return adminFetch('/api/admin/blog-access').then((data) => ({
-        blogAccess: data.grants || data.blogAccess || [],
+export function fetchMentorshipAccessList() {
+    return adminFetch('/api/admin/mentorship-access').then((data) => ({
+        mentorshipAccess: data.grants || data.mentorshipAccess || [],
     }));
 }
 
-export async function fetchBlogAccess(uid) {
-    return adminFetch(`/api/admin/blog-access/${encodeURIComponent(uid)}`);
+export async function fetchMentorshipAccess(uid) {
+    return adminFetch(`/api/admin/mentorship-access/${encodeURIComponent(uid)}`);
 }
 
-export function grantBlogAccess(body) {
-    return adminFetch('/api/admin/blog-access', {
+export function grantMentorshipAccess(body) {
+    return adminFetch('/api/admin/mentorship-access', {
         method: 'POST',
         body: JSON.stringify(body),
     });
 }
 
-export function updateBlogAccess(uid, body) {
-    return adminFetch(`/api/admin/blog-access/${encodeURIComponent(uid)}`, {
+export function updateMentorshipAccess(uid, body) {
+    return adminFetch(`/api/admin/mentorship-access/${encodeURIComponent(uid)}`, {
         method: 'PATCH',
         body: JSON.stringify(body),
     });
 }
 
-export function deleteBlogAccess(uid) {
-    return adminFetch(`/api/admin/blog-access/${encodeURIComponent(uid)}`, { method: 'DELETE' });
+export function deleteMentorshipAccess(uid) {
+    return adminFetch(`/api/admin/mentorship-access/${encodeURIComponent(uid)}`, { method: 'DELETE' });
+}
+
+export function fetchLandingAppSection() {
+    return adminFetch('/api/admin/landing-app').then((data) => data.appSection);
+}
+
+export function updateLandingAppSection(body) {
+    return adminFetch('/api/admin/landing-app', {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    }).then((data) => data.appSection);
 }
 
 export function fetchInquiries() {

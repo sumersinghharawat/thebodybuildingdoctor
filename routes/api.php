@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Admin\CourseController;
 use App\Http\Controllers\Api\Admin\EnrollmentController;
 use App\Http\Controllers\Api\Admin\InquiryAdminController;
 use App\Http\Controllers\Api\Admin\LessonController;
+use App\Http\Controllers\Api\Admin\SiteSettingsController;
 use App\Http\Controllers\Api\Admin\UploadController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
@@ -29,7 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/learn/courses/{courseId}', [LearnController::class, 'showCourse']);
         Route::get('/learn/courses/{courseId}/lessons/{lessonId}', [LearnController::class, 'showLesson']);
         Route::get('/learn/courses/{courseId}/lessons/{lessonId}/playback', [LearnController::class, 'playback']);
-        Route::get('/blogs', [LearnController::class, 'blogs']);
+        Route::get('/mentorship', [LearnController::class, 'mentorship']);
     });
 
     Route::middleware('admin')->prefix('admin')->group(function () {
@@ -50,11 +51,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/enrollments/{uid}/{courseId}', [EnrollmentController::class, 'update']);
         Route::delete('/enrollments/{uid}/{courseId}', [EnrollmentController::class, 'destroy']);
 
-        Route::get('/blogs', [BlogController::class, 'index']);
-        Route::post('/blogs', [BlogController::class, 'store']);
-        Route::get('/blogs/{id}', [BlogController::class, 'show']);
-        Route::patch('/blogs/{id}', [BlogController::class, 'update']);
-        Route::delete('/blogs/{id}', [BlogController::class, 'destroy']);
+        Route::get('/mentorship', [BlogController::class, 'index']);
+        Route::post('/mentorship', [BlogController::class, 'store']);
+        Route::get('/mentorship/{id}', [BlogController::class, 'show']);
+        Route::patch('/mentorship/{id}', [BlogController::class, 'update']);
+        Route::delete('/mentorship/{id}', [BlogController::class, 'destroy']);
 
         Route::get('/users', [UserController::class, 'index']);
         Route::post('/users', [UserController::class, 'store']);
@@ -65,11 +66,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/inquiries', [InquiryAdminController::class, 'index']);
         Route::patch('/inquiries/{id}', [InquiryAdminController::class, 'update']);
 
-        Route::get('/blog-access', [BlogAccessController::class, 'index']);
-        Route::post('/blog-access', [BlogAccessController::class, 'store']);
-        Route::get('/blog-access/{uid}', [BlogAccessController::class, 'show']);
-        Route::patch('/blog-access/{uid}', [BlogAccessController::class, 'update']);
-        Route::delete('/blog-access/{uid}', [BlogAccessController::class, 'destroy']);
+        Route::get('/mentorship-access', [BlogAccessController::class, 'index']);
+        Route::post('/mentorship-access', [BlogAccessController::class, 'store']);
+        Route::get('/mentorship-access/{uid}', [BlogAccessController::class, 'show']);
+        Route::patch('/mentorship-access/{uid}', [BlogAccessController::class, 'update']);
+        Route::delete('/mentorship-access/{uid}', [BlogAccessController::class, 'destroy']);
+
+        Route::get('/landing-app', [SiteSettingsController::class, 'showLandingApp']);
+        Route::patch('/landing-app', [SiteSettingsController::class, 'updateLandingApp']);
 
         Route::post('/upload', [UploadController::class, 'store']);
     });

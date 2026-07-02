@@ -1,9 +1,9 @@
 import AdminShell from '@/Components/Admin/AdminShell';
-import { fetchBlogAccess, fetchUsers, grantBlogAccess, updateBlogAccess } from '@/lib/admin-api';
+import { fetchMentorshipAccess, fetchUsers, grantMentorshipAccess, updateMentorshipAccess } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-export default function BlogAccessForm({ uid }) {
+export default function MentorshipAccessForm({ uid }) {
     const isEdit = Boolean(uid);
     const [users, setUsers] = useState([]);
     const [form, setForm] = useState({ uid: uid || '', status: 'active', note: '' });
@@ -13,11 +13,11 @@ export default function BlogAccessForm({ uid }) {
     useEffect(() => {
         fetchUsers().then((data) => setUsers(data.users));
         if (uid) {
-            fetchBlogAccess(uid).then((data) => {
+            fetchMentorshipAccess(uid).then((data) => {
                 setForm({
-                    uid: data.blogAccess.uid,
-                    status: data.blogAccess.status,
-                    note: data.blogAccess.note || '',
+                    uid: data.mentorshipAccess.uid,
+                    status: data.mentorshipAccess.status,
+                    note: data.mentorshipAccess.note || '',
                 });
             });
         }
@@ -29,11 +29,11 @@ export default function BlogAccessForm({ uid }) {
         setError(null);
         try {
             if (isEdit) {
-                await updateBlogAccess(uid, form);
+                await updateMentorshipAccess(uid, form);
             } else {
-                await grantBlogAccess(form);
+                await grantMentorshipAccess(form);
             }
-            router.visit(route('admin.blog-access.index'));
+            router.visit(route('admin.mentorship-access.index'));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -42,8 +42,8 @@ export default function BlogAccessForm({ uid }) {
     }
 
     return (
-        <AdminShell title={isEdit ? 'Edit blog access' : 'Grant blog access'}>
-            <Head title="Blog access" />
+        <AdminShell title={isEdit ? 'Edit mentorship access' : 'Grant mentorship access'}>
+            <Head title="Mentorship access" />
             <form onSubmit={handleSubmit} className="card-surface max-w-xl space-y-4 p-6">
                 {error && <p className="text-sm text-red-300">{error}</p>}
                 <div>
@@ -72,7 +72,7 @@ export default function BlogAccessForm({ uid }) {
                     <button type="submit" className="btn-primary" disabled={saving}>
                         {saving ? 'Saving…' : 'Save'}
                     </button>
-                    <Link href={route('admin.blog-access.index')} className="btn-secondary">
+                    <Link href={route('admin.mentorship-access.index')} className="btn-secondary">
                         Cancel
                     </Link>
                 </div>

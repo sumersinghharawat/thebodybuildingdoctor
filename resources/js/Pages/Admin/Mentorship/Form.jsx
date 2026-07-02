@@ -1,10 +1,11 @@
 import AdminShell from '@/Components/Admin/AdminShell';
-import { createBlog, fetchBlog, updateBlog, uploadThumbnail } from '@/lib/admin-api';
+import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
+import { createMentorship, fetchMentorshipItem, updateMentorship, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-export default function BlogForm({ blogId }) {
-    const isEdit = Boolean(blogId);
+export default function MentorshipForm({ mentorshipId }) {
+    const isEdit = Boolean(mentorshipId);
     const [form, setForm] = useState({
         title: '',
         slug: '',
@@ -19,33 +20,42 @@ export default function BlogForm({ blogId }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!blogId) return;
-        fetchBlog(blogId).then((data) => {
-            const blog = data.blog;
+        if (!mentorshipId) return;
+        fetchMentorshipItem(mentorshipId).then((data) => {
+            const item = data.mentorship;
             setForm({
-                title: blog.title,
-                slug: blog.slug,
-                excerpt: blog.excerpt,
-                contentHtml: blog.contentHtml,
-                thumbnailUrl: blog.thumbnailUrl || '',
-                authorName: blog.authorName,
-                published: blog.published,
-                order: blog.order,
+                title: item.title,
+                slug: item.slug,
+                excerpt: item.excerpt,
+                contentHtml: item.contentHtml,
+                thumbnailUrl: item.thumbnailUrl || '',
+                authorName: item.authorName,
+                published: item.published,
+                order: item.order,
             });
         });
-    }, [blogId]);
+    }, [mentorshipId]);
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (!form.title.trim()) {
+            setError('Title is required.');
+            return;
+        }
+        if (!htmlToPlainText(form.contentHtml)) {
+            setError('Content is required.');
+            return;
+        }
+
         setSaving(true);
         setError(null);
         try {
             if (isEdit) {
-                await updateBlog(blogId, form);
+                await updateMentorship(mentorshipId, form);
             } else {
-                await createBlog(form);
+                await createMentorship(form);
             }
-            router.visit(route('admin.blogs.index'));
+            router.visit(route('admin.mentorship.index'));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -54,13 +64,13 @@ export default function BlogForm({ blogId }) {
     }
 
     async function handleThumbnail(file) {
-        const { url } = await uploadThumbnail(file, 'blogs');
+        const { url } = await uploadThumbnail(file, 'mentorship');
         setForm((p) => ({ ...p, thumbnailUrl: url }));
     }
 
     return (
         <AdminShell title={isEdit ? 'Edit mentorship content' : 'New mentorship content'}>
-            <Head title="Blog" />
+            <Head title="Mentorship" />
             <form onSubmit={handleSubmit} className="card-surface max-w-3xl space-y-4 p-6">
                 {error && <p className="text-sm text-red-300">{error}</p>}
                 <div>
@@ -76,8 +86,14 @@ export default function BlogForm({ blogId }) {
                     <textarea className="input-dark" rows={2} value={form.excerpt} onChange={(e) => setForm((p) => ({ ...p, excerpt: e.target.value }))} />
                 </div>
                 <div>
-                    <label className="label-dark">Content HTML</label>
-                    <textarea className="input-dark font-mono text-xs" rows={12} value={form.contentHtml} onChange={(e) => setForm((p) => ({ ...p, contentHtml: e.target.value }))} />
+                    <label className="label-dark">Content</label>
+                    <RichTextEditor
+                        value={form.contentHtml}
+                        onChange={(value) => setForm((p) => ({ ...p, contentHtml: value }))}
+                        placeholder="Write the mentorship lecture, case study, or coaching notes…"
+                        minHeight="18rem"
+                        required
+                    />
                 </div>
                 <div>
                     <label className="label-dark">Thumbnail URL</label>
@@ -92,7 +108,7 @@ export default function BlogForm({ blogId }) {
                     <button type="submit" className="btn-primary" disabled={saving}>
                         {saving ? 'Saving…' : 'Save'}
                     </button>
-                    <Link href={route('admin.blogs.index')} className="btn-secondary">
+                    <Link href={route('admin.mentorship.index')} className="btn-secondary">
                         Cancel
                     </Link>
                 </div>

@@ -31,7 +31,14 @@ export default function CourseShow({ courseId }) {
             {course && (
                 <div className="space-y-6">
                     <div className="card-surface p-6">
-                        <p className="text-sm text-slate-400">{course.description}</p>
+                        {course.descriptionHtml ? (
+                            <div
+                                className="rich-content text-sm text-slate-400"
+                                dangerouslySetInnerHTML={{ __html: course.descriptionHtml }}
+                            />
+                        ) : (
+                            <p className="text-sm text-slate-400">{course.description}</p>
+                        )}
                         <p className="mt-3 text-xs text-slate-500">
                             {course.lessonCount} lessons · {formatDuration(course.totalDurationSec)} ·{' '}
                             {course.published ? 'Published' : 'Draft'}

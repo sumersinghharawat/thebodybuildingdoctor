@@ -36,7 +36,7 @@ Firebase password hashes cannot be migrated. All imported users receive the pass
 - **Courses:** 15 (+ 1 placeholder for orphaned lessons)
 - **Lessons:** 140
 - **Enrollments:** 5
-- **Blogs:** 41
+- **Mentorship:** 41
 - **Inquiries:** 1
 
 **Note:** This file contains real user emails. Do not commit to public repositories.

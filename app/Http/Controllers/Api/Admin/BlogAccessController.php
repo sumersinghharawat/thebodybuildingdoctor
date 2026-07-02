@@ -32,13 +32,13 @@ class BlogAccessController extends Controller
             ],
         );
 
-        return response()->json(['blogAccess' => $grant->toPublicArray()], 201);
+        return response()->json(['mentorshipAccess' => $grant->toPublicArray()], 201);
     }
 
     public function show(string $uid)
     {
         return response()->json([
-            'blogAccess' => BlogAccess::query()->findOrFail($uid)->toPublicArray(),
+            'mentorshipAccess' => BlogAccess::query()->findOrFail($uid)->toPublicArray(),
         ]);
     }
 
@@ -51,7 +51,7 @@ class BlogAccessController extends Controller
         ]);
         $grant->update($data);
 
-        return response()->json(['blogAccess' => $grant->fresh()->toPublicArray()]);
+        return response()->json(['mentorshipAccess' => $grant->fresh()->toPublicArray()]);
     }
 
     public function destroy(string $uid)

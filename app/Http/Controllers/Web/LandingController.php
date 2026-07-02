@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blog;
 use App\Models\Course;
 use App\Models\Inquiry;
+use App\Support\LandingAppSection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -26,7 +26,7 @@ class LandingController extends Controller
             'courses' => $courses,
             'totalCourseCount' => $totalCourseCount,
             'siteName' => config('app.name', 'The Bodybuilding Doctor'),
-            'androidPlayStoreUrl' => config('marketing.android_play_store_url'),
+            'appSection' => LandingAppSection::get(),
         ]);
     }
 

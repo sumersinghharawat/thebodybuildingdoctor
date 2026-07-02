@@ -13,10 +13,14 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'file' => ['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,webp,gif'],
-            'folder' => ['required', 'in:courses,blogs'],
+            'folder' => ['required', 'in:courses,mentorship,blogs,marketing'],
         ]);
 
-        $path = $data['file']->store($data['folder'], 'public');
+        $folder = match ($data['folder']) {
+            'mentorship' => 'blogs',
+            default => $data['folder'],
+        };
+        $path = $data['file']->store($folder, 'public');
         $url = Storage::disk('public')->url($path);
 
         return response()->json(['url' => $url]);

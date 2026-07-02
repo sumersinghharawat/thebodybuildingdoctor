@@ -37,7 +37,40 @@
         @apply mb-1.5 block text-xs font-medium text-slate-400;
     }
 
-  /* Rich HTML content (blogs, lessons) — responsive embeds */
+    .rich-editor__content {
+        @apply min-h-[10rem] text-sm text-slate-100;
+    }
+
+    .rich-editor__content p {
+        @apply my-2;
+    }
+
+    .rich-editor__content h2 {
+        @apply mb-2 mt-4 text-xl font-semibold text-slate-100;
+    }
+
+    .rich-editor__content h3 {
+        @apply mb-2 mt-3 text-lg font-semibold text-slate-100;
+    }
+
+    .rich-editor__content ul {
+        @apply my-2 list-disc pl-5;
+    }
+
+    .rich-editor__content ol {
+        @apply my-2 list-decimal pl-5;
+    }
+
+    .rich-editor__content a {
+        @apply text-amber-400 underline;
+    }
+
+    .rich-editor__content p.is-editor-empty:first-child::before {
+        @apply pointer-events-none float-left h-0 text-slate-500;
+        content: attr(data-placeholder);
+    }
+
+  /* Rich HTML content (mentorship, lessons) — responsive embeds */
   .rich-content {
         @apply prose prose-invert max-w-none break-words prose-a:text-amber-400;
     }

@@ -29,7 +29,7 @@ const MENTORSHIP_BENEFITS = [
     },
 ];
 
-export default function Landing({ courses = [], totalCourseCount = 0, siteName, androidPlayStoreUrl = '' }) {
+export default function Landing({ courses = [], totalCourseCount = 0, siteName, appSection }) {
     const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
         name: '',
         email: '',
@@ -48,7 +48,7 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
     const showViewMore = totalCourseCount > courses.length;
 
     return (
-        <MarketingLayout>
+        <MarketingLayout showAppLink={appSection?.enabled !== false}>
             <Head title={siteName} />
 
             <section className="space-y-6 py-12 text-center md:py-16">
@@ -135,64 +135,69 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                 </div>
             </section>
 
+            {appSection?.enabled !== false && (
             <section id="app" className="border-t border-slate-800 py-12 md:py-16">
                 <div className="grid items-center gap-10 lg:grid-cols-2">
                     <div className="space-y-4">
-                        <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">Mobile app</p>
-                        <h2 className="text-2xl font-bold md:text-3xl">Take your training on the go</h2>
-                        <p className="text-slate-400">
-                            Access courses, mentorship content, and member updates from our Android app — built for
-                            athletes who want coaching and education wherever they train.
-                        </p>
+                        <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">{appSection.eyebrow}</p>
+                        <h2 className="text-2xl font-bold md:text-3xl">{appSection.title}</h2>
+                        <p className="text-slate-400">{appSection.description}</p>
                         <ul className="space-y-2 text-sm text-slate-300">
-                            <li className="flex items-start gap-2">
-                                <span className="mt-1 text-accentSoft">✓</span>
-                                Stream course lessons on your phone
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="mt-1 text-accentSoft">✓</span>
-                                Stay up to date with new mentorship content
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="mt-1 text-accentSoft">✓</span>
-                                One account across web and mobile
-                            </li>
+                            {appSection.features.map((feature) => (
+                                <li key={feature} className="flex items-start gap-2">
+                                    <span className="mt-1 text-accentSoft">✓</span>
+                                    {feature}
+                                </li>
+                            ))}
                         </ul>
-                        {androidPlayStoreUrl ? (
+                        {appSection.playStoreUrl ? (
                             <a
-                                href={androidPlayStoreUrl}
+                                href={appSection.playStoreUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                             >
                                 <AndroidIcon />
-                                Get it on Google Play
+                                {appSection.buttonLabel}
                             </a>
                         ) : (
                             <p className="inline-flex items-center rounded-full border border-slate-700 px-5 py-2.5 text-sm text-slate-400">
-                                Coming soon to Google Play
+                                {appSection.comingSoonLabel}
                             </p>
                         )}
                     </div>
                     <div className="flex justify-center">
                         <div className="relative w-full max-w-xs rounded-[2rem] border border-slate-700 bg-slate-900 p-3 shadow-2xl shadow-black/40">
-                            <div className="rounded-[1.5rem] border border-slate-800 bg-slate-950 p-6">
-                                <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-slate-700" />
-                                <div className="space-y-3">
-                                    <div className="h-3 w-2/3 rounded bg-slate-800" />
-                                    <div className="h-24 rounded-lg bg-gradient-to-br from-accent/30 to-slate-800" />
-                                    <div className="h-2 w-full rounded bg-slate-800" />
-                                    <div className="h-2 w-5/6 rounded bg-slate-800" />
-                                    <div className="h-2 w-4/6 rounded bg-slate-800" />
-                                </div>
-                                <p className="mt-6 text-center text-xs font-medium text-slate-500">
-                                    The Bodybuilding Doctor
-                                </p>
+                            <div className="overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950">
+                                {appSection.screenshotUrl ? (
+                                    <img
+                                        src={appSection.screenshotUrl}
+                                        alt={appSection.title}
+                                        className="aspect-[9/16] w-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="p-6">
+                                        <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-slate-700" />
+                                        <div className="space-y-3">
+                                            <div className="h-3 w-2/3 rounded bg-slate-800" />
+                                            <div className="h-24 rounded-lg bg-gradient-to-br from-accent/30 to-slate-800" />
+                                            <div className="h-2 w-full rounded bg-slate-800" />
+                                            <div className="h-2 w-5/6 rounded bg-slate-800" />
+                                            <div className="h-2 w-4/6 rounded bg-slate-800" />
+                                        </div>
+                                        {appSection.mockupLabel && (
+                                            <p className="mt-6 text-center text-xs font-medium text-slate-500">
+                                                {appSection.mockupLabel}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+            )}
 
             <section id="apply" className="border-t border-slate-800 py-12 md:py-16">
                 <div className="mx-auto max-w-lg">

@@ -1,7 +1,7 @@
 import AppLayout from '@/Layouts/AppLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Dashboard({ blogs = [], isAdmin }) {
+export default function Dashboard({ mentorship = [], isAdmin }) {
     return (
         <AppLayout>
             <Head title="Mentorship" />
@@ -12,31 +12,31 @@ export default function Dashboard({ blogs = [], isAdmin }) {
                         <p className="mt-1 text-sm text-slate-400">Member mentorship lectures, case labs, and coaching content.</p>
                     </div>
                     {isAdmin && (
-                        <Link href={route('admin.blogs.create')} className="btn-primary">
+                        <Link href={route('admin.mentorship.create')} className="btn-primary">
                             New content
                         </Link>
                     )}
                 </header>
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {blogs.map((blog) => (
+                    {mentorship.map((item) => (
                         <Link
-                            key={blog.id}
-                            href={route('articles.show', blog.slug)}
+                            key={item.id}
+                            href={route('mentorship.show', item.slug)}
                             className="card-surface overflow-hidden transition hover:border-slate-600"
                         >
-                            {blog.thumbnailUrl && (
-                                <img src={blog.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
+                            {item.thumbnailUrl && (
+                                <img src={item.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
                             )}
                             <div className="p-4">
-                                <h2 className="font-semibold">{blog.title}</h2>
-                                <p className="mt-2 line-clamp-3 text-xs text-slate-400">{blog.excerpt}</p>
+                                <h2 className="font-semibold">{item.title}</h2>
+                                <p className="mt-2 line-clamp-3 text-xs text-slate-400">{item.excerpt}</p>
                             </div>
                         </Link>
                     ))}
                 </div>
 
-                {blogs.length === 0 && <p className="text-sm text-slate-400">No mentorship content published yet.</p>}
+                {mentorship.length === 0 && <p className="text-sm text-slate-400">No mentorship content published yet.</p>}
             </div>
         </AppLayout>
     );

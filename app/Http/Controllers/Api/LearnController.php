@@ -135,15 +135,15 @@ class LearnController extends Controller
         ]);
     }
 
-    public function blogs(Request $request)
+    public function mentorship(Request $request)
     {
-        $blogs = Blog::query()
+        $mentorship = Blog::query()
             ->where('published', true)
             ->orderBy('sort_order')
             ->orderByDesc('published_at')
             ->get()
             ->map->toPublicArray();
 
-        return response()->json(['blogs' => $blogs]);
+        return response()->json(['mentorship' => $mentorship]);
     }
 }
