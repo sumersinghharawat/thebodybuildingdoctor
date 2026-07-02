@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-background text-slate-100 antialiased;
+    }
+}
+
+@layer components {
+    .card-surface {
+        @apply rounded-xl border border-slate-800 bg-slate-900/80;
+    }
+
+    .pill {
+        @apply inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-300;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 disabled:opacity-50;
+    }
+
+    .input-dark {
+        @apply w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none;
+    }
+
+    .label-dark {
+        @apply mb-1.5 block text-xs font-medium text-slate-400;
+    }
+
+  /* Rich HTML content (blogs, lessons) — responsive embeds */
+  .rich-content {
+        @apply prose prose-invert max-w-none break-words prose-a:text-amber-400;
+    }
+
+    .rich-content iframe,
+    .rich-content video,
+    .rich-content embed,
+    .rich-content object {
+        display: block;
+        width: 100% !important;
+        max-width: 100% !important;
+        border: 0;
+        border-radius: 0.75rem;
+    }
+
+    .rich-content iframe {
+        aspect-ratio: 16 / 9;
+        height: auto;
+        min-height: 12rem;
+    }
+
+    .rich-content video {
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+
+    .rich-content img {
+        @apply h-auto max-w-full rounded-xl;
+    }
+
+    .rich-content table {
+        @apply block w-full max-w-full overflow-x-auto;
+    }
+
+    .rich-content .wp-block-embed,
+    .rich-content .wp-block-embed__wrapper,
+    .rich-content figure,
+    .rich-content .embed-responsive,
+    .rich-content .video-container,
+    .rich-content p:has(iframe) {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 1.5rem 0;
+        overflow: hidden;
+    }
+
+    .rich-content .wp-block-embed__wrapper {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        height: auto !important;
+    }
+
+    .rich-content .wp-block-embed__wrapper iframe,
+    .rich-content figure iframe,
+    .rich-content p iframe {
+        position: relative;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        min-height: 12rem;
+    }
+}

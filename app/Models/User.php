@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Models;
+
+use App\Support\Roles;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    /** @use HasFactory<UserFactory> */
+    use HasApiTokens, HasFactory, HasUuids, Notifiable;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'roles',
+        'photo_url',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'roles' => 'array',
+        ];
+    }
+
+    public function roleList(): array
+    {
+        return Roles::parse($this->roles);
+    }
+
+    public function hasAppAccess(): bool
+    {
+        return Roles::hasAppAccess($this->roleList());
+    }
+
+    public function isAdmin(): bool
+    {
+        return Roles::isAdmin($this->roleList());
+    }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function toSessionArray(): array
+    {
+        $roles = $this->roleList();
+
+        return [
+            'uid' => $this->id,
+            'id' => 0,
+            'email' => $this->email,
+            'name' => $this->name,
+            'username' => $this->email,
+            'roles' => $roles,
+            'role' => Roles::primary($roles),
+        ];
+    }
+}

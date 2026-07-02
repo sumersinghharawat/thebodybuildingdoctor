@@ -1,0 +1,7 @@
+[01-Jul-2026 20:01:54 UTC] PHP Fatal error:  Uncaught RuntimeException: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in /home/pinkujqu/app.triotradellc.com/vendor/composer/platform_check.php:22
+Stack trace:
+#0 /home/pinkujqu/app.triotradellc.com/vendor/composer/autoload_real.php(25): require()
+#1 /home/pinkujqu/app.triotradellc.com/vendor/autoload.php(22): ComposerAutoloaderInit53b5d56b3b7e3cbac1713e68c8850f6c::getLoader()
+#2 /home/pinkujqu/app.triotradellc.com/index.php(34): require('/home/pinkujqu/...')
+#3 {main}
+  thrown in /home/pinkujqu/app.triotradellc.com/vendor/composer/platform_check.php on line 22
