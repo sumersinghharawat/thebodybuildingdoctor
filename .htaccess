@@ -31,6 +31,12 @@
     </IfModule>
 
     RewriteEngine On
+    
+    
+
+    # Redirect www to non-www
+    RewriteCond %{HTTP_HOST} ^www\.thebodybuildingdoctor\.com$ [NC]
+    RewriteRule ^(.*)$ https://thebodybuildingdoctor.com/$1 [R=301,L]
 
     # Redirect www to non-www
     RewriteCond %{HTTP_HOST} ^www\.thebodybuildingdoctor\.com$ [NC]
