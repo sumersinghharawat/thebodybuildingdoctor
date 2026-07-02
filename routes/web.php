@@ -47,6 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group
     Route::get('/users/{uid}/edit', [AdminPageController::class, 'usersEdit'])->name('users.edit');
 
     Route::get('/landing-app', [AdminPageController::class, 'landingAppSection'])->name('landing-app.edit');
+    Route::get('/settings', [AdminPageController::class, 'generalSettings'])->name('settings.edit');
 });
 
 Route::middleware('auth')->group(function () {

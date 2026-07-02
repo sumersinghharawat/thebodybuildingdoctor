@@ -7,6 +7,7 @@ const links = [
     { href: '/dashboard/mentorship', label: 'Mentorship' },
     { href: '/dashboard/mentorship-access', label: 'Mentorship access' },
     { href: '/dashboard/landing-app', label: 'Landing app' },
+    { href: '/dashboard/settings', label: 'Settings' },
     { href: '/dashboard/users', label: 'Users' },
 ];
 

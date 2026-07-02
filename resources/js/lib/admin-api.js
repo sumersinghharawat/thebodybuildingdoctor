@@ -237,6 +237,17 @@ export function updateLandingAppSection(body) {
     }).then((data) => data.appSection);
 }
 
+export function fetchGeneralSettings() {
+    return adminFetch('/api/admin/settings').then((data) => data.settings);
+}
+
+export function updateGeneralSettings(body) {
+    return adminFetch('/api/admin/settings', {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    }).then((data) => data.settings);
+}
+
 export function fetchInquiries() {
     return adminFetch('/api/admin/inquiries');
 }

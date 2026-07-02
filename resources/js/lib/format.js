@@ -1,6 +1,30 @@
-export function formatPrice(cents) {
-    if (cents === 0) return 'Free';
-    return `€${(cents / 100).toFixed(0)}`;
+export function setSiteCurrency(currencyCode) {
+    if (currencyCode) {
+        siteCurrency = currencyCode;
+    }
+}
+
+export function getSiteCurrency() {
+    return siteCurrency;
+}
+
+let siteCurrency = 'EUR';
+
+export function formatPrice(cents, currencyCode = siteCurrency) {
+    if (cents === 0) {
+        return 'Free';
+    }
+
+    try {
+        return new Intl.NumberFormat('en', {
+            style: 'currency',
+            currency: currencyCode,
+            minimumFractionDigits: Number.isInteger(cents / 100) ? 0 : 2,
+            maximumFractionDigits: 2,
+        }).format(cents / 100);
+    } catch {
+        return `${currencyCode} ${(cents / 100).toFixed(2)}`;
+    }
 }
 
 export function formatDuration(seconds) {

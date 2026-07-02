@@ -4,10 +4,13 @@ import PdfUploadField from '@/Components/Admin/PdfUploadField';
 import VideoUrlField from '@/Components/Admin/VideoUrlField';
 import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
 import { createCourse, fetchCourse, updateCourse, uploadThumbnail } from '@/lib/admin-api';
-import { Head, Link, router } from '@inertiajs/react';
+import { formatPrice } from '@/lib/format';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 export default function CourseForm({ courseId }) {
+    const { site } = usePage().props;
+    const currency = site?.currency || 'EUR';
     const isEdit = Boolean(courseId);
     const [loading, setLoading] = useState(isEdit);
     const [saving, setSaving] = useState(false);
@@ -126,6 +129,9 @@ export default function CourseForm({ courseId }) {
                             <div>
                                 <label className="label-dark">Price (cents)</label>
                                 <input className="input-dark" type="number" value={form.priceCents} onChange={(e) => updateField('priceCents', Number(e.target.value))} />
+                                <p className="mt-1 text-xs text-slate-500">
+                                    Displays as {formatPrice(form.priceCents, currency)} ({currency})
+                                </p>
                             </div>
                         </div>
                         <div>

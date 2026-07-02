@@ -96,4 +96,9 @@ class AdminPageController extends Controller
     {
         return Inertia::render('Admin/Landing/AppSection');
     }
+
+    public function generalSettings()
+    {
+        return Inertia::render('Admin/Settings/General');
+    }
 }

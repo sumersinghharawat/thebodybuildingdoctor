@@ -75,6 +75,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/landing-app', [SiteSettingsController::class, 'showLandingApp']);
         Route::patch('/landing-app', [SiteSettingsController::class, 'updateLandingApp']);
 
+        Route::get('/settings', [SiteSettingsController::class, 'showGeneral']);
+        Route::patch('/settings', [SiteSettingsController::class, 'updateGeneral']);
+
         Route::post('/upload', [UploadController::class, 'store']);
     });
 });
