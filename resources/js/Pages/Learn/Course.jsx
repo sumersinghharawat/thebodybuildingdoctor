@@ -1,4 +1,5 @@
 import PdfDownloadLink from '@/Components/PdfDownloadLink';
+import ContentVideoPlayer from '@/Components/ContentVideoPlayer';
 import AppLayout from '@/Layouts/AppLayout';
 import { Head, Link } from '@inertiajs/react';
 
@@ -19,6 +20,8 @@ export default function LearnCourse({ course, enrolled, lessons }) {
                 ) : (
                     <p className="text-sm text-slate-400">{course.description}</p>
                 )}
+
+                <ContentVideoPlayer videoUrl={course.videoUrl} title={course.title} />
 
                 <PdfDownloadLink url={course.pdfUrl} label="Download course PDF" />
 

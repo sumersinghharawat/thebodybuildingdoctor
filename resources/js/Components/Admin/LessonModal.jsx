@@ -1,5 +1,6 @@
 import Modal from '@/Components/Modal';
 import PdfUploadField from '@/Components/Admin/PdfUploadField';
+import VideoUrlField from '@/Components/Admin/VideoUrlField';
 import { useEffect, useState } from 'react';
 
 const emptyLesson = {
@@ -75,15 +76,10 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
                     />
                 </div>
 
-                <div>
-                    <label className="label-dark">Video URL</label>
-                    <input
-                        className="input-dark"
-                        placeholder="YouTube, Vimeo, or direct file URL"
-                        value={form.videoUrl}
-                        onChange={(e) => updateField('videoUrl', e.target.value)}
-                    />
-                </div>
+                <VideoUrlField
+                    value={form.videoUrl}
+                    onChange={(value) => updateField('videoUrl', value)}
+                />
 
                 <div>
                     <label className="label-dark">Duration (seconds)</label>

@@ -9,6 +9,9 @@
 
     RewriteEngine On
 
+    # Serve uploaded files through Laravel (avoids 403 on shared hosting symlinks)
+    RewriteRule ^storage/(.*)$ index.php [L,QSA]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

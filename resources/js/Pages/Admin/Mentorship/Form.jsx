@@ -1,5 +1,6 @@
 import AdminShell from '@/Components/Admin/AdminShell';
 import PdfUploadField from '@/Components/Admin/PdfUploadField';
+import VideoUrlField from '@/Components/Admin/VideoUrlField';
 import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
 import { createMentorship, fetchMentorshipItem, updateMentorship, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
@@ -14,6 +15,7 @@ export default function MentorshipForm({ mentorshipId }) {
         contentHtml: '',
         thumbnailUrl: '',
         pdfUrl: '',
+        videoUrl: '',
         authorName: 'The Bodybuilding Doctor',
         published: false,
         order: 0,
@@ -32,6 +34,7 @@ export default function MentorshipForm({ mentorshipId }) {
                 contentHtml: item.contentHtml,
                 thumbnailUrl: item.thumbnailUrl || '',
                 pdfUrl: item.pdfUrl || '',
+                videoUrl: item.videoUrl || '',
                 authorName: item.authorName,
                 published: item.published,
                 order: item.order,
@@ -108,6 +111,11 @@ export default function MentorshipForm({ mentorshipId }) {
                     value={form.pdfUrl}
                     onChange={(value) => setForm((p) => ({ ...p, pdfUrl: value }))}
                     folder="mentorship"
+                />
+                <VideoUrlField
+                    label="Mentorship video"
+                    value={form.videoUrl}
+                    onChange={(value) => setForm((p) => ({ ...p, videoUrl: value }))}
                 />
                 <label className="flex items-center gap-2 text-sm">
                     <input type="checkbox" checked={form.published} onChange={(e) => setForm((p) => ({ ...p, published: e.target.checked }))} />

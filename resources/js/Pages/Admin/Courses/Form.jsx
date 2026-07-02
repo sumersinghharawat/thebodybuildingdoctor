@@ -1,6 +1,7 @@
 import AdminShell from '@/Components/Admin/AdminShell';
 import LessonManager from '@/Components/Admin/LessonManager';
 import PdfUploadField from '@/Components/Admin/PdfUploadField';
+import VideoUrlField from '@/Components/Admin/VideoUrlField';
 import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
 import { createCourse, fetchCourse, updateCourse, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
@@ -19,6 +20,7 @@ export default function CourseForm({ courseId }) {
         descriptionHtml: '',
         thumbnailUrl: '',
         pdfUrl: '',
+        videoUrl: '',
         instructorName: 'The Bodybuilding Doctor',
         level: 'beginner',
         category: 'Training',
@@ -39,6 +41,7 @@ export default function CourseForm({ courseId }) {
                     descriptionHtml: data.course.descriptionHtml || data.course.description || '',
                     thumbnailUrl: data.course.thumbnailUrl || '',
                     pdfUrl: data.course.pdfUrl || '',
+                    videoUrl: data.course.videoUrl || '',
                     instructorName: data.course.instructorName || '',
                     level: data.course.level,
                     category: data.course.category,
@@ -145,6 +148,11 @@ export default function CourseForm({ courseId }) {
                             value={form.pdfUrl}
                             onChange={(value) => updateField('pdfUrl', value)}
                             folder="courses"
+                        />
+                        <VideoUrlField
+                            label="Course video"
+                            value={form.videoUrl}
+                            onChange={(value) => updateField('videoUrl', value)}
                         />
                         <label className="flex items-center gap-2 text-sm">
                             <input type="checkbox" checked={form.published} onChange={(e) => updateField('published', e.target.checked)} />

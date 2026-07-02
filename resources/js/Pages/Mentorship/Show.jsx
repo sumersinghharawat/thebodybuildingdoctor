@@ -1,5 +1,6 @@
 import AppLayout from '@/Layouts/AppLayout';
 import PdfDownloadLink from '@/Components/PdfDownloadLink';
+import ContentVideoPlayer from '@/Components/ContentVideoPlayer';
 import { Head, Link } from '@inertiajs/react';
 
 export default function MentorshipShow({ mentorship }) {
@@ -20,6 +21,7 @@ export default function MentorshipShow({ mentorship }) {
                         {mentorship.publishedAt ? ` · ${new Date(mentorship.publishedAt).toLocaleDateString()}` : ''}
                     </p>
                 </header>
+                <ContentVideoPlayer videoUrl={mentorship.videoUrl} title={mentorship.title} />
                 <PdfDownloadLink url={mentorship.pdfUrl} label="Download PDF" />
                 <div
                     className="rich-content"
