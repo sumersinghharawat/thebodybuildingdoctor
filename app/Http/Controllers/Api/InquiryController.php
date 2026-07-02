@@ -17,7 +17,7 @@ class InquiryController extends Controller
             'email' => ['required', 'email', 'max:190'],
             'phone' => ['nullable', 'string', 'max:40'],
             'type' => ['required', 'in:mentorship,courses,both'],
-            'courseId' => ['nullable', 'string', 'max:32'],
+            'courseId' => ['nullable', 'string', 'max:64'],
             'courseTitle' => ['nullable', 'string', 'max:190'],
             'message' => ['nullable', 'string', 'max:5000'],
         ]);

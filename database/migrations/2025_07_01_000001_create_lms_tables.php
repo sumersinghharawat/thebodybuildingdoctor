@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->string('id', 32)->primary();
+            $table->string('id', 64)->primary();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description');
@@ -27,8 +27,8 @@ return new class extends Migration
         });
 
         Schema::create('lessons', function (Blueprint $table) {
-            $table->string('id', 32)->primary();
-            $table->string('course_id', 32);
+            $table->string('id', 64)->primary();
+            $table->string('course_id', 64);
             $table->string('title');
             $table->string('slug')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
@@ -45,7 +45,7 @@ return new class extends Migration
 
         Schema::create('enrollments', function (Blueprint $table) {
             $table->uuid('user_id');
-            $table->string('course_id', 32);
+            $table->string('course_id', 64);
             $table->timestamp('enrolled_at');
             $table->enum('source', ['free', 'purchase', 'admin'])->default('admin');
             $table->enum('status', ['active', 'expired', 'revoked'])->default('active');
@@ -58,10 +58,10 @@ return new class extends Migration
         });
 
         Schema::create('blogs', function (Blueprint $table) {
-            $table->string('id', 32)->primary();
+            $table->string('id', 64)->primary();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('excerpt')->default('');
+            $table->text('excerpt');
             $table->longText('content_html');
             $table->string('thumbnail_url')->default('');
             $table->string('author_name')->default('The Bodybuilding Doctor');
@@ -82,12 +82,12 @@ return new class extends Migration
         });
 
         Schema::create('inquiries', function (Blueprint $table) {
-            $table->string('id', 32)->primary();
+            $table->string('id', 64)->primary();
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
             $table->enum('type', ['mentorship', 'courses', 'both'])->default('both');
-            $table->string('course_id', 32)->nullable();
+            $table->string('course_id', 64)->nullable();
             $table->string('course_title')->nullable();
             $table->text('message')->nullable();
             $table->enum('status', ['new', 'contacted', 'closed'])->default('new');
