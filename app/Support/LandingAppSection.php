@@ -24,8 +24,9 @@ class LandingAppSection
                 'One account across web and mobile',
             ],
             'playStoreUrl' => '',
-            'buttonLabel' => 'Get it on Google Play',
-            'comingSoonLabel' => 'Coming soon to Google Play',
+            'appDownloadUrl' => '',
+            'buttonLabel' => 'Download Android app',
+            'comingSoonLabel' => 'Android app coming soon',
             'screenshotUrl' => '',
             'mockupLabel' => 'The Bodybuilding Doctor',
         ];
@@ -46,7 +47,7 @@ class LandingAppSection
             }
         }
 
-        if (empty($settings['playStoreUrl'])) {
+        if (empty($settings['playStoreUrl']) && empty($settings['appDownloadUrl'])) {
             $settings['playStoreUrl'] = (string) config('marketing.android_play_store_url', '');
         }
 
@@ -97,10 +98,25 @@ class LandingAppSection
             'description' => (string) ($settings['description'] ?? ''),
             'features' => $settings['features'] ?? [],
             'playStoreUrl' => (string) ($settings['playStoreUrl'] ?? ''),
-            'buttonLabel' => (string) ($settings['buttonLabel'] ?? 'Get it on Google Play'),
-            'comingSoonLabel' => (string) ($settings['comingSoonLabel'] ?? 'Coming soon to Google Play'),
+            'appDownloadUrl' => (string) ($settings['appDownloadUrl'] ?? ''),
+            'downloadUrl' => self::resolveDownloadUrl($settings),
+            'buttonLabel' => (string) ($settings['buttonLabel'] ?? 'Download Android app'),
+            'comingSoonLabel' => (string) ($settings['comingSoonLabel'] ?? 'Android app coming soon'),
             'screenshotUrl' => (string) ($settings['screenshotUrl'] ?? ''),
             'mockupLabel' => (string) ($settings['mockupLabel'] ?? ''),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $settings
+     */
+    public static function resolveDownloadUrl(array $settings): string
+    {
+        $playStoreUrl = trim((string) ($settings['playStoreUrl'] ?? ''));
+        if ($playStoreUrl !== '') {
+            return $playStoreUrl;
+        }
+
+        return trim((string) ($settings['appDownloadUrl'] ?? ''));
     }
 }

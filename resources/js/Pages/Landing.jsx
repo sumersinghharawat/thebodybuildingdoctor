@@ -150,11 +150,12 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                                 </li>
                             ))}
                         </ul>
-                        {appSection.playStoreUrl ? (
+                        {appSection.downloadUrl ? (
                             <a
-                                href={appSection.playStoreUrl}
+                                href={appSection.downloadUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                {...(!appSection.playStoreUrl ? { download: true } : {})}
                                 className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                             >
                                 <AndroidIcon />

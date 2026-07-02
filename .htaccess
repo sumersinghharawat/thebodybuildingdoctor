@@ -2,12 +2,39 @@
 // Posted by Rutvik Panchal
 // Retrieved 2026-07-02, License - CC BY-SA 4.0
 
+# Allow large APK / PDF uploads (Apache mod_php only)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 210M
+    php_value memory_limit 256M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 210M
+    php_value memory_limit 256M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 210M
+    php_value memory_limit 256M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
 
     RewriteEngine On
+
+    # Redirect www to non-www
+    RewriteCond %{HTTP_HOST} ^www\.thebodybuildingdoctor\.com$ [NC]
+    RewriteRule ^(.*)$ https://thebodybuildingdoctor.com/$1 [R=301,L]
 
     # Serve uploaded files through Laravel (avoids 403 on shared hosting symlinks)
     RewriteRule ^storage/(.*)$ index.php [L,QSA]

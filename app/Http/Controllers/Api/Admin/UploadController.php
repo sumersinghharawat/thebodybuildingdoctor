@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UploadController extends Controller
@@ -13,16 +14,37 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'file' => ['required', 'file'],
-            'folder' => ['required', Rule::in(['courses', 'mentorship', 'blogs', 'marketing', 'documents'])],
+            'folder' => ['required', Rule::in(['courses', 'mentorship', 'blogs', 'marketing', 'documents', 'apps'])],
         ]);
 
         $file = $data['file'];
-        $isPdf = $file->getMimeType() === 'application/pdf'
-            || str_ends_with(strtolower($file->getClientOriginalName()), '.pdf');
+        $extension = strtolower($file->getClientOriginalExtension());
+        $mime = (string) $file->getMimeType();
+
+        $isPdf = $extension === 'pdf' || $mime === 'application/pdf';
+        $isApk = $extension === 'apk' || in_array($mime, [
+            'application/vnd.android.package-archive',
+            'application/java-archive',
+            'application/zip',
+            'application/octet-stream',
+        ], true);
 
         if ($isPdf) {
             $request->validate([
                 'file' => ['mimes:pdf', 'max:20480'],
+            ]);
+        } elseif ($isApk) {
+            // APKs are ZIP archives and are frequently detected as
+            // application/octet-stream, so validate by extension + size
+            // rather than an unreliable MIME guess.
+            if ($extension !== 'apk') {
+                return response()->json([
+                    'message' => 'Please upload a valid .apk file.',
+                ], 422);
+            }
+
+            $request->validate([
+                'file' => ['max:204800'],
             ]);
         } else {
             $request->validate([
@@ -36,7 +58,12 @@ class UploadController extends Controller
             default => $data['folder'],
         };
 
-        $path = $file->store($folder, 'public');
+        if ($isApk) {
+            $path = $file->storeAs($folder, Str::random(40).'.apk', 'public');
+        } else {
+            $path = $file->store($folder, 'public');
+        }
+
         $url = Storage::disk('public')->url($path);
 
         return response()->json(['url' => $url]);

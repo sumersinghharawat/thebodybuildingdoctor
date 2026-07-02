@@ -282,6 +282,29 @@ export async function uploadPdf(file, folder) {
     return data;
 }
 
+export async function uploadApp(file) {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('folder', 'apps');
+
+    const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'X-XSRF-TOKEN': getCsrfToken(),
+            Accept: 'application/json',
+        },
+        body: form,
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        throw new Error(data.message || 'APK upload failed');
+    }
+
+    return data;
+}
+
 export async function uploadThumbnail(file, folder) {
     const form = new FormData();
     form.append('file', file);

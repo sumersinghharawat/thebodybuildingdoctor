@@ -1,4 +1,5 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import AppUploadField from '@/Components/Admin/AppUploadField';
 import { fetchLandingAppSection, updateLandingAppSection, uploadThumbnail } from '@/lib/admin-api';
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -10,6 +11,7 @@ const emptyForm = {
     description: '',
     features: [''],
     playStoreUrl: '',
+    appDownloadUrl: '',
     buttonLabel: '',
     comingSoonLabel: '',
     screenshotUrl: '',
@@ -34,6 +36,7 @@ export default function LandingAppSectionAdmin() {
                     description: appSection.description,
                     features: appSection.features?.length ? appSection.features : [''],
                     playStoreUrl: appSection.playStoreUrl || '',
+                    appDownloadUrl: appSection.appDownloadUrl || '',
                     buttonLabel: appSection.buttonLabel,
                     comingSoonLabel: appSection.comingSoonLabel,
                     screenshotUrl: appSection.screenshotUrl || '',
@@ -184,15 +187,22 @@ export default function LandingAppSectionAdmin() {
                         ))}
                     </div>
 
+                    <AppUploadField
+                        value={form.appDownloadUrl}
+                        onChange={(value) => updateField('appDownloadUrl', value)}
+                    />
+
                     <div>
-                        <label className="label-dark">Google Play URL</label>
+                        <label className="label-dark">Google Play URL (optional)</label>
                         <input
                             className="input-dark"
                             value={form.playStoreUrl}
                             onChange={(e) => updateField('playStoreUrl', e.target.value)}
                             placeholder="https://play.google.com/store/apps/details?id=..."
                         />
-                        <p className="mt-1 text-xs text-slate-500">Leave empty to show the coming soon message.</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                            Add this later when the app goes live on Google Play. It takes priority over the uploaded APK.
+                        </p>
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-2">

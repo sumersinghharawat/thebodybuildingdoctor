@@ -45,6 +45,7 @@ class SiteSettingsController extends Controller
             'features' => ['required', 'array', 'min:1', 'max:8'],
             'features.*' => ['required', 'string', 'max:190'],
             'playStoreUrl' => ['nullable', 'string', 'max:500'],
+            'appDownloadUrl' => ['nullable', 'string', 'max:500'],
             'buttonLabel' => ['required', 'string', 'max:120'],
             'comingSoonLabel' => ['required', 'string', 'max:120'],
             'screenshotUrl' => ['nullable', 'string', 'max:500'],
