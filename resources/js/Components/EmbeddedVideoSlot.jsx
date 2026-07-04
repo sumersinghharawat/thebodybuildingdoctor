@@ -1,7 +1,7 @@
 import ContentVideoPlayer from '@/Components/ContentVideoPlayer';
 import { useEffect, useState } from 'react';
 
-export default function LessonVideoPlayer({ courseId, lessonId, title }) {
+export default function EmbeddedVideoSlot({ slot, playbackUrl, title = 'Embedded video', className = '' }) {
     const [playback, setPlayback] = useState(null);
     const [error, setError] = useState(null);
 
@@ -10,10 +10,7 @@ export default function LessonVideoPlayer({ courseId, lessonId, title }) {
 
         async function load() {
             try {
-                const res = await fetch(route('learn.lessons.playback', [courseId, lessonId]), {
-                    credentials: 'include',
-                    headers: { Accept: 'application/json' },
-                });
+                const res = await fetch(playbackUrl, { credentials: 'include' });
                 const data = await res.json();
                 if (!res.ok) {
                     throw new Error(data.message || 'Could not load video');
@@ -33,11 +30,11 @@ export default function LessonVideoPlayer({ courseId, lessonId, title }) {
         return () => {
             cancelled = true;
         };
-    }, [courseId, lessonId]);
+    }, [playbackUrl]);
 
     if (error) {
         return (
-            <div className="flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-400">
+            <div className="my-6 flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-400">
                 {error}
             </div>
         );
@@ -45,11 +42,11 @@ export default function LessonVideoPlayer({ courseId, lessonId, title }) {
 
     if (!playback) {
         return (
-            <div className="flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-500">
+            <div className="my-6 flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-500">
                 Loading video…
             </div>
         );
     }
 
-    return <ContentVideoPlayer playback={playback} title={title} />;
+    return <ContentVideoPlayer playback={playback} title={title} className={className} />;
 }

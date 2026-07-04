@@ -1,6 +1,4 @@
-import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect } from 'react';
@@ -22,12 +20,11 @@ export default function RichTextEditor({
         extensions: [
             StarterKit.configure({
                 heading: { levels: [2, 3] },
-            }),
-            Underline,
-            Link.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    class: 'text-amber-400 underline',
+                link: {
+                    openOnClick: false,
+                    HTMLAttributes: {
+                        class: 'text-amber-400 underline',
+                    },
                 },
             }),
             Placeholder.configure({ placeholder }),

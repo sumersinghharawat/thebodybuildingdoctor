@@ -12,7 +12,7 @@ class BlogController extends Controller
     public function index()
     {
         return response()->json([
-            'mentorship' => Blog::query()->orderBy('sort_order')->orderByDesc('published_at')->get()->map->toPublicArray(),
+            'mentorship' => Blog::query()->orderBy('sort_order')->orderByDesc('published_at')->get()->map->toAdminArray(),
         ]);
     }
 
@@ -25,12 +25,12 @@ class BlogController extends Controller
             ...$data,
         ]);
 
-        return response()->json(['mentorship' => $blog->toPublicArray()], 201);
+        return response()->json(['mentorship' => $blog->toAdminArray()], 201);
     }
 
     public function show(string $id)
     {
-        return response()->json(['mentorship' => Blog::query()->findOrFail($id)->toPublicArray()]);
+        return response()->json(['mentorship' => Blog::query()->findOrFail($id)->toAdminArray()]);
     }
 
     public function update(Request $request, string $id)
@@ -42,7 +42,7 @@ class BlogController extends Controller
         }
         $blog->update($data);
 
-        return response()->json(['mentorship' => $blog->fresh()->toPublicArray()]);
+        return response()->json(['mentorship' => $blog->fresh()->toAdminArray()]);
     }
 
     public function destroy(string $id)

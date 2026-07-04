@@ -1,5 +1,6 @@
 import PdfDownloadLink from '@/Components/PdfDownloadLink';
-import ContentVideoPlayer from '@/Components/ContentVideoPlayer';
+import CourseVideoPlayer from '@/Components/CourseVideoPlayer';
+import RichContent from '@/Components/RichContent';
 import AppLayout from '@/Layouts/AppLayout';
 import { Head, Link } from '@inertiajs/react';
 
@@ -13,15 +14,16 @@ export default function LearnCourse({ course, enrolled, lessons }) {
                 </Link>
                 <h1 className="text-2xl font-bold">{course.title}</h1>
                 {course.descriptionHtml ? (
-                    <div
-                        className="rich-content text-sm text-slate-400"
-                        dangerouslySetInnerHTML={{ __html: course.descriptionHtml }}
+                    <RichContent
+                        html={course.descriptionHtml}
+                        className="text-sm text-slate-400"
+                        embedPlaybackUrl={(slot) => route('learn.courses.embed.playback', [course.id, slot])}
                     />
                 ) : (
                     <p className="text-sm text-slate-400">{course.description}</p>
                 )}
 
-                <ContentVideoPlayer videoUrl={course.videoUrl} title={course.title} />
+                {course.hasVideo && <CourseVideoPlayer courseId={course.id} title={course.title} />}
 
                 <PdfDownloadLink url={course.pdfUrl} label="Download course PDF" />
 

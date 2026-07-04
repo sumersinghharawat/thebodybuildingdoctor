@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ContentProtectionService;
 use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
@@ -35,6 +36,17 @@ class Blog extends Model
     }
 
     public function toPublicArray(): array
+    {
+        $data = $this->toAdminArray();
+        $data['contentHtml'] = ContentProtectionService::sanitizeHtml($data['contentHtml']);
+        $data['videoUrl'] = ContentProtectionService::publicVideoUrl($this->video_url);
+        $data['hasVideo'] = trim((string) $this->video_url) !== '';
+        $data['hasEmbeddedVideo'] = ContentProtectionService::htmlHasEmbeddableVideo($this->content_html);
+
+        return $data;
+    }
+
+    public function toAdminArray(): array
     {
         return [
             'id' => $this->id,

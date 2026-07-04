@@ -23,7 +23,7 @@ class LessonController extends Controller
 
         $this->syncCourseStats($courseId);
 
-        return response()->json(['lesson' => $lesson->toPublicArray()], 201);
+        return response()->json(['lesson' => $lesson->toAdminArray()], 201);
     }
 
     public function update(Request $request, string $courseId, string $lessonId)
@@ -32,7 +32,7 @@ class LessonController extends Controller
         $lesson->update($this->validated($request, partial: true));
         $this->syncCourseStats($courseId);
 
-        return response()->json(['lesson' => $lesson->fresh()->toPublicArray()]);
+        return response()->json(['lesson' => $lesson->fresh()->toAdminArray()]);
     }
 
     public function destroy(string $courseId, string $lessonId)
@@ -63,7 +63,7 @@ class LessonController extends Controller
         }
 
         return response()->json([
-            'lessons' => Lesson::query()->where('course_id', $courseId)->orderBy('sort_order')->get()->map->toPublicArray(),
+            'lessons' => Lesson::query()->where('course_id', $courseId)->orderBy('sort_order')->get()->map->toAdminArray(),
         ]);
     }
 

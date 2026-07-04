@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ContentProtectionService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -41,6 +42,11 @@ class Lesson extends Model
 
     public function toPublicArray(): array
     {
+        return $this->toAdminArray();
+    }
+
+    public function toAdminArray(): array
+    {
         return [
             'id' => $this->id,
             'courseId' => $this->course_id,
@@ -58,8 +64,14 @@ class Lesson extends Model
 
     public function toLearnerArray(bool $includeVideo = false): array
     {
-        $data = $this->toPublicArray();
-        if (! $includeVideo) {
+        $data = $this->toAdminArray();
+        $data['contentHtml'] = ContentProtectionService::sanitizeHtml($data['contentHtml']);
+        $data['hasVideo'] = trim((string) $this->video_url) !== '';
+        $data['hasEmbeddedVideo'] = ContentProtectionService::htmlHasEmbeddableVideo($this->content_html);
+
+        if ($includeVideo) {
+            $data['videoUrl'] = ContentProtectionService::publicVideoUrl($this->video_url);
+        } else {
             unset($data['videoUrl']);
         }
 

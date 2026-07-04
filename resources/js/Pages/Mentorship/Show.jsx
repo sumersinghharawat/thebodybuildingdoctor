@@ -1,6 +1,8 @@
 import AppLayout from '@/Layouts/AppLayout';
 import PdfDownloadLink from '@/Components/PdfDownloadLink';
-import ContentVideoPlayer from '@/Components/ContentVideoPlayer';
+import EmbeddedVideoSlot from '@/Components/EmbeddedVideoSlot';
+import MentorshipVideoPlayer from '@/Components/MentorshipVideoPlayer';
+import RichContent from '@/Components/RichContent';
 import { Head, Link } from '@inertiajs/react';
 
 export default function MentorshipShow({ mentorship }) {
@@ -21,11 +23,21 @@ export default function MentorshipShow({ mentorship }) {
                         {mentorship.publishedAt ? ` · ${new Date(mentorship.publishedAt).toLocaleDateString()}` : ''}
                     </p>
                 </header>
-                <ContentVideoPlayer videoUrl={mentorship.videoUrl} title={mentorship.title} />
+                {mentorship.hasVideo && (
+                    <MentorshipVideoPlayer mentorshipId={mentorship.id} title={mentorship.title} />
+                )}
+                {!mentorship.hasVideo && mentorship.hasEmbeddedVideo && (
+                    <EmbeddedVideoSlot
+                        slot={0}
+                        playbackUrl={route('mentorship.embed.playback', [mentorship.id, 0])}
+                        title={mentorship.title}
+                    />
+                )}
                 <PdfDownloadLink url={mentorship.pdfUrl} label="Download PDF" />
-                <div
-                    className="rich-content"
-                    dangerouslySetInnerHTML={{ __html: mentorship.contentHtml }}
+                <RichContent
+                    html={mentorship.contentHtml}
+                    hiddenSlots={!mentorship.hasVideo && mentorship.hasEmbeddedVideo ? [0] : []}
+                    embedPlaybackUrl={(slot) => route('mentorship.embed.playback', [mentorship.id, slot])}
                 />
             </article>
         </AppLayout>

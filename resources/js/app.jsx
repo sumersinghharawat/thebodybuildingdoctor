@@ -5,6 +5,7 @@ import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { setSiteCurrency } from '@/lib/format';
+import { installMediaLinkProtection } from '@/lib/media-protection';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -25,6 +26,7 @@ createInertiaApp({
         ),
     setup({ el, App, props }) {
         syncSiteSettings(props.initialPage);
+        installMediaLinkProtection();
         const root = createRoot(el);
 
         root.render(<App {...props} />);

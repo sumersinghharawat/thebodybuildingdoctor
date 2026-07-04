@@ -132,4 +132,40 @@
         height: 100% !important;
         min-height: 12rem;
     }
+
+    .protected-video {
+        @apply select-none;
+    }
+
+    .protected-video__shield {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .protected-video__play-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: 9999px;
+        background: rgb(0 0 0 / 0.55);
+        pointer-events: none;
+    }
+
+    .rich-content-protected {
+        @apply select-text;
+    }
+
+    .rich-content-protected a[href="#"] {
+        @apply pointer-events-none no-underline text-inherit;
+    }
 }

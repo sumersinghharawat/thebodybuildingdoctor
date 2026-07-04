@@ -1,7 +1,7 @@
 import ContentVideoPlayer from '@/Components/ContentVideoPlayer';
 import { useEffect, useState } from 'react';
 
-export default function LessonVideoPlayer({ courseId, lessonId, title }) {
+export default function CourseVideoPlayer({ courseId, title }) {
     const [playback, setPlayback] = useState(null);
     const [error, setError] = useState(null);
 
@@ -10,7 +10,7 @@ export default function LessonVideoPlayer({ courseId, lessonId, title }) {
 
         async function load() {
             try {
-                const res = await fetch(route('learn.lessons.playback', [courseId, lessonId]), {
+                const res = await fetch(route('learn.courses.playback', courseId), {
                     credentials: 'include',
                     headers: { Accept: 'application/json' },
                 });
@@ -33,7 +33,7 @@ export default function LessonVideoPlayer({ courseId, lessonId, title }) {
         return () => {
             cancelled = true;
         };
-    }, [courseId, lessonId]);
+    }, [courseId]);
 
     if (error) {
         return (

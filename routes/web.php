@@ -15,11 +15,17 @@ Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inq
 
 Route::middleware(['auth', 'app.access'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/mentorship/{id}/embed/{slot}/playback', [MentorshipPageController::class, 'embedPlayback'])->name('mentorship.embed.playback');
+    Route::get('/mentorship/{id}/playback', [MentorshipPageController::class, 'playback'])->name('mentorship.playback');
     Route::get('/mentorship/{slug}', [MentorshipPageController::class, 'show'])->name('mentorship.show');
 
     Route::get('/learn', [LearnPageController::class, 'index'])->name('learn.index');
     Route::get('/learn/courses/{courseId}', [LearnPageController::class, 'showCourse'])->name('learn.courses.show');
+    Route::get('/learn/courses/{courseId}/playback', [LearnPageController::class, 'coursePlayback'])->name('learn.courses.playback');
+    Route::get('/learn/courses/{courseId}/embed/{slot}/playback', [LearnPageController::class, 'courseEmbedPlayback'])->name('learn.courses.embed.playback');
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}', [LearnPageController::class, 'showLesson'])->name('learn.lessons.show');
+    Route::get('/learn/courses/{courseId}/lessons/{lessonId}/playback', [LearnPageController::class, 'lessonPlayback'])->name('learn.lessons.playback');
+    Route::get('/learn/courses/{courseId}/lessons/{lessonId}/embed/{slot}/playback', [LearnPageController::class, 'lessonEmbedPlayback'])->name('learn.lessons.embed.playback');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group(function () {

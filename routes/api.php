@@ -29,7 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/learn/courses', [LearnController::class, 'courses']);
         Route::get('/learn/courses/{courseId}', [LearnController::class, 'showCourse']);
         Route::get('/learn/courses/{courseId}/lessons/{lessonId}', [LearnController::class, 'showLesson']);
+        Route::get('/learn/courses/{courseId}/playback', [LearnController::class, 'coursePlayback']);
         Route::get('/learn/courses/{courseId}/lessons/{lessonId}/playback', [LearnController::class, 'playback']);
+        Route::get('/mentorship/{id}/playback', [LearnController::class, 'mentorshipPlayback']);
         Route::get('/mentorship', [LearnController::class, 'mentorship']);
     });
 

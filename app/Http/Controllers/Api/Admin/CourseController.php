@@ -13,7 +13,7 @@ class CourseController extends Controller
     public function index()
     {
         return response()->json([
-            'courses' => Course::query()->orderBy('sort_order')->get()->map->toPublicArray(),
+            'courses' => Course::query()->orderBy('sort_order')->get()->map->toAdminArray(),
         ]);
     }
 
@@ -25,7 +25,7 @@ class CourseController extends Controller
             ...$data,
         ]);
 
-        return response()->json(['course' => $course->toPublicArray()], 201);
+        return response()->json(['course' => $course->toAdminArray()], 201);
     }
 
     public function show(string $id)
@@ -33,8 +33,8 @@ class CourseController extends Controller
         $course = Course::query()->findOrFail($id);
 
         return response()->json([
-            'course' => $course->toPublicArray(),
-            'lessons' => $course->lessons->map->toPublicArray(),
+            'course' => $course->toAdminArray(),
+            'lessons' => $course->lessons->map->toAdminArray(),
         ]);
     }
 
@@ -43,7 +43,7 @@ class CourseController extends Controller
         $course = Course::query()->findOrFail($id);
         $course->update($this->validated($request, partial: true));
 
-        return response()->json(['course' => $course->fresh()->toPublicArray()]);
+        return response()->json(['course' => $course->fresh()->toAdminArray()]);
     }
 
     public function destroy(string $id)

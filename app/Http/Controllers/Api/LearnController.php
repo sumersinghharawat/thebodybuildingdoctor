@@ -62,6 +62,31 @@ class LearnController extends Controller
         ]);
     }
 
+    public function coursePlayback(Request $request, string $courseId)
+    {
+        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $streamPath = URL::to("/api/learn/courses/{$courseId}/lessons/placeholder/stream");
+        $playback = PlaybackService::resolve($course->video_url, $streamPath);
+
+        if (! $playback) {
+            return response()->json(['message' => 'Video unavailable'], 404);
+        }
+
+        return response()->json(['playback' => $playback]);
+    }
+
+    public function mentorshipPlayback(Request $request, string $id)
+    {
+        $mentorship = Blog::query()->where('published', true)->findOrFail($id);
+        $playback = PlaybackService::resolve($mentorship->video_url, '');
+
+        if (! $playback) {
+            return response()->json(['message' => 'Video unavailable'], 404);
+        }
+
+        return response()->json(['playback' => $playback]);
+    }
+
     public function playback(Request $request, string $courseId, string $lessonId)
     {
         $lesson = Lesson::query()->where('course_id', $courseId)->findOrFail($lessonId);

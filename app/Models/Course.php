@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ContentProtectionService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -47,6 +48,17 @@ class Course extends Model
     }
 
     public function toPublicArray(): array
+    {
+        $data = $this->toAdminArray();
+        $data['descriptionHtml'] = ContentProtectionService::sanitizeHtml($data['descriptionHtml']);
+        $data['videoUrl'] = ContentProtectionService::publicVideoUrl($this->video_url);
+        $data['hasVideo'] = trim((string) $this->video_url) !== '';
+        $data['hasEmbeddedVideo'] = ContentProtectionService::htmlHasEmbeddableVideo($this->description_html);
+
+        return $data;
+    }
+
+    public function toAdminArray(): array
     {
         return [
             'id' => $this->id,

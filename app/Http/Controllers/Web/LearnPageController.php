@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Services\ContentProtectionService;
 use App\Services\LessonAccessService;
+use App\Services\PlaybackService;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 
 class LearnPageController extends Controller
@@ -66,5 +69,65 @@ class LearnPageController extends Controller
                 ? ['id' => $lessons[$index + 1]->id, 'title' => $lessons[$index + 1]->title]
                 : null,
         ]);
+    }
+
+    public function coursePlayback(string $courseId)
+    {
+        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $streamPath = URL::to("/api/learn/courses/{$courseId}/lessons/placeholder/stream");
+        $playback = PlaybackService::resolve($course->video_url, $streamPath);
+
+        if (! $playback) {
+            return response()->json(['message' => 'Video unavailable'], 404);
+        }
+
+        return response()->json(['playback' => $playback]);
+    }
+
+    public function courseEmbedPlayback(string $courseId, int $slot)
+    {
+        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $playback = ContentProtectionService::embeddedPlaybackAt($course->description_html, $slot);
+
+        if (! $playback) {
+            return response()->json(['message' => 'Video unavailable'], 404);
+        }
+
+        return response()->json(['playback' => $playback]);
+    }
+
+    public function lessonPlayback(string $courseId, string $lessonId)
+    {
+        $lesson = Lesson::query()->where('course_id', $courseId)->findOrFail($lessonId);
+
+        if (! $this->access->canAccessLesson(auth()->user(), $courseId, $lesson)) {
+            return response()->json(['message' => 'Enrollment required'], 403);
+        }
+
+        $streamPath = URL::to("/api/learn/courses/{$courseId}/lessons/{$lessonId}/stream");
+        $playback = PlaybackService::resolve($lesson->video_url, $streamPath);
+
+        if (! $playback) {
+            return response()->json(['message' => 'Video unavailable'], 404);
+        }
+
+        return response()->json(['playback' => $playback]);
+    }
+
+    public function lessonEmbedPlayback(string $courseId, string $lessonId, int $slot)
+    {
+        $lesson = Lesson::query()->where('course_id', $courseId)->findOrFail($lessonId);
+
+        if (! $this->access->canAccessLesson(auth()->user(), $courseId, $lesson)) {
+            return response()->json(['message' => 'Enrollment required'], 403);
+        }
+
+        $playback = ContentProtectionService::embeddedPlaybackAt($lesson->content_html, $slot);
+
+        if (! $playback) {
+            return response()->json(['message' => 'Video unavailable'], 404);
+        }
+
+        return response()->json(['playback' => $playback]);
     }
 }
