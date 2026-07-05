@@ -45,6 +45,28 @@ Point the Expo app at your local or production API:
 EXPO_PUBLIC_WEB_API_URL=http://localhost:8000
 ```
 
+### API documentation (Swagger UI)
+
+Open **http://localhost:8000/api/documentation** for interactive docs of all `/api` routes (auth, learn, mentorship, inquiries, admin).
+
+Regenerate after changing `app/OpenApi/*`:
+
+```bash
+php artisan l5-swagger:generate
+```
+
+Use **Authorize** in Swagger UI and paste the bearer token from `POST /api/auth/login`.
+
+### Background jobs (email)
+
+Course access inquiry emails are queued. Run a worker locally:
+
+```bash
+php artisan queue:work
+```
+
+Or use `composer dev`, which starts `queue:listen` automatically. Default queue driver: `database` (`QUEUE_CONNECTION` in `.env`).
+
 ## Production content snapshot
 
 Courses, lessons, mentorship, and users are seeded from `database/seeders/data/app-content.json` when you run `php artisan db:seed`.

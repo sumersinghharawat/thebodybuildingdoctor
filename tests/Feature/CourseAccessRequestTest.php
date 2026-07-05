@@ -49,6 +49,6 @@ class CourseAccessRequestTest extends TestCase
             'status' => 'new',
         ]);
 
-        Mail::assertSent(InquiryReceivedMail::class);
+        Mail::assertQueued(InquiryReceivedMail::class);
     }
 }

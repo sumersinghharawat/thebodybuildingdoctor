@@ -48,6 +48,6 @@ class InquiryNotificationService
             return;
         }
 
-        Mail::to($recipients)->send(new InquiryReceivedMail($inquiry));
+        Mail::to($recipients)->queue(new InquiryReceivedMail($inquiry));
     }
 }
