@@ -9,17 +9,23 @@ use App\Models\Enrollment;
 use App\Models\Inquiry;
 use App\Models\Lesson;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class FirestoreImporter
+class AppContentImporter
 {
+    public static function seedPassword(): string
+    {
+        return (string) env('SEED_USER_PASSWORD', env('IMPORTED_USER_PASSWORD', 'password'));
+    }
+
     /**
      * @return array<string, int>
      */
     public static function import(array $data, ?string $defaultPassword = null): array
     {
-        $password = $defaultPassword ?? env('IMPORTED_USER_PASSWORD', 'ChangeMeAfterImport!');
+        $password = $defaultPassword ?? self::seedPassword();
+        $manifest = SeedMedia::manifestForSnapshot($data);
+        $mediaPublished = SeedMedia::publishToStorage();
 
         $counts = [
             'users' => 0,
@@ -31,6 +37,7 @@ class FirestoreImporter
             'blog_access' => 0,
             'skipped_lessons' => 0,
             'skipped_enrollments' => 0,
+            'media_files' => $mediaPublished,
         ];
 
         foreach ($data['users'] ?? [] as $row) {
@@ -42,7 +49,7 @@ class FirestoreImporter
                 [
                     'email' => $row['email'] ?? "{$uid}@import.local",
                     'name' => $row['displayName'] ?? $row['name'] ?? 'Imported User',
-                    'password' => Hash::make($password),
+                    'password' => $password,
                     'roles' => $roles,
                 ],
             );
@@ -57,8 +64,8 @@ class FirestoreImporter
                     'title' => $row['title'] ?? 'Untitled',
                     'slug' => $row['slug'] ?? Str::slug($row['title'] ?? $id),
                     'description' => $row['description'] ?? '',
-                    'description_html' => $row['descriptionHtml'] ?? null,
-                    'thumbnail_url' => $row['thumbnailUrl'] ?? '',
+                    'description_html' => SeedMedia::rewriteHtml($row['descriptionHtml'] ?? null, $manifest),
+                    'thumbnail_url' => self::resolveThumbnailPath($row['thumbnailUrl'] ?? '', $manifest),
                     'instructor_name' => $row['instructorName'] ?? '',
                     'level' => $row['level'] ?? 'beginner',
                     'category' => $row['category'] ?? '',
@@ -96,9 +103,9 @@ class FirestoreImporter
                     'sort_order' => (int) ($row['order'] ?? 0),
                     'duration_sec' => (int) ($row['durationSec'] ?? 0),
                     'video_url' => $row['videoUrl'] ?? '',
-                    'content_html' => $row['contentHtml'] ?? null,
+                    'content_html' => SeedMedia::rewriteHtml($row['contentHtml'] ?? null, $manifest),
                     'free_preview' => (bool) ($row['freePreview'] ?? false),
-                    'thumbnail_url' => $row['thumbnailUrl'] ?? null,
+                    'thumbnail_url' => self::resolveThumbnailPath($row['thumbnailUrl'] ?? '', $manifest),
                 ],
             );
             $counts['lessons']++;
@@ -138,8 +145,8 @@ class FirestoreImporter
                     'title' => $row['title'] ?? 'Mentorship',
                     'slug' => $row['slug'] ?? Str::slug($row['title'] ?? $id),
                     'excerpt' => $row['excerpt'] ?? '',
-                    'content_html' => $row['contentHtml'] ?? '',
-                    'thumbnail_url' => $row['thumbnailUrl'] ?? '',
+                    'content_html' => SeedMedia::rewriteHtml($row['contentHtml'] ?? '', $manifest) ?? '',
+                    'thumbnail_url' => self::resolveThumbnailPath($row['thumbnailUrl'] ?? '', $manifest),
                     'author_name' => $row['authorName'] ?? 'The Bodybuilding Doctor',
                     'published' => (bool) ($row['published'] ?? false),
                     'published_at' => $row['publishedAt'] ?? null,
@@ -184,7 +191,7 @@ class FirestoreImporter
             $counts['blog_access']++;
         }
 
-        $displayCounts = [
+        return [
             'users' => $counts['users'],
             'courses' => $counts['courses'],
             'lessons' => $counts['lessons'],
@@ -194,15 +201,23 @@ class FirestoreImporter
             'mentorship_access' => $counts['blog_access'],
             'skipped_lessons' => $counts['skipped_lessons'] ?? 0,
             'skipped_enrollments' => $counts['skipped_enrollments'] ?? 0,
+            'media_files' => $counts['media_files'] ?? 0,
         ];
+    }
 
-        return $displayCounts;
+    private static function resolveThumbnailPath(?string $url, array $manifest): string
+    {
+        if ($url === null || $url === '') {
+            return '';
+        }
+
+        return SeedMedia::pathForUrl($url, $manifest) ?? '';
     }
 
     /**
      * @return array<string, mixed>|null
      */
-    public static function loadExportFile(string $path): ?array
+    public static function loadSnapshot(string $path): ?array
     {
         if (! is_file($path)) {
             return null;
@@ -265,7 +280,7 @@ class FirestoreImporter
                 'id' => $courseId,
                 'title' => Str::headline(str_replace('-', ' ', $courseId)),
                 'slug' => Str::slug($courseId),
-                'description' => 'Imported placeholder for orphaned lessons.',
+                'description' => 'Placeholder for orphaned lessons.',
                 'thumbnail_url' => '',
                 'instructor_name' => 'The Bodybuilding Doctor',
                 'level' => 'beginner',

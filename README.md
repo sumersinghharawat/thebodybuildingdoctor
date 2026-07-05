@@ -33,6 +33,8 @@ php artisan serve    # http://localhost:8000
 | admin@thebodybuildingdoctor.test | password | administrator |
 | member@thebodybuildingdoctor.test | password | media_channel |
 
+Snapshot users from `database/seeders/data/app-content.json` use `SEED_USER_PASSWORD` from `.env` (default: `password`).
+
 Public registration is disabled — admins create users and enrollments.
 
 ## Mobile app
@@ -43,23 +45,9 @@ Point the Expo app at your local or production API:
 EXPO_PUBLIC_WEB_API_URL=http://localhost:8000
 ```
 
-## Firebase production data
+## Production content snapshot
 
-Export is at `database/seeders/data/firestore-export.json`. `php artisan db:seed` imports it automatically.
-
-Refresh from Firebase:
-
-```bash
-cd ../web && npm run export:laravel
-```
-
-Imported users receive `IMPORTED_USER_PASSWORD` from `.env` (default: `ChangeMeAfterImport!`).
-
-Manual import:
-
-```bash
-php artisan import:firestore-json database/seeders/data/firestore-export.json
-```
+Courses, lessons, mentorship, and users are seeded from `database/seeders/data/app-content.json` when you run `php artisan db:seed`.
 
 ## Deploy
 

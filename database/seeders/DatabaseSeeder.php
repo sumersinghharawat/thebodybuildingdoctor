@@ -13,21 +13,22 @@ class DatabaseSeeder extends Seeder
         $this->seedDevUser('admin@thebodybuildingdoctor.test', 'Administrator', ['administrator']);
         $this->seedDevUser('member@thebodybuildingdoctor.test', 'Media Channel Member', ['media_channel']);
 
-        $this->call(FirestoreDataSeeder::class);
+        $this->call(AppContentSeeder::class);
     }
 
     private function seedDevUser(string $email, string $name, array $roles): void
     {
-        if (User::query()->where('email', $email)->exists()) {
-            return;
+        $user = User::query()->firstOrNew(['email' => $email]);
+
+        if (! $user->exists) {
+            $user->id = (string) Str::uuid();
         }
 
-        User::query()->create([
-            'id' => (string) Str::uuid(),
-            'email' => $email,
+        $user->fill([
             'name' => $name,
             'password' => 'password',
             'roles' => $roles,
         ]);
+        $user->save();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\ContentProtectionService;
+use App\Support\MediaUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -66,8 +67,8 @@ class Course extends Model
             'slug' => $this->slug,
             'description' => $this->description,
             'descriptionHtml' => $this->description_html,
-            'thumbnailUrl' => $this->thumbnail_url,
-            'pdfUrl' => $this->pdf_url,
+            'thumbnailUrl' => MediaUrl::resolve($this->thumbnail_url) ?? '',
+            'pdfUrl' => MediaUrl::resolve($this->pdf_url) ?? '',
             'videoUrl' => $this->video_url,
             'instructorName' => $this->instructor_name,
             'level' => $this->level,

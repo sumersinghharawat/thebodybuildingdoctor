@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
-use App\Models\Inquiry;
+use App\Services\InquiryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class InquiryController extends Controller
 {
@@ -28,16 +27,14 @@ class InquiryController extends Controller
             $courseTitle = $course?->title ?? '';
         }
 
-        $inquiry = Inquiry::query()->create([
-            'id' => Str::random(24),
+        $inquiry = InquiryService::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'type' => $data['type'],
-            'course_id' => $data['courseId'] ?? null,
-            'course_title' => $courseTitle ?: null,
+            'courseId' => $data['courseId'] ?? null,
+            'courseTitle' => $courseTitle ?: null,
             'message' => $data['message'] ?? null,
-            'status' => 'new',
         ]);
 
         return response()->json(['inquiry' => $inquiry->toPublicArray()], 201);

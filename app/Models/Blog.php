@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\ContentProtectionService;
+use App\Support\MediaUrl;
 use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
@@ -54,8 +55,8 @@ class Blog extends Model
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'contentHtml' => $this->content_html,
-            'thumbnailUrl' => $this->thumbnail_url,
-            'pdfUrl' => $this->pdf_url,
+            'thumbnailUrl' => MediaUrl::resolve($this->thumbnail_url) ?? '',
+            'pdfUrl' => MediaUrl::resolve($this->pdf_url) ?? '',
             'videoUrl' => $this->video_url,
             'authorName' => $this->author_name,
             'published' => $this->published,

@@ -1,6 +1,7 @@
 import { formatPrice } from '@/lib/format';
+import CourseRequestButton from '@/Components/CourseRequestButton';
 
-export default function CourseCard({ course }) {
+export default function CourseCard({ course, showRequest = true }) {
     return (
         <article className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-900 transition hover:border-slate-600">
             {course.thumbnailUrl ? (
@@ -31,6 +32,11 @@ export default function CourseCard({ course }) {
                         </span>
                     )}
                 </div>
+                {showRequest && (
+                    <div className="mt-3">
+                        <CourseRequestButton course={course} compact />
+                    </div>
+                )}
             </div>
         </article>
     );

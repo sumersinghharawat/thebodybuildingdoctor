@@ -21,6 +21,7 @@ class SiteSettingsController extends Controller
     {
         $data = $request->validate([
             'currency' => ['required', 'string', Rule::in(array_keys(GeneralSettings::supportedCurrencies()))],
+            'notificationEmail' => ['nullable', 'email', 'max:190'],
         ]);
 
         return response()->json([

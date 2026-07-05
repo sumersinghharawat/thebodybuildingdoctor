@@ -1,10 +1,12 @@
 import PdfDownloadLink from '@/Components/PdfDownloadLink';
+import CourseRequestButton from '@/Components/CourseRequestButton';
 import CourseVideoPlayer from '@/Components/CourseVideoPlayer';
 import RichContent from '@/Components/RichContent';
 import AppLayout from '@/Layouts/AppLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function LearnCourse({ course, enrolled, lessons }) {
+    const { flash } = usePage().props;
     return (
         <AppLayout>
             <Head title={course.title} />
@@ -27,13 +29,26 @@ export default function LearnCourse({ course, enrolled, lessons }) {
 
                 <PdfDownloadLink url={course.pdfUrl} label="Download course PDF" />
 
-                {!enrolled && (
-                    <p className="text-sm text-slate-400">
-                        Enrollment is managed by an administrator.{' '}
-                        <Link href="/#apply" className="text-amber-400 hover:underline">
-                            Request access
-                        </Link>
+                {flash?.success && (
+                    <p className="rounded-lg border border-emerald-900/50 bg-emerald-950/40 px-4 py-3 text-sm text-emerald-300">
+                        {flash.success}
                     </p>
+                )}
+                {flash?.error && (
+                    <p className="rounded-lg border border-red-900/50 bg-red-950/40 px-4 py-3 text-sm text-red-300">
+                        {flash.error}
+                    </p>
+                )}
+
+                {!enrolled && (
+                    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+                        <p className="text-sm text-slate-400">
+                            Enrollment is managed by an administrator. Request access to this course below.
+                        </p>
+                        <div className="mt-3 max-w-xs">
+                            <CourseRequestButton course={course} enrolled={enrolled} />
+                        </div>
+                    </div>
                 )}
 
                 <ol className="divide-y divide-slate-800 rounded-xl border border-slate-800">

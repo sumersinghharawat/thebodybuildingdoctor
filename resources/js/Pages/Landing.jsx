@@ -1,6 +1,7 @@
 import CourseCard from '@/Components/Marketing/CourseCard';
 import MarketingLayout from '@/Layouts/MarketingLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
 
 const MENTORSHIP_BENEFITS = [
     {
@@ -44,6 +45,26 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
         e.preventDefault();
         post(route('inquiries.store'));
     };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const courseId = params.get('courseId') || '';
+        const courseTitle = params.get('courseTitle') || '';
+
+        if (!courseId && !courseTitle) {
+            return;
+        }
+
+        setData((current) => ({
+            ...current,
+            type: 'courses',
+            courseId,
+            courseTitle,
+            message: courseTitle
+                ? `I would like access to the course "${courseTitle}".`
+                : 'I would like access to a course.',
+        }));
+    }, [setData]);
 
     const showViewMore = totalCourseCount > courses.length;
 

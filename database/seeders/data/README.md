@@ -1,38 +1,51 @@
-# Firebase export data
+# App content snapshot
 
-`firestore-export.json` is generated from production Firebase/MongoDB data.
+`app-content.json` is a static snapshot of production courses, lessons, mentorship posts, enrollments, and users. It is committed to the repo and loaded by `AppContentSeeder` — no Firebase export step is required.
 
-## Refresh export (before deploy)
-
-From the `web/` folder (requires `serviceAccountKey.json` and `.env.local`):
+## Seed the database
 
 ```bash
-npm run export:laravel
+php artisan migrate:fresh --seed
 ```
 
-This overwrites `backend/database/seeders/data/firestore-export.json`.
-
-## Seed Laravel database
+Or seed content only:
 
 ```bash
-cd backend
-php artisan migrate --seed
+php artisan db:seed --class=AppContentSeeder
 ```
 
-Or import only Firebase data:
+## Seeded passwords
+
+| Account | Email | Password |
+|---------|-------|----------|
+| Dev admin | `admin@thebodybuildingdoctor.test` | `password` |
+| Dev member | `member@thebodybuildingdoctor.test` | `password` |
+| Snapshot users | their real email from the JSON | `SEED_USER_PASSWORD` from `.env` (default: `password`) |
+
+Set `SEED_USER_PASSWORD` in `.env` before seeding if you want a different password for snapshot users.
+
+## Media files
+
+Images are stored in `database/seeders/media/` and copied to `storage/app/public/` during seeding. The database stores storage-relative paths (e.g. `courses/abc.jpg`).
+
+To (re)download images from the URLs in `app-content.json`:
 
 ```bash
-php artisan db:seed --class=FirestoreDataSeeder
+php artisan app-content:fetch-media
 ```
 
-## Imported user passwords
+Then seed:
 
-Firebase password hashes cannot be migrated. All imported users receive the password from `IMPORTED_USER_PASSWORD` in `.env` (default: `ChangeMeAfterImport!`). Send password reset emails after go-live.
+```bash
+php artisan migrate:fresh --seed
+```
 
-## Last export
+Ensure `php artisan storage:link` has been run so `/storage/...` URLs are served.
+
+## Snapshot contents
 
 - **Exported at:** 2026-07-01
-- **Users:** 114 (Firebase Auth + roles)
+- **Users:** 114
 - **Courses:** 15 (+ 1 placeholder for orphaned lessons)
 - **Lessons:** 140
 - **Enrollments:** 5

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 
 export default function GeneralSettingsAdmin() {
     const [currency, setCurrency] = useState('EUR');
+    const [notificationEmail, setNotificationEmail] = useState('');
     const [supportedCurrencies, setSupportedCurrencies] = useState({});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -16,6 +17,7 @@ export default function GeneralSettingsAdmin() {
         fetchGeneralSettings()
             .then((settings) => {
                 setCurrency(settings.currency);
+                setNotificationEmail(settings.notificationEmail || '');
                 setSupportedCurrencies(settings.supportedCurrencies || {});
             })
             .catch((err) => setError(err.message))
@@ -29,8 +31,9 @@ export default function GeneralSettingsAdmin() {
         setSuccess(false);
 
         try {
-            const settings = await updateGeneralSettings({ currency });
+            const settings = await updateGeneralSettings({ currency, notificationEmail });
             setCurrency(settings.currency);
+            setNotificationEmail(settings.notificationEmail || '');
             setSupportedCurrencies(settings.supportedCurrencies || {});
             setSiteCurrency(settings.currency);
             setSuccess(true);
@@ -54,6 +57,30 @@ export default function GeneralSettingsAdmin() {
                             Settings saved. Course prices across the site will use the selected currency.
                         </p>
                     )}
+
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-100">Notifications</h2>
+                        <p className="mt-1 text-sm text-slate-400">
+                            Course access requests are saved in Inquiries and emailed to this address.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label className="label-dark" htmlFor="notificationEmail">
+                            Admin notification email
+                        </label>
+                        <input
+                            id="notificationEmail"
+                            type="email"
+                            className="input-dark"
+                            placeholder="admin@example.com"
+                            value={notificationEmail}
+                            onChange={(e) => setNotificationEmail(e.target.value)}
+                        />
+                        <p className="mt-2 text-xs text-slate-500">
+                            Leave blank to use ADMIN_NOTIFICATION_EMAIL or admin user emails.
+                        </p>
+                    </div>
 
                     <div>
                         <h2 className="text-lg font-semibold text-slate-100">Course pricing</h2>

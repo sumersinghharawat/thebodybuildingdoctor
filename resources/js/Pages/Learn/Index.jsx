@@ -1,7 +1,10 @@
 import AppLayout from '@/Layouts/AppLayout';
-import { Head, Link } from '@inertiajs/react';
+import CourseRequestButton from '@/Components/CourseRequestButton';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function LearnIndex({ enrolledCourses = [], browseCourses = [] }) {
+    const { flash } = usePage().props;
+
     return (
         <AppLayout>
             <Head title="My Courses" />
@@ -12,6 +15,12 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [] })
                         Enrollment is managed by an administrator.
                     </p>
                 </header>
+
+                {flash?.success && (
+                    <p className="rounded-lg border border-emerald-900/50 bg-emerald-950/40 px-4 py-3 text-sm text-emerald-300">
+                        {flash.success}
+                    </p>
+                )}
 
                 <section className="space-y-4">
                     <h2 className="text-lg font-semibold">Continue learning</h2>
@@ -25,7 +34,7 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [] })
                 {browseCourses.length > 0 && (
                     <section className="space-y-4">
                         <h2 className="text-lg font-semibold">Browse courses</h2>
-                        <CourseGrid courses={browseCourses} />
+                        <CourseGrid courses={browseCourses} showRequest />
                     </section>
                 )}
             </div>
@@ -33,23 +42,29 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [] })
     );
 }
 
-function CourseGrid({ courses }) {
+function CourseGrid({ courses, showRequest = false }) {
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {courses.map((course) => (
-                <Link
+                <article
                     key={course.id}
-                    href={route('learn.courses.show', course.id)}
-                    className="rounded-xl border border-slate-800 bg-slate-900 overflow-hidden hover:border-slate-600 transition"
+                    className="rounded-xl border border-slate-800 bg-slate-900 overflow-hidden hover:border-slate-600 transition flex flex-col"
                 >
-                    {course.thumbnailUrl && (
-                        <img src={course.thumbnailUrl} alt="" className="w-full aspect-video object-cover" />
+                    <Link href={route('learn.courses.show', course.id)} className="block">
+                        {course.thumbnailUrl && (
+                            <img src={course.thumbnailUrl} alt="" className="w-full aspect-video object-cover" />
+                        )}
+                        <div className="p-4">
+                            <h3 className="font-semibold">{course.title}</h3>
+                            <p className="text-xs text-slate-400 mt-1 line-clamp-2">{course.description}</p>
+                        </div>
+                    </Link>
+                    {showRequest && (
+                        <div className="px-4 pb-4 mt-auto">
+                            <CourseRequestButton course={course} compact className="w-full" />
+                        </div>
                     )}
-                    <div className="p-4">
-                        <h3 className="font-semibold">{course.title}</h3>
-                        <p className="text-xs text-slate-400 mt-1 line-clamp-2">{course.description}</p>
-                    </div>
-                </Link>
+                </article>
             ))}
         </div>
     );

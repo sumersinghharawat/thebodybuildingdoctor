@@ -84,18 +84,15 @@ chmod -R 775 storage bootstrap/cache
 
 Enable **AutoSSL** in cPanel for your domain.
 
-## 8. Import existing Firebase data
+## 8. Seed production content
 
-Export from the legacy Next.js app:
+Set `SEED_USER_PASSWORD` in `.env`, then:
 
 ```bash
-cd ../web
-node scripts/export-firestore-for-mysql.cjs firestore-export.json
-cd ../backend
-php artisan import:firestore-json ../web/firestore-export.json
+php artisan migrate --seed
 ```
 
-Reset passwords for imported users via admin or `php artisan tinker`.
+This loads courses, lessons, mentorship, and users from `database/seeders/data/app-content.json`. Reset user passwords after go-live.
 
 ## 9. Mobile app
 

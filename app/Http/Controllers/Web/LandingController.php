@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
-use App\Models\Inquiry;
+use App\Services\InquiryService;
 use App\Support\LandingAppSection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class LandingController extends Controller
@@ -42,16 +41,14 @@ class LandingController extends Controller
             'message' => ['nullable', 'string', 'max:5000'],
         ]);
 
-        Inquiry::query()->create([
-            'id' => Str::random(24),
+        InquiryService::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'type' => $data['type'],
-            'course_id' => $data['courseId'] ?? null,
-            'course_title' => $data['courseTitle'] ?? null,
+            'courseId' => $data['courseId'] ?? null,
+            'courseTitle' => $data['courseTitle'] ?? null,
             'message' => $data['message'] ?? null,
-            'status' => 'new',
         ]);
 
         return back()->with('success', 'Request submitted. We will contact you soon.');

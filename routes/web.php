@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AdminPageController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\CourseRequestController;
 use App\Http\Controllers\Web\CoursesPageController;
 use App\Http\Controllers\Web\LandingController;
 use App\Http\Controllers\Web\LearnPageController;
@@ -21,6 +22,7 @@ Route::middleware(['auth', 'app.access'])->group(function () {
 
     Route::get('/learn', [LearnPageController::class, 'index'])->name('learn.index');
     Route::get('/learn/courses/{courseId}', [LearnPageController::class, 'showCourse'])->name('learn.courses.show');
+    Route::post('/learn/courses/{courseId}/request', [CourseRequestController::class, 'store'])->name('learn.courses.request');
     Route::get('/learn/courses/{courseId}/playback', [LearnPageController::class, 'coursePlayback'])->name('learn.courses.playback');
     Route::get('/learn/courses/{courseId}/embed/{slot}/playback', [LearnPageController::class, 'courseEmbedPlayback'])->name('learn.courses.embed.playback');
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}', [LearnPageController::class, 'showLesson'])->name('learn.lessons.show');

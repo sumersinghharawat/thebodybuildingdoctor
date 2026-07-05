@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\ContentProtectionService;
+use App\Support\MediaUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -57,8 +58,8 @@ class Lesson extends Model
             'videoUrl' => $this->video_url,
             'contentHtml' => $this->content_html,
             'freePreview' => $this->free_preview,
-            'thumbnailUrl' => $this->thumbnail_url,
-            'pdfUrl' => $this->pdf_url,
+            'thumbnailUrl' => MediaUrl::resolve($this->thumbnail_url) ?? '',
+            'pdfUrl' => MediaUrl::resolve($this->pdf_url) ?? '',
         ];
     }
 
