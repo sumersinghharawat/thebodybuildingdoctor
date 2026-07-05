@@ -23,8 +23,16 @@ php artisan storage:link
 
 npm install
 npm run dev          # Vite dev server
-php artisan serve    # http://localhost:8000
+composer serve       # http://localhost:8000 (200MB upload limit for APKs)
 ```
+
+Or run everything together (server, queue, logs, Vite):
+
+```bash
+composer dev
+```
+
+**APK uploads:** `php artisan serve` now passes 200MB limits to the built-in PHP server. Restart the dev server after pulling (`Ctrl+C`, then `composer dev`). If port 8000 is stuck, stop the old process: `lsof -ti :8000 | xargs kill`.
 
 ### Seeded users
 

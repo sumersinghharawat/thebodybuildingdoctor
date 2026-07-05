@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\MentorshipPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
+Route::get('/download/android', App\Http\Controllers\Web\AppDownloadController::class)->name('app.download');
 Route::get('/courses', CoursesPageController::class)->name('courses.index');
 Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inquiries.store');
 

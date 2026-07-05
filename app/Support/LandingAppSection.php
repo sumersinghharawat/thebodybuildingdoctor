@@ -37,15 +37,7 @@ class LandingAppSection
      */
     public static function get(): array
     {
-        $settings = self::defaults();
-        $raw = SiteSetting::query()->find(self::SETTING_KEY)?->value;
-
-        if ($raw) {
-            $stored = json_decode($raw, true);
-            if (is_array($stored)) {
-                $settings = array_merge($settings, $stored);
-            }
-        }
+        $settings = self::storedSettings();
 
         if (empty($settings['playStoreUrl']) && empty($settings['appDownloadUrl'])) {
             $settings['playStoreUrl'] = (string) config('marketing.android_play_store_url', '');
@@ -62,6 +54,24 @@ class LandingAppSection
         }
 
         return self::toPublicArray($settings);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function storedSettings(): array
+    {
+        $settings = self::defaults();
+        $raw = SiteSetting::query()->find(self::SETTING_KEY)?->value;
+
+        if ($raw) {
+            $stored = json_decode($raw, true);
+            if (is_array($stored)) {
+                $settings = array_merge($settings, $stored);
+            }
+        }
+
+        return $settings;
     }
 
     /**
@@ -100,6 +110,7 @@ class LandingAppSection
             'playStoreUrl' => (string) ($settings['playStoreUrl'] ?? ''),
             'appDownloadUrl' => (string) ($settings['appDownloadUrl'] ?? ''),
             'downloadUrl' => self::resolveDownloadUrl($settings),
+            'isPlayStore' => self::isPlayStoreDownload($settings),
             'buttonLabel' => (string) ($settings['buttonLabel'] ?? 'Download Android app'),
             'comingSoonLabel' => (string) ($settings['comingSoonLabel'] ?? 'Android app coming soon'),
             'screenshotUrl' => (string) ($settings['screenshotUrl'] ?? ''),
@@ -117,6 +128,30 @@ class LandingAppSection
             return $playStoreUrl;
         }
 
+        if (self::apkStoragePath($settings) !== null) {
+            return route('app.download');
+        }
+
         return trim((string) ($settings['appDownloadUrl'] ?? ''));
+    }
+
+    public static function isPlayStoreDownload(array $settings): bool
+    {
+        return trim((string) ($settings['playStoreUrl'] ?? '')) !== '';
+    }
+
+    public static function apkStoragePath(array $settings): ?string
+    {
+        $appUrl = trim((string) ($settings['appDownloadUrl'] ?? ''));
+        if ($appUrl === '') {
+            return null;
+        }
+
+        $path = MediaUrl::storagePath($appUrl);
+        if ($path === '' || ! str_starts_with($path, 'apps/')) {
+            return null;
+        }
+
+        return $path;
     }
 }

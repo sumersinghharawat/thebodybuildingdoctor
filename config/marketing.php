@@ -14,4 +14,15 @@ return [
 
     'android_play_store_url' => env('ANDROID_PLAY_STORE_URL'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Direct APK download filename
+    |--------------------------------------------------------------------------
+    |
+    | Used when serving a hosted APK from /download/android.
+    |
+    */
+
+    'android_apk_filename' => env('ANDROID_APK_FILENAME', 'the-bodybuilding-doctor.apk'),
+
 ];

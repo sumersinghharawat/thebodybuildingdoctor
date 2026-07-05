@@ -4,6 +4,7 @@ import { useState } from 'react';
 export default function AppUploadField({ label = 'Android app (APK)', value = '', onChange }) {
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(null);
+    const testHref = value.includes('/apps/') || value.startsWith('apps/') ? '/download/android' : value;
 
     async function handleUpload(file) {
         setUploading(true);
@@ -42,8 +43,8 @@ export default function AppUploadField({ label = 'Android app (APK)', value = ''
             {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
             {value && (
                 <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <a href={value} target="_blank" rel="noopener noreferrer" className="text-sm text-amber-400 hover:underline">
-                        Test download link
+                    <a href={testHref} className="text-sm text-amber-400 hover:underline">
+                        Test APK download
                     </a>
                     <button type="button" className="btn-secondary" onClick={() => onChange('')}>
                         Remove APK
@@ -51,7 +52,7 @@ export default function AppUploadField({ label = 'Android app (APK)', value = ''
                 </div>
             )}
             <p className="mt-1 text-xs text-slate-500">
-                Upload the Android APK for direct download while the app is not on Google Play yet.
+                Upload the Android APK. Visitors download it from <code className="text-slate-400">/download/android</code> as a proper .apk file.
             </p>
         </div>
     );

@@ -66,6 +66,11 @@ class UploadController extends Controller
 
         $url = Storage::disk('public')->url($path);
 
-        return response()->json(['url' => $url]);
+        $payload = ['url' => $url, 'path' => $path];
+        if ($isApk) {
+            $payload['downloadUrl'] = route('app.download');
+        }
+
+        return response()->json($payload);
     }
 }
