@@ -1,12 +1,12 @@
 # Namecheap Shared Hosting Deployment
 
-Deploy the Laravel + Inertia + React app in [`backend/`](../backend/) to Namecheap cPanel.
+Deploy the Laravel + Inertia + React app in [`web/`](../web/) to Namecheap cPanel.
 
 ## Requirements
 
 - PHP **8.2+** with extensions: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `curl`, `fileinfo`
 - MySQL database created in cPanel
-- Document root pointed at `backend/public`
+- Document root pointed at `web/public`
 
 ## 1. Create MySQL database (cPanel)
 
@@ -16,7 +16,7 @@ Deploy the Laravel + Inertia + React app in [`backend/`](../backend/) to Nameche
 
 ## 2. Upload files
 
-Upload the entire `backend/` folder to your account (e.g. `~/tbbd/`).
+Upload the entire `web/` folder to your account (e.g. `~/tbbd/`).
 
 Set the domain document root to:
 
@@ -67,7 +67,7 @@ php artisan storage:link
 On your computer (or CI):
 
 ```bash
-cd backend
+cd ../web
 npm ci
 npm run build
 ```

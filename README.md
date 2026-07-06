@@ -12,7 +12,7 @@ Backend and web app for the LMS, replacing the Next.js + Firebase stack.
 ## Local development
 
 ```bash
-cd backend
+cd web
 composer install
 cp .env.example .env
 php artisan key:generate
