@@ -9,7 +9,7 @@ import {
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-export default function EnrollmentForm({ uid, courseId }) {
+export default function EnrollmentForm({ uid, courseId, prefillEmail = '', returnTo = null }) {
     const isEdit = Boolean(uid && courseId);
     const [users, setUsers] = useState([]);
     const [courses, setCourses] = useState([]);
@@ -21,6 +21,15 @@ export default function EnrollmentForm({ uid, courseId }) {
         Promise.all([fetchUsers(), fetchCourses()]).then(([userData, courseData]) => {
             setUsers(userData.users);
             setCourses(courseData.courses);
+
+            if (!isEdit && prefillEmail) {
+                const match = userData.users.find(
+                    (user) => user.email.toLowerCase() === prefillEmail.toLowerCase(),
+                );
+                if (match) {
+                    setForm((prev) => ({ ...prev, uid: match.uid }));
+                }
+            }
         });
         if (isEdit) {
             fetchEnrollment(uid, courseId).then((data) => {
@@ -33,7 +42,7 @@ export default function EnrollmentForm({ uid, courseId }) {
                 });
             });
         }
-    }, [uid, courseId, isEdit]);
+    }, [uid, courseId, isEdit, prefillEmail]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -49,7 +58,7 @@ export default function EnrollmentForm({ uid, courseId }) {
             } else {
                 await createEnrollment(payload);
             }
-            router.visit(route('admin.enrollments.index'));
+            router.visit(returnTo || route('admin.enrollments.index'));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -100,7 +109,7 @@ export default function EnrollmentForm({ uid, courseId }) {
                     <button type="submit" className="btn-primary" disabled={saving}>
                         {saving ? 'Saving…' : 'Save'}
                     </button>
-                    <Link href={route('admin.enrollments.index')} className="btn-secondary">
+                    <Link href={returnTo || route('admin.enrollments.index')} className="btn-secondary">
                         Cancel
                     </Link>
                 </div>

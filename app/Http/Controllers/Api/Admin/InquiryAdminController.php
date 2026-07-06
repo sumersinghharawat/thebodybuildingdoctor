@@ -11,7 +11,11 @@ class InquiryAdminController extends Controller
     public function index()
     {
         return response()->json([
-            'inquiries' => Inquiry::query()->orderByDesc('created_at')->get()->map->toPublicArray(),
+            'inquiries' => Inquiry::query()
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
+                ->get()
+                ->map->toPublicArray(),
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AdminPageController extends Controller
@@ -37,9 +38,14 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/Enrollments/Index');
     }
 
-    public function enrollmentsCreate()
+    public function enrollmentsCreate(Request $request)
     {
-        return Inertia::render('Admin/Enrollments/Form', ['uid' => null, 'courseId' => null]);
+        return Inertia::render('Admin/Enrollments/Form', [
+            'uid' => null,
+            'courseId' => $request->query('courseId'),
+            'prefillEmail' => $request->query('email'),
+            'returnTo' => $request->query('returnTo'),
+        ]);
     }
 
     public function enrollmentsEdit(string $uid, string $courseId)
@@ -82,9 +88,17 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/Users/Index');
     }
 
-    public function usersCreate()
+    public function usersCreate(Request $request)
     {
-        return Inertia::render('Admin/Users/Form', ['uid' => null]);
+        return Inertia::render('Admin/Users/Form', [
+            'uid' => null,
+            'prefill' => [
+                'name' => $request->query('name', ''),
+                'email' => $request->query('email', ''),
+            ],
+            'returnTo' => $request->query('returnTo'),
+            'afterCreate' => $request->query('afterCreate'),
+        ]);
     }
 
     public function usersEdit(string $uid)

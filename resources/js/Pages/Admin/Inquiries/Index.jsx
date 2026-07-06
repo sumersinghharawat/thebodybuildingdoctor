@@ -1,7 +1,47 @@
 import AdminShell from '@/Components/Admin/AdminShell';
 import { fetchInquiries, updateInquiry } from '@/lib/admin-api';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+
+function sortInquiries(items) {
+    return [...items].sort((a, b) => {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (bTime !== aTime) {
+            return bTime - aTime;
+        }
+
+        return String(b.id).localeCompare(String(a.id));
+    });
+}
+
+function formatDate(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleString();
+}
+
+function enrollUrl(inquiry) {
+    const params = new URLSearchParams();
+    if (inquiry.email) params.set('email', inquiry.email);
+    if (inquiry.courseId) params.set('courseId', inquiry.courseId);
+    params.set('returnTo', route('admin.inquiries.index'));
+
+    return `${route('admin.enrollments.create')}?${params}`;
+}
+
+function createUserUrl(inquiry) {
+    const params = new URLSearchParams();
+    if (inquiry.email) params.set('email', inquiry.email);
+    if (inquiry.name) params.set('name', inquiry.name);
+    params.set('returnTo', route('admin.inquiries.index'));
+
+    const enrollParams = new URLSearchParams();
+    if (inquiry.email) enrollParams.set('email', inquiry.email);
+    if (inquiry.courseId) enrollParams.set('courseId', inquiry.courseId);
+    params.set('afterCreate', `${route('admin.enrollments.create')}?${enrollParams}`);
+
+    return `${route('admin.users.create')}?${params}`;
+}
 
 export default function InquiriesIndex() {
     const [inquiries, setInquiries] = useState([]);
@@ -9,13 +49,15 @@ export default function InquiriesIndex() {
 
     useEffect(() => {
         fetchInquiries()
-            .then((data) => setInquiries(data.inquiries))
+            .then((data) => setInquiries(sortInquiries(data.inquiries)))
             .finally(() => setLoading(false));
     }, []);
 
     async function setStatus(inquiry, status) {
         await updateInquiry(inquiry.id, { status });
-        setInquiries((prev) => prev.map((item) => (item.id === inquiry.id ? { ...item, status } : item)));
+        setInquiries((prev) =>
+            sortInquiries(prev.map((item) => (item.id === inquiry.id ? { ...item, status } : item))),
+        );
     }
 
     return (
@@ -32,6 +74,9 @@ export default function InquiriesIndex() {
                                     <p className="font-medium">{inquiry.name}</p>
                                     <p className="text-sm text-slate-400">{inquiry.email}</p>
                                     {inquiry.phone && <p className="text-xs text-slate-500">{inquiry.phone}</p>}
+                                    {inquiry.createdAt && (
+                                        <p className="mt-1 text-xs text-slate-500">{formatDate(inquiry.createdAt)}</p>
+                                    )}
                                 </div>
                                 <select
                                     className="input-dark w-auto"
@@ -47,6 +92,14 @@ export default function InquiriesIndex() {
                             {inquiry.courseTitle && (
                                 <p className="text-xs text-slate-500">Course: {inquiry.courseTitle}</p>
                             )}
+                            <div className="flex flex-wrap gap-2 pt-1">
+                                <Link href={createUserUrl(inquiry)} className="btn-secondary text-sm">
+                                    Create user
+                                </Link>
+                                <Link href={enrollUrl(inquiry)} className="btn-primary text-sm">
+                                    Grant enrollment
+                                </Link>
+                            </div>
                         </article>
                     ))}
                     {inquiries.length === 0 && <p className="text-sm text-slate-400">No inquiries yet.</p>}

@@ -1,4 +1,6 @@
 import YouTubeProtectedPlayer from '@/Components/YouTubeProtectedPlayer';
+import VideoFullscreenButton from '@/Components/VideoFullscreenButton';
+import { useFullscreen } from '@/lib/use-fullscreen';
 import { resolveVideoPlayback } from '@/lib/video-playback';
 import { useCallback, useState } from 'react';
 
@@ -7,10 +9,13 @@ function blockMediaInteraction(event) {
     event.stopPropagation();
 }
 
-function ProtectedVideoFrame({ children, className = '', controls = null }) {
+function ProtectedVideoFrame({ children, className = '', controls = null, showFullscreen = true }) {
+    const { containerRef, isFullscreen, toggleFullscreen } = useFullscreen();
+
     return (
         <div
-            className={`protected-video relative select-none ${className}`}
+            ref={containerRef}
+            className={`protected-video relative select-none ${isFullscreen ? 'is-fullscreen' : ''} ${className}`}
             onContextMenu={blockMediaInteraction}
             onCopy={blockMediaInteraction}
             onCut={blockMediaInteraction}
@@ -19,6 +24,15 @@ function ProtectedVideoFrame({ children, className = '', controls = null }) {
         >
             {children}
             {controls}
+            {showFullscreen && (
+                <div className="protected-video__fullscreen">
+                    <VideoFullscreenButton
+                        isFullscreen={isFullscreen}
+                        onClick={toggleFullscreen}
+                        className="protected-video__fullscreen-btn"
+                    />
+                </div>
+            )}
         </div>
     );
 }

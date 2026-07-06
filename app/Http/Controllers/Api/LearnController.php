@@ -30,23 +30,30 @@ class LearnController extends Controller
             ->get()
             ->map->toPublicArray();
 
-        $browse = Course::query()
-            ->where('published', true)
+        $browseQuery = Course::query()
             ->whereNotIn('id', $enrolledIds)
-            ->orderBy('sort_order')
-            ->get()
-            ->map->toPublicArray();
+            ->orderBy('sort_order');
+
+        if (! $user->isAdmin()) {
+            $browseQuery->where('published', true);
+        }
+
+        $browse = $browseQuery->get()->map->toPublicArray();
 
         return response()->json([
             'enrolledCourses' => $enrolled,
             'browseCourses' => $browse,
+            'isAdmin' => $user->isAdmin(),
         ]);
     }
 
     public function showCourse(Request $request, string $courseId)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
-        $enrolled = $this->access->isEnrolled($request->user(), $courseId);
+        $user = $request->user();
+        $course = Course::query()
+            ->when(! $user->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
+        $enrolled = $this->access->isEnrolled($user, $courseId);
 
         $lessons = $course->lessons->map(function (Lesson $lesson) use ($enrolled) {
             $row = $lesson->toLearnerArray(false);
@@ -64,7 +71,9 @@ class LearnController extends Controller
 
     public function coursePlayback(Request $request, string $courseId)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $course = Course::query()
+            ->when(! $request->user()?->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
         $streamPath = URL::to("/api/learn/courses/{$courseId}/lessons/placeholder/stream");
         $playback = PlaybackService::resolve($course->video_url, $streamPath);
 
@@ -136,10 +145,13 @@ class LearnController extends Controller
 
     public function showLesson(Request $request, string $courseId, string $lessonId)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $user = $request->user();
+        $course = Course::query()
+            ->when(! $user->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
         $lesson = Lesson::query()->where('course_id', $courseId)->findOrFail($lessonId);
 
-        if (! $this->access->canAccessLesson($request->user(), $courseId, $lesson)) {
+        if (! $this->access->canAccessLesson($user, $courseId, $lesson)) {
             return response()->json(['message' => 'Enrollment required'], 403);
         }
 

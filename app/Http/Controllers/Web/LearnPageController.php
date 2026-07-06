@@ -24,16 +24,28 @@ class LearnPageController extends Controller
             ->where('status', 'active')
             ->pluck('course_id');
 
+        $browseQuery = Course::query()
+            ->whereNotIn('id', $enrolledIds)
+            ->orderBy('sort_order');
+
+        if (! $user->isAdmin()) {
+            $browseQuery->where('published', true);
+        }
+
         return Inertia::render('Learn/Index', [
             'enrolledCourses' => Course::query()->whereIn('id', $enrolledIds)->orderBy('sort_order')->get()->map->toPublicArray(),
-            'browseCourses' => Course::query()->where('published', true)->whereNotIn('id', $enrolledIds)->orderBy('sort_order')->get()->map->toPublicArray(),
+            'browseCourses' => $browseQuery->get()->map->toPublicArray(),
+            'isAdmin' => $user->isAdmin(),
         ]);
     }
 
     public function showCourse(string $courseId)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
-        $enrolled = $this->access->isEnrolled(auth()->user(), $courseId);
+        $user = auth()->user();
+        $course = Course::query()
+            ->when(! $user->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
+        $enrolled = $this->access->isEnrolled($user, $courseId);
 
         $lessons = $course->lessons->map(function (Lesson $lesson) use ($enrolled) {
             return [
@@ -51,10 +63,13 @@ class LearnPageController extends Controller
 
     public function showLesson(string $courseId, string $lessonId)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $user = auth()->user();
+        $course = Course::query()
+            ->when(! $user->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
         $lesson = Lesson::query()->where('course_id', $courseId)->findOrFail($lessonId);
 
-        if (! $this->access->canAccessLesson(auth()->user(), $courseId, $lesson)) {
+        if (! $this->access->canAccessLesson($user, $courseId, $lesson)) {
             return redirect()->route('learn.courses.show', $courseId);
         }
 
@@ -73,7 +88,9 @@ class LearnPageController extends Controller
 
     public function coursePlayback(string $courseId)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $course = Course::query()
+            ->when(! auth()->user()?->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
         $streamPath = URL::to("/api/learn/courses/{$courseId}/lessons/placeholder/stream");
         $playback = PlaybackService::resolve($course->video_url, $streamPath);
 
@@ -86,7 +103,9 @@ class LearnPageController extends Controller
 
     public function courseEmbedPlayback(string $courseId, int $slot)
     {
-        $course = Course::query()->where('published', true)->findOrFail($courseId);
+        $course = Course::query()
+            ->when(! auth()->user()?->isAdmin(), fn ($query) => $query->where('published', true))
+            ->findOrFail($courseId);
         $playback = ContentProtectionService::embeddedPlaybackAt($course->description_html, $slot);
 
         if (! $playback) {

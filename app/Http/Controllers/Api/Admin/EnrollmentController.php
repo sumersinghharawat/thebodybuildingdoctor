@@ -20,7 +20,7 @@ class EnrollmentController extends Controller
         }
 
         return response()->json([
-            'enrollments' => $query->get()->map->toPublicArray(),
+            'enrollments' => $query->orderByDesc('enrolled_at')->get()->map->toPublicArray(),
         ]);
     }
 

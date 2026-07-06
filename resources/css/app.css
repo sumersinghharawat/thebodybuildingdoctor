@@ -165,6 +165,24 @@
         @apply relative overflow-hidden bg-black text-white;
     }
 
+    .stream-player:fullscreen,
+    .stream-player.is-fullscreen,
+    .protected-video:fullscreen,
+    .protected-video.is-fullscreen {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        aspect-ratio: auto !important;
+        border-radius: 0 !important;
+        border: 0 !important;
+    }
+
+    .stream-player:fullscreen .stream-player__center-play svg,
+    .stream-player.is-fullscreen .stream-player__center-play svg {
+        width: 5.5rem;
+        height: 5.5rem;
+    }
+
     .stream-player__media,
     .stream-player__mount {
         @apply absolute inset-0 h-full w-full;
@@ -284,6 +302,10 @@
         gap: 0.375rem;
     }
 
+    .stream-player__toolbar-group--end {
+        margin-left: auto;
+    }
+
     .stream-player__icon-btn {
         display: inline-flex;
         min-width: 2.5rem;
@@ -366,6 +388,34 @@
     .protected-video__control-btn--primary {
         min-width: 2.75rem;
         padding-inline: 0.625rem;
+    }
+
+    .protected-video__fullscreen {
+        position: absolute;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        z-index: 25;
+    }
+
+    .protected-video__fullscreen-btn {
+        display: inline-flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        border: 0;
+        background: rgb(0 0 0 / 0.65);
+        color: rgb(248 250 252);
+        transition: background-color 150ms ease, transform 150ms ease;
+    }
+
+    .protected-video__fullscreen-btn:hover {
+        background: rgb(0 0 0 / 0.82);
+    }
+
+    .protected-video__fullscreen-btn:active {
+        transform: scale(0.96);
     }
 
     .rich-content-protected {

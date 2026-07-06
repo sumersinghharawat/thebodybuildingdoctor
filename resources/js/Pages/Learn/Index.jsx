@@ -2,7 +2,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import CourseRequestButton from '@/Components/CourseRequestButton';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function LearnIndex({ enrolledCourses = [], browseCourses = [] }) {
+export default function LearnIndex({ enrolledCourses = [], browseCourses = [], isAdmin = false }) {
     const { flash } = usePage().props;
 
     return (
@@ -27,14 +27,14 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [] })
                     {enrolledCourses.length === 0 ? (
                         <p className="text-slate-400 text-sm">No enrollments yet.</p>
                     ) : (
-                        <CourseGrid courses={enrolledCourses} />
+                        <CourseGrid courses={enrolledCourses} isAdmin={isAdmin} />
                     )}
                 </section>
 
                 {browseCourses.length > 0 && (
                     <section className="space-y-4">
                         <h2 className="text-lg font-semibold">Browse courses</h2>
-                        <CourseGrid courses={browseCourses} showRequest />
+                        <CourseGrid courses={browseCourses} showRequest isAdmin={isAdmin} />
                     </section>
                 )}
             </div>
@@ -42,7 +42,7 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [] })
     );
 }
 
-function CourseGrid({ courses, showRequest = false }) {
+function CourseGrid({ courses, showRequest = false, isAdmin = false }) {
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {courses.map((course) => (
@@ -55,7 +55,14 @@ function CourseGrid({ courses, showRequest = false }) {
                             <img src={course.thumbnailUrl} alt="" className="w-full aspect-video object-cover" />
                         )}
                         <div className="p-4">
-                            <h3 className="font-semibold">{course.title}</h3>
+                            <div className="flex items-start gap-2">
+                                <h3 className="font-semibold">{course.title}</h3>
+                                {isAdmin && !course.published && (
+                                    <span className="shrink-0 rounded bg-amber-900/60 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-200">
+                                        Draft
+                                    </span>
+                                )}
+                            </div>
                             <p className="text-xs text-slate-400 mt-1 line-clamp-2">{course.description}</p>
                         </div>
                     </Link>

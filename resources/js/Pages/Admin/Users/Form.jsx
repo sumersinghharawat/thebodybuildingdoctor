@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 
 const ROLE_OPTIONS = ['administrator', 'lms_manager', 'media_channel'];
 
-export default function UserForm({ uid }) {
+export default function UserForm({ uid, prefill = {}, returnTo = null, afterCreate = null }) {
     const isEdit = Boolean(uid);
     const [form, setForm] = useState({
-        name: '',
-        email: '',
+        name: prefill.name || '',
+        email: prefill.email || '',
         password: '',
         roles: ['media_channel'],
     });
@@ -44,10 +44,11 @@ export default function UserForm({ uid }) {
         try {
             if (isEdit) {
                 await updateUser(uid, form);
+                router.visit(returnTo || route('admin.users.index'));
             } else {
                 await createUser(form);
+                router.visit(afterCreate || returnTo || route('admin.users.index'));
             }
-            router.visit(route('admin.users.index'));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -87,7 +88,7 @@ export default function UserForm({ uid }) {
                     <button type="submit" className="btn-primary" disabled={saving}>
                         {saving ? 'Saving…' : 'Save'}
                     </button>
-                    <Link href={route('admin.users.index')} className="btn-secondary">
+                    <Link href={returnTo || route('admin.users.index')} className="btn-secondary">
                         Cancel
                     </Link>
                 </div>

@@ -3,6 +3,8 @@ import {
     loadYouTubePlayerApi,
     YOUTUBE_SEEK_STEP_SEC,
 } from '@/lib/youtube-player-api';
+import { useFullscreen } from '@/lib/use-fullscreen';
+import VideoFullscreenButton from '@/Components/VideoFullscreenButton';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 function blockMediaInteraction(event) {
@@ -24,6 +26,7 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
     const hideControlsTimer = useRef(null);
     const progressTimer = useRef(null);
     const playingRef = useRef(false);
+    const { containerRef, isFullscreen, toggleFullscreen } = useFullscreen();
 
     const [ready, setReady] = useState(false);
     const [playing, setPlaying] = useState(false);
@@ -223,7 +226,8 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
 
     return (
         <div
-            className={`stream-player protected-video ${className}`.trim()}
+            ref={containerRef}
+            className={`stream-player protected-video ${isFullscreen ? 'is-fullscreen' : ''} ${className}`.trim()}
             onContextMenu={blockMediaInteraction}
             onCopy={blockMediaInteraction}
             onMouseMove={() => revealControls(true)}
@@ -324,9 +328,16 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
                         </button>
                     </div>
 
-                    <span className="stream-player__time">
-                        {formatPlaybackTime(currentTime)} / {formatPlaybackTime(duration)}
-                    </span>
+                    <div className="stream-player__toolbar-group stream-player__toolbar-group--end">
+                        <span className="stream-player__time">
+                            {formatPlaybackTime(currentTime)} / {formatPlaybackTime(duration)}
+                        </span>
+                        <VideoFullscreenButton
+                            isFullscreen={isFullscreen}
+                            disabled={!ready}
+                            onClick={toggleFullscreen}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
