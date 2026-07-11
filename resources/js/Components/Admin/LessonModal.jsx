@@ -1,5 +1,6 @@
 import Modal from '@/Components/Modal';
 import PdfUploadField from '@/Components/Admin/PdfUploadField';
+import ThumbnailUploadField from '@/Components/Admin/ThumbnailUploadField';
 import VideoUrlField from '@/Components/Admin/VideoUrlField';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,7 @@ const emptyLesson = {
     freePreview: false,
     contentHtml: '',
     pdfUrl: '',
+    thumbnailUrl: '',
 };
 
 export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
@@ -27,6 +29,7 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
                           freePreview: Boolean(lesson.freePreview),
                           contentHtml: lesson.contentHtml ?? '',
                           pdfUrl: lesson.pdfUrl ?? '',
+                          thumbnailUrl: lesson.thumbnailUrl ?? '',
                       }
                     : emptyLesson,
             );
@@ -102,6 +105,13 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
                         placeholder="Optional lesson notes, embeds, or rich text HTML"
                     />
                 </div>
+
+                <ThumbnailUploadField
+                    label="Lesson thumbnail"
+                    value={form.thumbnailUrl}
+                    onChange={(value) => updateField('thumbnailUrl', value)}
+                    folder="lessons"
+                />
 
                 <PdfUploadField
                     label="Lesson PDF"

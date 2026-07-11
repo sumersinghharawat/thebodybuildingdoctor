@@ -14,7 +14,7 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'file' => ['required', 'file'],
-            'folder' => ['required', Rule::in(['courses', 'mentorship', 'blogs', 'marketing', 'documents', 'apps'])],
+            'folder' => ['required', Rule::in(['courses', 'lessons', 'mentorship', 'blogs', 'marketing', 'documents', 'apps'])],
         ]);
 
         $file = $data['file'];
