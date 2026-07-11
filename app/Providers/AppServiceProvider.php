@@ -33,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
         Passkeys::authorizeLoginUsing(function ($request, $user) {
             return $user->hasAppAccess();
         });
+
+        if ($this->app->environment('local')) {
+            config(['passkeys.throttle' => null]);
+        }
     }
 }

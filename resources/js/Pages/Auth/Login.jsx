@@ -6,6 +6,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { usePasskeyVerify } from '@laravel/passkeys/react';
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -14,15 +15,30 @@ export default function Login({ status, canResetPassword }) {
         remember: false,
     });
 
+    const [passkeyHint, setPasskeyHint] = useState(null);
+
     const {
         verify: loginWithPasskey,
         isLoading: passkeyLoading,
         error: passkeyError,
         isSupported: passkeySupported,
     } = usePasskeyVerify({
-        autofill: true,
         onSuccess: (response) => {
             router.visit(response.redirect || route('dashboard'));
+        },
+        onError: (err) => {
+            if (err.message?.includes("can't be used on")) {
+                setPasskeyHint('Passkeys require http://localhost:8000 in local development (not 127.0.0.1).');
+                return;
+            }
+
+            if (err.name === 'UserCancelledError') {
+                return;
+            }
+
+            setPasskeyHint(
+                'No passkey found for this site. Sign in with your password, then add a passkey from your profile page.',
+            );
         },
     });
 
@@ -101,9 +117,10 @@ export default function Login({ status, canResetPassword }) {
                                 disabled={passkeyLoading || processing}
                                 onClick={loginWithPasskey}
                             >
-                                {passkeyLoading ? 'Verifying…' : 'Sign in with Face ID / passkey'}
+                                {passkeyLoading ? 'Verifying…' : 'Sign in with face lock'}
                             </button>
                             {passkeyError && <p className="text-center text-sm text-red-400">{passkeyError}</p>}
+                            {passkeyHint && <p className="text-center text-sm text-amber-400">{passkeyHint}</p>}
                         </>
                     )}
 
