@@ -24,6 +24,7 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "@laravel/passkeys": "^0.2.0",
         "@tiptap/extension-link": "^3.27.1",
         "@tiptap/extension-placeholder": "^3.27.1",
         "@tiptap/extension-underline": "^3.27.1",

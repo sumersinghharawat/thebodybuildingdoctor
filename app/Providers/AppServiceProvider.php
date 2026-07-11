@@ -7,6 +7,7 @@ use Illuminate\Foundation\Console\ServeCommand;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passkeys\Passkeys;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         Vite::prefetch(concurrency: 3);
+
+        Passkeys::authorizeLoginUsing(function ($request, $user) {
+            return $user->hasAppAccess();
+        });
     }
 }
