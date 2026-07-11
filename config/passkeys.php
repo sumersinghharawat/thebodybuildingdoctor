@@ -26,9 +26,11 @@ return [
     |
     */
 
-    'allowed_origins' => [
+    'allowed_origins' => array_values(array_unique(array_filter([
         config('app.url'),
-    ],
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]))),
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +92,7 @@ return [
     |
     */
 
-    'management_middleware' => ['password.confirm'],
+    'management_middleware' => [],
 
     /*
     |--------------------------------------------------------------------------

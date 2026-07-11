@@ -4,17 +4,19 @@ import './bootstrap';
 import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { syncCsrfToken } from '@/lib/csrf';
 import { setSiteCurrency } from '@/lib/format';
 import { installMediaLinkProtection } from '@/lib/media-protection';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-function syncSiteSettings(page) {
+function syncPageProps(page) {
     setSiteCurrency(page?.props?.site?.currency);
+    syncCsrfToken(page?.props?.csrf_token);
 }
 
 router.on('success', (event) => {
-    syncSiteSettings(event.detail.page);
+    syncPageProps(event.detail.page);
 });
 
 createInertiaApp({
@@ -25,7 +27,7 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.jsx'),
         ),
     setup({ el, App, props }) {
-        syncSiteSettings(props.initialPage);
+        syncPageProps(props.initialPage);
         installMediaLinkProtection();
         const root = createRoot(el);
 

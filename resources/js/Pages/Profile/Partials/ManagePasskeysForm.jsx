@@ -1,13 +1,7 @@
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { getCsrfToken } from '@/lib/csrf';
 import { usePasskeyRegister } from '@laravel/passkeys/react';
-import { Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-
-function getCsrfToken() {
-    const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
-    return match ? decodeURIComponent(match[1]) : '';
-}
 
 export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
     const [deviceName, setDeviceName] = useState('');
@@ -24,6 +18,11 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
             router.reload({ only: ['passkeys'] });
             setDeviceName('');
         },
+        onError: (err) => {
+            if (err.message?.includes("can't be used on")) {
+                setRemoveError('Use http://localhost:8000 instead of 127.0.0.1 for face lock login in local development.');
+            }
+        },
     });
 
     async function handleRemove(passkeyId) {
@@ -36,13 +35,13 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
                 credentials: 'same-origin',
                 headers: {
                     Accept: 'application/json',
-                    'X-XSRF-TOKEN': getCsrfToken(),
+                    'X-CSRF-TOKEN': getCsrfToken(),
                 },
             });
 
             if (!res.ok) {
                 const data = await res.json().catch(() => ({}));
-                throw new Error(data.message || 'Unable to remove passkey.');
+                throw new Error(data.message || 'Unable to remove face lock login.');
             }
 
             setItems((current) => current.filter((item) => item.id !== passkeyId));
@@ -55,57 +54,74 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">Face login</h2>
-                <p className="mt-1 text-sm text-gray-600">
-                    Register Face ID, Touch ID, or another device passkey for faster sign-in.
-                </p>
+            <header className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                    <h2 className="text-lg font-semibold">Face lock login</h2>
+                    <p className="mt-1 text-sm text-slate-400">
+                        Sign in with Face ID, Touch ID, or your device passkey instead of typing your password.
+                    </p>
+                </div>
+                {items.length > 0 && (
+                    <span className="pill border-emerald-800/60 bg-emerald-950/40 text-emerald-300">
+                        Enabled
+                    </span>
+                )}
             </header>
 
             {!isSupported ? (
-                <p className="mt-4 text-sm text-gray-500">
-                    Passkeys are not supported in this browser. Use a modern browser on a secure connection.
+                <p className="mt-4 text-sm text-slate-500">
+                    Face lock login is not supported in this browser. Use a modern browser on a secure connection (HTTPS).
                 </p>
             ) : (
                 <div className="mt-6 space-y-4">
-                    <div>
-                        <InputLabel htmlFor="passkey-name" value="Device name" />
-                        <input
-                            id="passkey-name"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            value={deviceName}
-                            onChange={(e) => setDeviceName(e.target.value)}
-                            placeholder="e.g. MacBook Pro, iPhone"
-                        />
+                    <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-4">
+                        <p className="text-sm text-slate-300">
+                            {items.length === 0
+                                ? 'No face lock set up yet. Add this device to enable quick sign-in.'
+                                : 'Add another device if you sign in from multiple phones or computers.'}
+                        </p>
+
+                        <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+                            <div>
+                                <label htmlFor="passkey-name" className="label-dark">
+                                    Device name
+                                </label>
+                                <input
+                                    id="passkey-name"
+                                    className="input-dark"
+                                    value={deviceName}
+                                    onChange={(e) => setDeviceName(e.target.value)}
+                                    placeholder="e.g. iPhone, MacBook Pro"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                className="btn-primary whitespace-nowrap"
+                                disabled={isLoading || !deviceName.trim()}
+                                onClick={() => register(deviceName.trim())}
+                            >
+                                {isLoading ? 'Setting up…' : 'Enable face lock login'}
+                            </button>
+                        </div>
                     </div>
 
-                    <PrimaryButton
-                        type="button"
-                        disabled={isLoading || !deviceName.trim()}
-                        onClick={() => register(deviceName.trim())}
-                    >
-                        {isLoading ? 'Registering…' : 'Add passkey'}
-                    </PrimaryButton>
+                    {error && <p className="text-sm text-red-400">{error}</p>}
+                    {removeError && <p className="text-sm text-red-400">{removeError}</p>}
 
-                    {error && <p className="text-sm text-red-600">{error}</p>}
-                    {removeError && <p className="text-sm text-red-600">{removeError}</p>}
-
-                    <p className="text-xs text-gray-500">
-                        You may be asked to confirm your password before adding or removing a passkey.{' '}
-                        <Link href={route('password.confirm')} className="underline">
-                            Confirm password
-                        </Link>
+                    <p className="text-xs text-slate-500">
+                        After enabling, use &ldquo;Sign in with Face ID / passkey&rdquo; on the login page.
                     </p>
                 </div>
             )}
 
             {items.length > 0 && (
-                <ul className="mt-6 divide-y divide-gray-200 rounded-md border border-gray-200">
+                <ul className="mt-6 divide-y divide-slate-800 rounded-lg border border-slate-800">
                     {items.map((passkey) => (
                         <li key={passkey.id} className="flex items-center justify-between gap-4 px-4 py-3">
                             <div>
-                                <p className="text-sm font-medium text-gray-900">{passkey.name}</p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-sm font-medium text-slate-100">{passkey.name}</p>
+                                <p className="text-xs text-slate-500">
                                     {passkey.authenticator ? `${passkey.authenticator} · ` : ''}
                                     Added {new Date(passkey.createdAt).toLocaleDateString()}
                                     {passkey.lastUsedAt
@@ -115,7 +131,7 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
                             </div>
                             <button
                                 type="button"
-                                className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                                className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
                                 disabled={removingId === passkey.id}
                                 onClick={() => handleRemove(passkey.id)}
                             >
