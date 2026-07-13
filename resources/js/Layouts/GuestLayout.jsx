@@ -6,7 +6,7 @@ export default function GuestLayout({ children }) {
             <Link href="/" className="mb-8 text-lg font-semibold text-slate-100">
                 The Bodybuilding Doctor
             </Link>
-            <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900/80 p-6 shadow-soft-glow">
+            <div className="w-full max-w-lg rounded-xl border border-slate-800 bg-slate-900/80 p-6 shadow-soft-glow">
                 {children}
             </div>
         </div>

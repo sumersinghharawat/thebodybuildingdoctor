@@ -33,12 +33,14 @@ class User extends Authenticatable implements PasskeyUser
     protected $hidden = [
         'password',
         'remember_token',
+        'face_descriptor',
     ];
 
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'face_registered_at' => 'datetime',
             'password' => 'hashed',
             'roles' => 'array',
         ];
@@ -57,6 +59,11 @@ class User extends Authenticatable implements PasskeyUser
     public function isAdmin(): bool
     {
         return Roles::isAdmin($this->roleList());
+    }
+
+    public function hasFaceRegistered(): bool
+    {
+        return filled($this->face_descriptor) && $this->face_registered_at !== null;
     }
 
     public function enrollments(): HasMany

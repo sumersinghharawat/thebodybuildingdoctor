@@ -5,12 +5,19 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BlogAccess;
 use App\Models\User;
+use App\Services\FaceAuth\FaceEnrollmentLinkService;
+use App\Services\FaceAuth\FaceEnrollmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly FaceEnrollmentLinkService $faceEnrollmentLinks,
+        private readonly FaceEnrollmentService $faceEnrollment,
+    ) {}
+
     public function index()
     {
         return response()->json([
@@ -74,6 +81,40 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function issueFaceEnrollLink(Request $request, string $uid)
+    {
+        $user = User::query()->findOrFail($uid);
+
+        $data = $request->validate([
+            'hours' => ['nullable', 'integer', 'min:1', 'max:168'],
+        ]);
+
+        $result = $this->faceEnrollmentLinks->generate($user, $data['hours'] ?? 24);
+
+        return response()->json([
+            'user' => $this->serialize($user),
+            ...$result,
+        ]);
+    }
+
+    public function revokeFaceLock(string $uid)
+    {
+        $user = User::query()->findOrFail($uid);
+
+        if (! $this->faceEnrollment->isEnrolled($user)) {
+            return response()->json([
+                'message' => 'This user does not have face lock enrolled.',
+            ], 422);
+        }
+
+        $this->faceEnrollment->revoke($user);
+
+        return response()->json([
+            'success' => true,
+            'user' => $this->serialize($user->refresh()),
+        ]);
+    }
+
     private function serialize(User $user): array
     {
         return [
@@ -82,6 +123,8 @@ class UserController extends Controller
             'name' => $user->name,
             'roles' => $user->roleList(),
             'createdAt' => $user->created_at?->toISOString(),
+            'hasFaceRegistered' => $user->hasFaceRegistered(),
+            'faceRegisteredAt' => $user->face_registered_at?->toISOString(),
         ];
     }
 }

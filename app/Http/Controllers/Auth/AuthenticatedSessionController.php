@@ -33,6 +33,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+
+        if ($user && ! $user->hasFaceRegistered()) {
+            return redirect()
+                ->route('profile.edit')
+                ->with('status', 'Register Face Lock below to enable passwordless sign-in next time.');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

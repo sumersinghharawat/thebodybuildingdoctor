@@ -1,4 +1,5 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import FaceLockPanel from '@/Components/Admin/FaceLockPanel';
 import { createUser, fetchUser, updateUser } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -13,17 +14,19 @@ export default function UserForm({ uid, prefill = {}, returnTo = null, afterCrea
         password: '',
         roles: ['media_channel'],
     });
+    const [user, setUser] = useState(null);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!uid) return;
-        fetchUser(uid).then((user) => {
+        fetchUser(uid).then((loaded) => {
+            setUser(loaded);
             setForm({
-                name: user.name,
-                email: user.email,
+                name: loaded.name,
+                email: loaded.email,
                 password: '',
-                roles: user.roles || ['media_channel'],
+                roles: loaded.roles || ['media_channel'],
             });
         });
     }, [uid]);
@@ -59,40 +62,44 @@ export default function UserForm({ uid, prefill = {}, returnTo = null, afterCrea
     return (
         <AdminShell title={isEdit ? 'Edit user' : 'New user'}>
             <Head title="User" />
-            <form onSubmit={handleSubmit} className="card-surface max-w-xl space-y-4 p-6">
-                {error && <p className="text-sm text-red-300">{error}</p>}
-                <div>
-                    <label className="label-dark">Name</label>
-                    <input className="input-dark" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} required />
-                </div>
-                <div>
-                    <label className="label-dark">Email</label>
-                    <input className="input-dark" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required />
-                </div>
-                <div>
-                    <label className="label-dark">{isEdit ? 'New password (optional)' : 'Password'}</label>
-                    <input className="input-dark" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} required={!isEdit} />
-                </div>
-                <div>
-                    <label className="label-dark">Roles</label>
-                    <div className="flex flex-wrap gap-3">
-                        {ROLE_OPTIONS.map((role) => (
-                            <label key={role} className="flex items-center gap-2 text-sm">
-                                <input type="checkbox" checked={form.roles.includes(role)} onChange={() => toggleRole(role)} />
-                                {role}
-                            </label>
-                        ))}
+            <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="card-surface max-w-xl space-y-4 p-6">
+                    {error && <p className="text-sm text-red-300">{error}</p>}
+                    <div>
+                        <label className="label-dark">Name</label>
+                        <input className="input-dark" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} required />
                     </div>
-                </div>
-                <div className="flex gap-3">
-                    <button type="submit" className="btn-primary" disabled={saving}>
-                        {saving ? 'Saving…' : 'Save'}
-                    </button>
-                    <Link href={returnTo || route('admin.users.index')} className="btn-secondary">
-                        Cancel
-                    </Link>
-                </div>
-            </form>
+                    <div>
+                        <label className="label-dark">Email</label>
+                        <input className="input-dark" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required />
+                    </div>
+                    <div>
+                        <label className="label-dark">{isEdit ? 'New password (optional)' : 'Password'}</label>
+                        <input className="input-dark" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} required={!isEdit} />
+                    </div>
+                    <div>
+                        <label className="label-dark">Roles</label>
+                        <div className="flex flex-wrap gap-3">
+                            {ROLE_OPTIONS.map((role) => (
+                                <label key={role} className="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" checked={form.roles.includes(role)} onChange={() => toggleRole(role)} />
+                                    {role}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <button type="submit" className="btn-primary" disabled={saving}>
+                            {saving ? 'Saving…' : 'Save'}
+                        </button>
+                        <Link href={returnTo || route('admin.users.index')} className="btn-secondary">
+                            Cancel
+                        </Link>
+                    </div>
+                </form>
+
+                {isEdit && user && <FaceLockPanel user={user} onUserChange={setUser} />}
+            </div>
         </AdminShell>
     );
 }

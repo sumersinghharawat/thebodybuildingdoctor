@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faceplugin Standalone Test</title>
+    <style>
+        body { font-family: ui-sans-serif, system-ui, sans-serif; background:#0b1220; color:#e5e7eb; margin:0; padding:24px; }
+        .wrap { width:min(720px,100%); margin:0 auto; }
+        h1 { font-size:1.35rem; margin:0 0 8px; }
+        p { color:#94a3b8; }
+        .camera { background:#000; border-radius:12px; overflow:hidden; aspect-ratio:4/3; border:1px solid #1e293b; position:relative; }
+        video { width:100%; height:100%; object-fit:cover; }
+        canvas { position:absolute; left:-9999px; width:1px; height:1px; }
+        .row { display:flex; gap:8px; margin:16px 0; flex-wrap:wrap; }
+        button { border:0; border-radius:8px; padding:12px 16px; font-weight:600; cursor:pointer; background:#16a34a; color:#fff; }
+        button:disabled { opacity:.5; cursor:not-allowed; }
+        button.secondary { background:#1d4ed8; }
+        #status { padding:12px; border-radius:8px; background:#111827; border:1px solid #1f2937; margin-bottom:12px; }
+        #log { height:280px; overflow:auto; background:#020617; border:1px solid #1e293b; border-radius:8px; padding:12px; font:12px/1.45 ui-monospace,Menlo,monospace; }
+        .ok { color:#4ade80; } .err { color:#f87171; } .info { color:#cbd5e1; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>Faceplugin standalone test</h1>
+    <p>Open at <code>/face-test/index.html</code> over HTTPS. Tests ONNX → OpenCV → camera → capture.</p>
+    <div class="camera">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="row">
+        <button id="step1" type="button">1) Test ONNX</button>
+        <button id="step2" type="button" disabled>2) Load OpenCV</button>
+        <button id="step3" type="button" disabled>3) Camera + Capture</button>
+    </div>
+    <div id="status">Ready</div>
+    <div id="log"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/ort.min.js"></script>
+<script>
+const MODELS = '/faceplugin/model';
+const logEl = document.getElementById('log');
+const statusEl = document.getElementById('status');
+const sessions = {};
+
+function log(msg, kind = 'info') {
+    const d = document.createElement('div');
+    d.className = kind;
+    d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    logEl.appendChild(d);
+    logEl.scrollTop = logEl.scrollHeight;
+    statusEl.textContent = msg;
+    console.log(msg);
+}
+
+async function loadModel(name) {
+    log(`Fetching ${name}…`);
+    const res = await fetch(`${MODELS}/${name}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${name}`);
+    const buf = await res.arrayBuffer();
+    log(`${name}: ${(buf.byteLength / 1024 / 1024).toFixed(2)} MB`);
+    return buf;
+}
+
+document.getElementById('step1').onclick = async () => {
+    const btn = document.getElementById('step1');
+    btn.disabled = true;
+    try {
+        ort.env.wasm.wasmPaths = new URL('./wasm/', location.href).href;
+        ort.env.wasm.numThreads = 1;
+        ort.env.wasm.proxy = false;
+        log(`wasmPaths=${ort.env.wasm.wasmPaths}`);
+
+        const name = 'fr_detect.onnx';
+        const buffer = await loadModel(name);
+        log('Creating InferenceSession (this can take 1–3 min on first run)…');
+        const t0 = performance.now();
+        sessions.detect = await ort.InferenceSession.create(buffer, { executionProviders: ['wasm'] });
+        log(`PASS: ONNX session ready in ${Math.round(performance.now() - t0)}ms`, 'ok');
+        document.getElementById('step2').disabled = false;
+    } catch (e) {
+        log(`FAIL: ${e.message}`, 'err');
+        console.error(e);
+        btn.disabled = false;
+    }
+};
+
+document.getElementById('step2').onclick = async () => {
+    const btn = document.getElementById('step2');
+    btn.disabled = true;
+    try {
+        log('Loading OpenCV…');
+        await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error('OpenCV timeout')), 60000);
+            const done = (src) => {
+                if (!window.cv?.Mat) return;
+                clearTimeout(timeout);
+                clearInterval(poll);
+                log(`OpenCV ready (${src})`, 'ok');
+                resolve();
+            };
+            window.Module = {
+                locateFile(p) {
+                    return p.endsWith('.wasm') ? new URL('./opencv_js.wasm', location.href).href : p;
+                },
+                onRuntimeInitialized() { done('onRuntimeInitialized'); },
+                _main() { done('_main'); },
+            };
+            const poll = setInterval(() => done('poll'), 300);
+            const s = document.createElement('script');
+            s.src = './opencv.js';
+            s.onerror = () => reject(new Error('opencv.js failed to load'));
+            document.head.appendChild(s);
+        });
+        document.getElementById('step3').disabled = false;
+    } catch (e) {
+        log(`FAIL: ${e.message}`, 'err');
+        btn.disabled = false;
+    }
+};
+
+document.getElementById('step3').onclick = async () => {
+    const btn = document.getElementById('step3');
+    btn.disabled = true;
+    try {
+        log('Loading capture module…');
+        const { runCaptureOnly } = await import('./app.js');
+        log('Running capture…');
+        await runCaptureOnly(sessions);
+    } catch (e) {
+        log(`FAIL: ${e.message}`, 'err');
+        console.error(e);
+        btn.disabled = false;
+    }
+};
+</script>
+</body>
+</html>

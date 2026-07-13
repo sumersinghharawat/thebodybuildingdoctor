@@ -64,6 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users/{uid}', [UserController::class, 'show']);
         Route::patch('/users/{uid}', [UserController::class, 'update']);
         Route::delete('/users/{uid}', [UserController::class, 'destroy']);
+        Route::post('/users/{uid}/face-enroll-link', [UserController::class, 'issueFaceEnrollLink']);
+        Route::delete('/users/{uid}/face-lock', [UserController::class, 'revokeFaceLock']);
 
         Route::get('/inquiries', [InquiryAdminController::class, 'index']);
         Route::patch('/inquiries/{id}', [InquiryAdminController::class, 'update']);

@@ -1,0 +1,106 @@
+:root {
+    --face-bg: #0f172a;
+    --face-card: #111827;
+    --face-border: #1f2937;
+    --face-primary: #2563eb;
+    --face-success: #16a34a;
+}
+
+body.face-auth-body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, rgba(37, 99, 235, 0.18), transparent 40%),
+        var(--face-bg);
+    color: #e5e7eb;
+}
+
+.face-auth-card {
+    background: var(--face-card);
+    border: 1px solid var(--face-border);
+    border-radius: 1rem;
+    color: #e5e7eb;
+}
+
+.face-auth-card .text-muted {
+    color: #9ca3af !important;
+}
+
+.camera-shell {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 0.875rem;
+    border: 1px solid var(--face-border);
+    background: #000;
+}
+
+#face-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+.face-canvas-offscreen {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.camera-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+.progress {
+    height: 0.65rem;
+    background: #1f2937;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #2563eb, #16a34a);
+}
+
+.faceio-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+#face-status {
+    background: #1f2937;
+    border: 1px solid #374151;
+    color: #e5e7eb;
+}
+
+#face-error,
+#face-success {
+    margin-bottom: 0;
+}
+
+.btn-primary {
+    background: var(--face-primary);
+    border-color: var(--face-primary);
+}
+
+.btn-primary:disabled,
+.btn-success:disabled {
+    opacity: 0.65;
+}
+
+@media (max-width: 576px) {
+    .face-auth-card .card-body {
+        padding: 1.25rem !important;
+    }
+}

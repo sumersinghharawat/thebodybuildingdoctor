@@ -20,7 +20,7 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
         },
         onError: (err) => {
             if (err.message?.includes("can't be used on")) {
-                setRemoveError('Use http://localhost:8000 instead of 127.0.0.1 for face lock login in local development.');
+                setRemoveError('Use http://localhost:8000 instead of 127.0.0.1 for face scan lock in local development.');
             }
         },
     });
@@ -41,7 +41,7 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
 
             if (!res.ok) {
                 const data = await res.json().catch(() => ({}));
-                throw new Error(data.message || 'Unable to remove face lock login.');
+                throw new Error(data.message || 'Unable to remove face scan lock.');
             }
 
             setItems((current) => current.filter((item) => item.id !== passkeyId));
@@ -56,9 +56,9 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
         <section className={className}>
             <header className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <h2 className="text-lg font-semibold">Face lock login</h2>
+                    <h2 className="text-lg font-semibold">Face scan lock</h2>
                     <p className="mt-1 text-sm text-slate-400">
-                        Sign in with Face ID, Touch ID, or your device passkey instead of typing your password.
+                        Sign in with Face ID or Touch ID instead of typing your password.
                     </p>
                 </div>
                 {items.length > 0 && (
@@ -70,24 +70,24 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
 
             {!isSupported ? (
                 <p className="mt-4 text-sm text-slate-500">
-                    Face lock login is not supported in this browser. Use a modern browser on a secure connection (HTTPS).
+                    Face scan lock is not supported in this browser. Use a modern browser on a secure connection (HTTPS).
                 </p>
             ) : (
                 <div className="mt-6 space-y-4">
                     <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-4">
                         <p className="text-sm text-slate-300">
                             {items.length === 0
-                                ? 'No face lock set up yet. Add this device to enable quick sign-in.'
+                                ? 'No face scan lock set up yet. Add this device to enable quick sign-in.'
                                 : 'Add another device if you sign in from multiple phones or computers.'}
                         </p>
 
                         <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
                             <div>
-                                <label htmlFor="passkey-name" className="label-dark">
+                                <label htmlFor="face-lock-device-name" className="label-dark">
                                     Device name
                                 </label>
                                 <input
-                                    id="passkey-name"
+                                    id="face-lock-device-name"
                                     className="input-dark"
                                     value={deviceName}
                                     onChange={(e) => setDeviceName(e.target.value)}
@@ -101,16 +101,18 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
                                 disabled={isLoading || !deviceName.trim()}
                                 onClick={() => register(deviceName.trim())}
                             >
-                                {isLoading ? 'Setting up…' : 'Enable face lock login'}
+                                {isLoading ? 'Setting up…' : 'Enable face scan lock'}
                             </button>
                         </div>
                     </div>
 
-                    {error && <p className="text-sm text-red-400">{error}</p>}
+                    {error && (
+                        <p className="text-sm text-red-400">{error.replace(/passkey/gi, 'face scan lock')}</p>
+                    )}
                     {removeError && <p className="text-sm text-red-400">{removeError}</p>}
 
                     <p className="text-xs text-slate-500">
-                        After enabling, use &ldquo;Sign in with Face ID / passkey&rdquo; on the login page.
+                        After enabling, use &ldquo;Sign in with face scan lock&rdquo; on the login page.
                     </p>
                 </div>
             )}

@@ -21,6 +21,9 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'hasFaceRegistered' => $request->user()->hasFaceRegistered(),
+            'faceRegisteredAt' => $request->user()->face_registered_at?->toIso8601String(),
+            'faceConfig' => app(\App\Services\FaceAuth\FaceRecognitionService::class)->clientConfig(),
             'passkeys' => $request->user()->passkeys()
                 ->latest()
                 ->get()

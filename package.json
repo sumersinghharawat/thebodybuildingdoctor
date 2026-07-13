@@ -4,7 +4,10 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "faceplugin:copy": "bash scripts/copy-faceplugin-assets.sh",
+        "test:face-capture": "node scripts/test-face-capture.mjs",
+        "postinstall": "bash scripts/copy-faceplugin-assets.sh || true"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
@@ -29,6 +32,10 @@
         "@tiptap/extension-placeholder": "^3.27.1",
         "@tiptap/extension-underline": "^3.27.1",
         "@tiptap/react": "^3.27.1",
-        "@tiptap/starter-kit": "^3.27.1"
+        "@tiptap/starter-kit": "^3.27.1",
+        "face-api.js": "^0.22.2",
+        "faceplugin-face-recognition-js": "^0.0.1",
+        "onnxruntime-web": "1.14.0",
+        "react-webcam": "^7.2.0"
     }
 }

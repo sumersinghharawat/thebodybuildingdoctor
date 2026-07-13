@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminAuthenticatedSessionController;
+use App\Http\Controllers\FaceAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AdminPageController;
 use App\Http\Controllers\Web\DashboardController;
@@ -11,9 +13,43 @@ use App\Http\Controllers\Web\MentorshipPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
+
 Route::get('/download/android', App\Http\Controllers\Web\AppDownloadController::class)->name('app.download');
 Route::get('/courses', CoursesPageController::class)->name('courses.index');
 Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inquiries.store');
+
+Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy-policy');
+Route::view('/terms-of-service', 'legal.terms-of-service')->name('terms-of-service');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [AdminAuthenticatedSessionController::class, 'create'])->name('login');
+        Route::post('login', [AdminAuthenticatedSessionController::class, 'store'])->name('login.store');
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
+    });
+});
+
+Route::middleware(['face.https'])->prefix('face')->name('face.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [FaceAuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [FaceAuthController::class, 'login'])
+            ->middleware('throttle:'.config('faceauth.max_attempts_per_minute', 10).',1')
+            ->name('login.store');
+    });
+
+    Route::middleware(['auth', 'app.access'])->group(function () {
+        Route::post('/register', [FaceAuthController::class, 'register'])
+            ->middleware('throttle:'.config('faceauth.max_attempts_per_minute', 10).',1')
+            ->name('register');
+        Route::put('/update', [FaceAuthController::class, 'update'])
+            ->middleware('throttle:'.config('faceauth.max_attempts_per_minute', 10).',1')
+            ->name('update');
+        Route::delete('/delete', [FaceAuthController::class, 'delete'])->name('delete');
+    });
+});
 
 Route::middleware(['auth', 'app.access'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

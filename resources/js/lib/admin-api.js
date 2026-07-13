@@ -24,6 +24,15 @@ async function adminFetch(path, init = {}) {
     });
 
     const data = await res.json().catch(() => ({}));
+
+    if (res.status === 401) {
+        if (window.location.pathname !== '/admin/login') {
+            window.location.href = '/admin/login';
+        }
+
+        throw new Error(data.message || 'Unauthenticated.');
+    }
+
     if (!res.ok) {
         const message =
             (typeof data.message === 'string' && data.message) ||
@@ -168,6 +177,17 @@ export async function updateUser(uid, body) {
 
 export function deleteUser(uid) {
     return adminFetch(`/api/admin/users/${uid}`, { method: 'DELETE' });
+}
+
+export async function issueFaceEnrollLink(uid, hours = 24) {
+    return adminFetch(`/api/admin/users/${uid}/face-enroll-link`, {
+        method: 'POST',
+        body: JSON.stringify({ hours }),
+    });
+}
+
+export async function revokeFaceLock(uid) {
+    return adminFetch(`/api/admin/users/${uid}/face-lock`, { method: 'DELETE' });
 }
 
 export function fetchMentorship() {

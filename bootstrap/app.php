@@ -12,9 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(prepend: [
+        $middleware->prepend([
             \App\Http\Middleware\ConfigurePasskeysForRequest::class,
+            \App\Http\Middleware\ConfigureStatefulAuthForRequest::class,
         ]);
+
+        // Cross-origin isolation is not required for single-threaded ONNX WASM.
+        // $middleware->append([
+        //     \App\Http\Middleware\EnableFaceAuthIsolation::class,
+        // ]);
 
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
@@ -28,6 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'app.access' => \App\Http\Middleware\EnsureAppAccess::class,
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'face.https' => \App\Http\Middleware\EnsureFaceAuthHttps::class,
+            'face.enroll' => \App\Http\Middleware\EnsureFaceEnrollAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

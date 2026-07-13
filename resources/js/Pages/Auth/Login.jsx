@@ -1,139 +1,216 @@
-import Checkbox from '@/Components/Checkbox';
+import FaceLivenessChallenge from '@/Components/Face/FaceLivenessChallenge';
+import FaceStatus from '@/Components/Face/FaceStatus';
+import FaceWebcam from '@/Components/Face/FaceWebcam';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { usePasskeyVerify } from '@laravel/passkeys/react';
+import { useFaceApi, useLivenessChallenge } from '@/hooks/useFaceApi';
+import { detectSingleFace } from '@/lib/face-api-loader';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function Login({ config, livenessAction, status, error: pageError }) {
+    const webcamRef = useRef(null);
+    const { ready, loading, error: modelError } = useFaceApi(config.modelsPath);
+    const getVideo = useCallback(() => webcamRef.current?.getVideo() ?? null, []);
+
+    const liveness = useLivenessChallenge(getVideo, livenessAction, {
+        enabled: ready,
+        modelsReady: ready,
+    });
+
+    const [cameraError, setCameraError] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
+    const [message, setMessage] = useState(pageError || null);
+    const [tone, setTone] = useState(pageError ? 'error' : 'info');
+    const [showPassword, setShowPassword] = useState(false);
+
+    const passwordForm = useForm({
         email: '',
         password: '',
-        remember: false,
+        remember: true,
     });
 
-    const [passkeyHint, setPasskeyHint] = useState(null);
+    const handleLogin = async () => {
+        setMessage(null);
+        setSubmitting(true);
 
-    const {
-        verify: loginWithPasskey,
-        isLoading: passkeyLoading,
-        error: passkeyError,
-        isSupported: passkeySupported,
-    } = usePasskeyVerify({
-        onSuccess: (response) => {
-            router.visit(response.redirect || route('dashboard'));
-        },
-        onError: (err) => {
-            if (err.message?.includes("can't be used on")) {
-                setPasskeyHint('Passkeys require http://localhost:8000 in local development (not 127.0.0.1).');
-                return;
+        try {
+            if (!liveness.passed) {
+                throw new Error('Complete the liveness challenge first.');
             }
 
-            if (err.name === 'UserCancelledError') {
-                return;
+            const video = getVideo();
+            if (!video) {
+                throw new Error('Camera is not ready.');
             }
 
-            setPasskeyHint(
-                'No passkey found for this site. Sign in with your password, then add a passkey from your profile page.',
-            );
-        },
-    });
+            const result = await detectSingleFace(video, { retries: 5, delayMs: 300 });
 
-    const submit = (e) => {
-        e.preventDefault();
-        post(route('login'), {
-            onFinish: () => reset('password'),
+            if (result.error === 'no_face') {
+                throw new Error(
+                    'Face not found. Sit closer, face the camera with good lighting, then try again.',
+                );
+            }
+
+            if (result.error === 'multiple_faces') {
+                throw new Error('Multiple faces detected. Only one person can be in frame.');
+            }
+
+            const response = await window.axios.post(route('face.login.store'), {
+                descriptor: result.descriptor,
+                liveness_action: livenessAction,
+                liveness_passed: true,
+            });
+
+            if (!response.data?.success) {
+                throw new Error(response.data?.message || 'Face login failed.');
+            }
+
+            setTone('success');
+            setMessage(response.data.message || 'Success. Redirecting…');
+            router.visit(response.data.redirect || route('dashboard'));
+        } catch (err) {
+            const apiMessage = err.response?.data?.message || err.message || 'Face login failed.';
+            setTone('error');
+            setMessage(apiMessage);
+            liveness.reset();
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const submitPassword = (event) => {
+        event.preventDefault();
+        passwordForm.post('/login', {
+            onFinish: () => passwordForm.reset('password'),
         });
     };
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="Face Login" />
 
-            <div className="mb-6 text-center">
-                <h1 className="text-xl font-semibold">Member login</h1>
-                <p className="mt-1 text-sm text-slate-400">Sign in to access courses and mentorship.</p>
+            <div className="mb-5 text-center">
+                <h1 className="text-xl font-semibold text-slate-100">Face Login</h1>
+                <p className="mt-1 text-sm text-slate-400">
+                    Sign in with Face Lock. First time? Use email/password to register your face.
+                </p>
             </div>
 
-            {status && <div className="mb-4 text-sm font-medium text-emerald-400">{status}</div>}
+            {status && <FaceStatus tone="success">{status}</FaceStatus>}
 
-            <form onSubmit={submit} className="space-y-4">
-                <div>
-                    <InputLabel htmlFor="email" value="Email" className="text-slate-300" />
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="input-dark mt-1"
-                        autoComplete="username webauthn"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+            <div className="space-y-4">
+                <FaceWebcam
+                    ref={webcamRef}
+                    onUserMediaError={() =>
+                        setCameraError('Camera permission denied. Allow camera access and refresh.')
+                    }
+                />
+
+                {(loading || !ready) && !modelError && (
+                    <FaceStatus tone="loading">Loading face recognition models…</FaceStatus>
+                )}
+
+                {modelError && <FaceStatus tone="error">{modelError}</FaceStatus>}
+                {cameraError && <FaceStatus tone="error">{cameraError}</FaceStatus>}
+
+                {ready && !cameraError && (
+                    <FaceLivenessChallenge
+                        label={liveness.label}
+                        hint={liveness.hint}
+                        passed={liveness.passed}
+                        status={liveness.status}
                     />
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
+                )}
 
-                <div>
-                    <InputLabel htmlFor="password" value="Password" className="text-slate-300" />
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="input-dark mt-1"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
+                {message && <FaceStatus tone={tone}>{message}</FaceStatus>}
 
-                <label className="flex items-center gap-2 text-sm text-slate-400">
-                    <Checkbox
-                        name="remember"
-                        checked={data.remember}
-                        onChange={(e) => setData('remember', e.target.checked)}
-                    />
-                    Remember me
-                </label>
+                <PrimaryButton
+                    type="button"
+                    className="w-full justify-center"
+                    disabled={!ready || !liveness.passed || submitting || Boolean(cameraError)}
+                    onClick={handleLogin}
+                >
+                    {submitting ? 'Verifying…' : 'Login with Face'}
+                </PrimaryButton>
 
-                <div className="flex flex-col gap-3 pt-2">
-                    <PrimaryButton className="btn-primary w-full justify-center" disabled={processing}>
-                        Sign in
-                    </PrimaryButton>
+                <button
+                    type="button"
+                    className="w-full text-sm text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
+                    onClick={() => {
+                        setMessage(null);
+                        liveness.reset();
+                    }}
+                >
+                    Retry challenge
+                </button>
 
-                    {passkeySupported && (
-                        <>
-                            <div className="flex items-center gap-3 text-xs text-slate-500">
-                                <span className="h-px flex-1 bg-slate-700" />
-                                or
-                                <span className="h-px flex-1 bg-slate-700" />
+                <div className="border-t border-slate-800 pt-4">
+                    <button
+                        type="button"
+                        className="w-full text-sm font-medium text-slate-300 underline-offset-2 hover:underline"
+                        onClick={() => setShowPassword((value) => !value)}
+                    >
+                        {showPassword
+                            ? 'Hide email/password sign-in'
+                            : 'First time? Sign in with email to set up Face Lock'}
+                    </button>
+
+                    {showPassword && (
+                        <form onSubmit={submitPassword} className="mt-4 space-y-3">
+                            <div>
+                                <InputLabel htmlFor="email" value="Email" className="text-slate-300" />
+                                <TextInput
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    value={passwordForm.data.email}
+                                    className="input-dark mt-1 w-full"
+                                    autoComplete="username"
+                                    onChange={(e) => passwordForm.setData('email', e.target.value)}
+                                />
+                                <InputError message={passwordForm.errors.email} className="mt-2" />
                             </div>
-                            <button
-                                type="button"
-                                className="btn-secondary w-full justify-center"
-                                disabled={passkeyLoading || processing}
-                                onClick={loginWithPasskey}
-                            >
-                                {passkeyLoading ? 'Verifying…' : 'Sign in with face lock'}
-                            </button>
-                            {passkeyError && <p className="text-center text-sm text-red-400">{passkeyError}</p>}
-                            {passkeyHint && <p className="text-center text-sm text-amber-400">{passkeyHint}</p>}
-                        </>
-                    )}
 
-                    {canResetPassword && (
-                        <Link href={route('password.request')} className="text-center text-sm text-slate-400 underline hover:text-white">
-                            Forgot password?
-                        </Link>
+                            <div>
+                                <InputLabel htmlFor="password" value="Password" className="text-slate-300" />
+                                <TextInput
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    value={passwordForm.data.password}
+                                    className="input-dark mt-1 w-full"
+                                    autoComplete="current-password"
+                                    onChange={(e) => passwordForm.setData('password', e.target.value)}
+                                />
+                                <InputError message={passwordForm.errors.password} className="mt-2" />
+                            </div>
+
+                            <PrimaryButton
+                                type="submit"
+                                className="w-full justify-center"
+                                disabled={passwordForm.processing}
+                            >
+                                {passwordForm.processing ? 'Signing in…' : 'Sign in with email'}
+                            </PrimaryButton>
+
+                            <p className="text-center text-xs text-slate-500">
+                                After signing in, open Profile → Face Lock to register your face.
+                            </p>
+                        </form>
                     )}
-                    <p className="text-center text-xs text-slate-500">
-                        New accounts are created by your administrator. Add a passkey from your profile after signing in.
-                    </p>
                 </div>
-            </form>
+
+                <p className="text-center text-xs text-slate-500">
+                    Admins:{' '}
+                    <Link href="/admin/login" className="text-slate-300 underline-offset-2 hover:underline">
+                        /admin/login
+                    </Link>
+                </p>
+            </div>
         </GuestLayout>
     );
 }
