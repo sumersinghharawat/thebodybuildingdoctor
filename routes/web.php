@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AdminPageController;
+use App\Http\Controllers\Web\CalculatorPageController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\CourseRequestController;
 use App\Http\Controllers\Web\CoursesPageController;
@@ -17,6 +18,7 @@ Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inq
 
 Route::middleware(['auth', 'app.access'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/calculator', CalculatorPageController::class)->name('calculator');
     Route::get('/mentorship/{id}/embed/{slot}/playback', [MentorshipPageController::class, 'embedPlayback'])->name('mentorship.embed.playback');
     Route::get('/mentorship/{id}/playback', [MentorshipPageController::class, 'playback'])->name('mentorship.playback');
     Route::get('/mentorship/{slug}', [MentorshipPageController::class, 'show'])->name('mentorship.show');

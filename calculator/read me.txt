@@ -1,0 +1,24 @@
+TeamMF Coach's Toolkit
+
+Oil Calculator
+Version: 1.5 FINAL
+
+Completed Features
+
+✓ Multi Compound Support
+✓ Weekly Total Oil
+✓ Individual Compound Calculations
+✓ Injection Planner
+✓ Monthly Injection Calendar
+✓ Multi Month Calendar
+✓ Syringe Size Selection
+✓ Syringe Readings
+✓ Injection Site Recommendations
+✓ Vial Duration
+✓ Coach Recommendations
+
+Status:
+Stable Release
+
+Date:
+26 June 2026

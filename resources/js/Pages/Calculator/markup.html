@@ -1,0 +1,294 @@
+<header>
+  <h1>Coach's Oil Calculator</h1>
+  <p>TeamMF | The Bodybuilding Doctor | Anabolic Arcc</p>
+</header>
+
+<div class="calc-tabs" role="tablist" aria-label="Calculator sections">
+  <button type="button" class="calc-tab is-active" role="tab" id="tab-btn-protocol" data-tab="protocol" aria-selected="true" aria-controls="tab-panel-protocol">
+    Protocol
+  </button>
+  <button type="button" class="calc-tab" role="tab" id="tab-btn-results" data-tab="results" aria-selected="false" aria-controls="tab-panel-results">
+    Results
+  </button>
+</div>
+
+<main>
+  <div id="tab-panel-protocol" class="calc-tab-panel is-active" role="tabpanel" aria-labelledby="tab-btn-protocol">
+    <form action="#" method="post">
+      <fieldset id="athlete-protocol">
+        <legend>Athlete Protocol</legend>
+
+        <p>
+          <label for="athlete-name">Athlete Name</label>
+          <input type="text" id="athlete-name" name="athlete-name" autocomplete="name">
+        </p>
+
+        <p>
+          <label for="coach-name">Coach Name</label>
+          <input type="text" id="coach-name" name="coach-name" value="TeamMF" autocomplete="off">
+        </p>
+
+        <p>
+          <label for="cycle-name">Cycle Name</label>
+          <select id="cycle-name" name="cycle-name">
+            <option value="trt">TRT</option>
+            <option value="cruise">Cruise</option>
+            <option value="lean-bulk">Lean Bulk</option>
+            <option value="mass-bulk">Mass Bulk</option>
+            <option value="cutting">Cutting</option>
+            <option value="contest-prep">Contest Prep</option>
+            <option value="female-cycle">Female Cycle</option>
+            <option value="custom">Custom</option>
+          </select>
+        </p>
+
+        <p class="athlete-custom-field" id="cycle-name-custom-field" hidden>
+          <label for="cycle-name-custom">Custom Cycle Name</label>
+          <input type="text" id="cycle-name-custom" name="cycle-name-custom" autocomplete="off">
+        </p>
+
+        <p>
+          <label for="athlete-age">Age</label>
+          <input type="number" id="athlete-age" name="athlete-age" min="0" step="1">
+        </p>
+
+        <p>
+          <label for="athlete-height">Height</label>
+          <input type="text" id="athlete-height" name="athlete-height" autocomplete="off" placeholder="e.g. 180 cm">
+        </p>
+
+        <p>
+          <label for="athlete-weight">Weight</label>
+          <input type="text" id="athlete-weight" name="athlete-weight" autocomplete="off" placeholder="e.g. 90 kg">
+        </p>
+
+        <p>
+          <label for="athlete-bodyfat">Body Fat % <span class="label-optional">(Optional)</span></label>
+          <input type="number" id="athlete-bodyfat" name="athlete-bodyfat" min="0" max="100" step="any">
+        </p>
+
+        <p>
+          <label for="start-date">Start Date</label>
+          <input type="date" id="start-date" name="start-date">
+        </p>
+
+        <p>
+          <label for="cycle-length">Cycle Length</label>
+          <select id="cycle-length" name="cycle-length">
+            <option value="4">4 Weeks</option>
+            <option value="6">6 Weeks</option>
+            <option value="8">8 Weeks</option>
+            <option value="10">10 Weeks</option>
+            <option value="12" selected>12 Weeks</option>
+            <option value="16">16 Weeks</option>
+            <option value="20">20 Weeks</option>
+            <option value="custom">Custom</option>
+          </select>
+        </p>
+
+        <p class="athlete-custom-field" id="cycle-length-custom-field" hidden>
+          <label for="cycle-length-custom">Custom Cycle Length (Weeks)</label>
+          <input type="number" id="cycle-length-custom" name="cycle-length-custom" min="1" step="1">
+        </p>
+
+        <p>
+          <label for="protocol-goal">Goal</label>
+          <select id="protocol-goal" name="protocol-goal">
+            <option value="gain-muscle">Gain Muscle</option>
+            <option value="fat-loss">Fat Loss</option>
+            <option value="recomp">Recomp</option>
+            <option value="peak-week">Peak Week</option>
+            <option value="recovery">Recovery</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="custom">Custom</option>
+          </select>
+        </p>
+
+        <p class="athlete-custom-field" id="goal-custom-field" hidden>
+          <label for="goal-custom">Custom Goal</label>
+          <input type="text" id="goal-custom" name="goal-custom" autocomplete="off">
+        </p>
+
+        <p>
+          <label for="coach-notes">Coach Notes</label>
+          <textarea id="coach-notes" name="coach-notes" rows="5"></textarea>
+        </p>
+      </fieldset>
+
+      <article id="athlete-protocol-summary" aria-labelledby="athlete-protocol-summary-heading">
+        <h2 id="athlete-protocol-summary-heading">Athlete Summary</h2>
+        <dl>
+          <dt>Athlete</dt>
+          <dd id="summary-athlete-name">&mdash;</dd>
+
+          <dt>Coach</dt>
+          <dd id="summary-coach-name">TeamMF</dd>
+
+          <dt>Goal</dt>
+          <dd id="summary-goal">&mdash;</dd>
+
+          <dt>Cycle</dt>
+          <dd id="summary-cycle-length">&mdash;</dd>
+
+          <dt>Start</dt>
+          <dd id="summary-start-date">&mdash;</dd>
+
+          <dt>Expected Finish</dt>
+          <dd id="summary-expected-finish">&mdash;</dd>
+        </dl>
+      </article>
+
+      <div id="compound-cards">
+        <fieldset class="compound-card">
+          <legend>Compound 1</legend>
+
+          <p>
+            <label for="compound-name">Compound Name</label>
+            <input type="text" id="compound-name" name="compound-name" autocomplete="off">
+          </p>
+
+          <p>
+            <label for="concentration">Concentration (mg/ml)</label>
+            <input type="number" id="concentration" name="concentration" min="0" step="any">
+          </p>
+
+          <p>
+            <label for="weekly-dose">Weekly Dose (mg)</label>
+            <input type="number" id="weekly-dose" name="weekly-dose" min="0" step="any">
+          </p>
+
+          <p>
+            <label for="vial-size">Vial Size (ml)</label>
+            <input type="number" id="vial-size" name="vial-size" value="10" min="0" step="any">
+          </p>
+
+          <p>
+            <button type="button" class="remove-compound">Remove</button>
+          </p>
+        </fieldset>
+      </div>
+
+      <p>
+        <button type="button" id="add-compound">Add Compound</button>
+      </p>
+
+      <fieldset>
+        <legend>Protocol Details</legend>
+
+        <p>
+          <label for="injection-frequency">Injection Frequency</label>
+          <select id="injection-frequency" name="injection-frequency">
+            <option value="daily">Daily</option>
+            <option value="eod">Every Other Day (EOD)</option>
+            <option value="twice-weekly">Twice Weekly</option>
+            <option value="three-times-weekly">Three Times Weekly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </p>
+
+        <p>
+          <label for="syringe-size">Syringe Size</label>
+          <select id="syringe-size" name="syringe-size">
+            <option value="40-iu">40 IU Insulin Syringe</option>
+            <option value="100-iu">100 IU Insulin Syringe</option>
+            <option value="3-ml">3 ml Syringe</option>
+            <option value="5-ml">5 ml Syringe</option>
+          </select>
+        </p>
+
+        <p class="injection-days-label">Injection Days</p>
+
+        <p>
+          <label for="day-monday"><input type="checkbox" id="day-monday" name="injection-day" value="monday"> Monday</label>
+        </p>
+        <p>
+          <label for="day-tuesday"><input type="checkbox" id="day-tuesday" name="injection-day" value="tuesday"> Tuesday</label>
+        </p>
+        <p>
+          <label for="day-wednesday"><input type="checkbox" id="day-wednesday" name="injection-day" value="wednesday"> Wednesday</label>
+        </p>
+        <p>
+          <label for="day-thursday"><input type="checkbox" id="day-thursday" name="injection-day" value="thursday"> Thursday</label>
+        </p>
+        <p>
+          <label for="day-friday"><input type="checkbox" id="day-friday" name="injection-day" value="friday"> Friday</label>
+        </p>
+        <p>
+          <label for="day-saturday"><input type="checkbox" id="day-saturday" name="injection-day" value="saturday"> Saturday</label>
+        </p>
+        <p>
+          <label for="day-sunday"><input type="checkbox" id="day-sunday" name="injection-day" value="sunday"> Sunday</label>
+        </p>
+      </fieldset>
+
+      <p>
+        <button type="submit">Calculate</button>
+      </p>
+    </form>
+  </div>
+
+  <div id="tab-panel-results" class="calc-tab-panel" role="tabpanel" aria-labelledby="tab-btn-results" hidden>
+    <p id="results-empty" class="results-empty">
+      Run Calculate on the Protocol tab to see compound summaries, injection plan, calendar, and vial duration.
+    </p>
+
+    <article id="compound-summary" aria-labelledby="compound-summary-heading" hidden>
+      <h2 id="compound-summary-heading">Compound Summary</h2>
+      <dl id="compound-summary-list"></dl>
+    </article>
+
+    <article id="stack-summary" aria-labelledby="stack-summary-heading" hidden>
+      <h2 id="stack-summary-heading">Stack Summary</h2>
+      <dl>
+        <dt>Total Weekly Dose (mg)</dt>
+        <dd id="result-total-weekly-dose">&mdash;</dd>
+
+        <dt>Total Weekly Oil (ml)</dt>
+        <dd id="result-total-weekly-oil">&mdash;</dd>
+
+        <dt>Injection Frequency</dt>
+        <dd id="result-injection-frequency">&mdash;</dd>
+
+        <dt>Total Oil Per Injection (ml)</dt>
+        <dd id="result-total-oil-per-injection">&mdash;</dd>
+      </dl>
+    </article>
+
+    <article id="injection-plan" aria-labelledby="injection-plan-heading" hidden>
+      <h2 id="injection-plan-heading">Injection Plan</h2>
+      <div id="injection-plan-cards"></div>
+    </article>
+
+    <article id="monthly-calendar" aria-labelledby="monthly-calendar-heading" hidden>
+      <h2 id="monthly-calendar-heading">Monthly Injection Calendar</h2>
+      <div id="monthly-calendar-cards"></div>
+    </article>
+
+    <article id="vial-duration" aria-labelledby="vial-duration-heading" hidden>
+      <h2 id="vial-duration-heading">Vial Duration</h2>
+      <div id="vial-duration-cards"></div>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <p>Educational Calculation Tool Only.<br>Not Medical Advice.</p>
+</footer>
+
+<div id="calendar-tooltip" class="calendar-tooltip" hidden></div>
+
+<div id="calendar-modal" class="calendar-modal" hidden>
+  <div class="calendar-modal-backdrop" id="calendar-modal-backdrop"></div>
+  <div class="calendar-modal-content" role="dialog" aria-modal="true" aria-labelledby="calendar-modal-title">
+    <button type="button" class="calendar-modal-close" id="calendar-modal-close" aria-label="Close">&times;</button>
+    <div class="calendar-modal-header">
+      <h3 id="calendar-modal-title"></h3>
+      <p id="calendar-modal-date"></p>
+    </div>
+    <div id="calendar-modal-body"></div>
+    <label class="calendar-modal-status" id="calendar-modal-status">
+      <input type="checkbox" id="calendar-modal-completed">
+      <span id="calendar-modal-status-label">Pending</span>
+    </label>
+  </div>
+</div>

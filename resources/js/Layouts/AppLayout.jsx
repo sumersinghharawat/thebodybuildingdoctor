@@ -19,6 +19,7 @@ export default function AppLayout({ children }) {
                     <nav className="flex-1 space-y-1 px-4 py-4 text-sm">
                         <NavItem href="/dashboard" label="Mentorship" />
                         <NavItem href="/learn" label="Courses" />
+                        <NavItem href="/calculator" label="Calculator" />
                         {isAdmin && (
                             <>
                                 <p className="px-3 pb-2 pt-4 text-xs uppercase text-slate-500">Admin</p>
@@ -67,6 +68,7 @@ export default function AppLayout({ children }) {
                     <nav className="space-y-1 border-b border-slate-800 p-4 text-sm md:hidden">
                         <NavItem href="/dashboard" label="Mentorship" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/learn" label="Courses" onNavigate={() => setMobileOpen(false)} />
+                        <NavItem href="/calculator" label="Calculator" onNavigate={() => setMobileOpen(false)} />
                         {isAdmin && (
                             <NavItem href="/dashboard/courses" label="Admin" onNavigate={() => setMobileOpen(false)} />
                         )}
