@@ -6,12 +6,22 @@ import { useEffect, useState } from 'react';
 export default function UsersIndex() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [query, setQuery] = useState('');
 
     useEffect(() => {
         fetchUsers()
             .then((data) => setUsers(data.users))
             .finally(() => setLoading(false));
     }, []);
+
+    const q = query.trim().toLowerCase();
+    const filtered = !q
+        ? users
+        : users.filter((user) =>
+              [user.name, user.email, ...(user.roles || [])]
+                  .filter(Boolean)
+                  .some((value) => String(value).toLowerCase().includes(q)),
+          );
 
     async function handleDelete(user) {
         if (!confirm(`Delete user ${user.email}?`)) return;
@@ -32,24 +42,51 @@ export default function UsersIndex() {
             {loading ? (
                 <p className="text-sm text-slate-400">Loading…</p>
             ) : (
-                <div className="space-y-3">
-                    {users.map((user) => (
-                        <article key={user.uid} className="card-surface flex flex-wrap items-center justify-between gap-4 p-4">
-                            <div>
-                                <p className="font-medium">{user.name}</p>
-                                <p className="text-sm text-slate-400">{user.email}</p>
-                                <p className="text-xs text-slate-500">{user.roles?.join(', ')}</p>
-                            </div>
-                            <div className="flex gap-2">
-                                <Link href={route('admin.users.edit', user.uid)} className="btn-secondary">
-                                    Edit
-                                </Link>
-                                <button type="button" className="btn-secondary text-red-300" onClick={() => handleDelete(user)}>
-                                    Delete
-                                </button>
-                            </div>
-                        </article>
-                    ))}
+                <div className="space-y-4">
+                    <input
+                        type="search"
+                        className="input-dark max-w-md"
+                        placeholder="Search by name, email, or role…"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        aria-label="Search users"
+                    />
+
+                    {filtered.length === 0 ? (
+                        <p className="text-sm text-slate-400">
+                            {query.trim() ? 'No users match your search.' : 'No users found.'}
+                        </p>
+                    ) : (
+                        <div className="space-y-3">
+                            {filtered.map((user) => (
+                                <article
+                                    key={user.uid}
+                                    className="card-surface flex flex-wrap items-center justify-between gap-4 p-4"
+                                >
+                                    <div>
+                                        <p className="font-medium">{user.name}</p>
+                                        <p className="text-sm text-slate-400">{user.email}</p>
+                                        <p className="text-xs text-slate-500">{user.roles?.join(', ')}</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Link
+                                            href={route('admin.users.edit', user.uid)}
+                                            className="btn-secondary"
+                                        >
+                                            Edit
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            className="btn-secondary text-red-300"
+                                            onClick={() => handleDelete(user)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </AdminShell>
