@@ -46,6 +46,7 @@ function createUserUrl(inquiry) {
 export default function InquiriesIndex() {
     const [inquiries, setInquiries] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [query, setQuery] = useState('');
 
     useEffect(() => {
         fetchInquiries()
@@ -60,49 +61,74 @@ export default function InquiriesIndex() {
         );
     }
 
+    const q = query.trim().toLowerCase();
+    const filtered = !q
+        ? inquiries
+        : inquiries.filter((inquiry) =>
+              [inquiry.name, inquiry.email, inquiry.phone, inquiry.message, inquiry.courseTitle, inquiry.status]
+                  .filter(Boolean)
+                  .some((value) => String(value).toLowerCase().includes(q)),
+          );
+
     return (
         <AdminShell title="Inquiries">
             <Head title="Inquiries" />
             {loading ? (
                 <p className="text-sm text-slate-400">Loading…</p>
             ) : (
-                <div className="space-y-3">
-                    {inquiries.map((inquiry) => (
-                        <article key={inquiry.id} className="card-surface space-y-3 p-4">
-                            <div className="flex flex-wrap items-start justify-between gap-4">
-                                <div>
-                                    <p className="font-medium">{inquiry.name}</p>
-                                    <p className="text-sm text-slate-400">{inquiry.email}</p>
-                                    {inquiry.phone && <p className="text-xs text-slate-500">{inquiry.phone}</p>}
-                                    {inquiry.createdAt && (
-                                        <p className="mt-1 text-xs text-slate-500">{formatDate(inquiry.createdAt)}</p>
+                <div className="space-y-4">
+                    <input
+                        type="search"
+                        className="input-dark max-w-md"
+                        placeholder="Search by name, email, course, or status…"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        aria-label="Search inquiries"
+                    />
+
+                    {filtered.length === 0 ? (
+                        <p className="text-sm text-slate-400">
+                            {query.trim() ? 'No inquiries match your search.' : 'No inquiries yet.'}
+                        </p>
+                    ) : (
+                        <div className="space-y-3">
+                            {filtered.map((inquiry) => (
+                                <article key={inquiry.id} className="card-surface space-y-3 p-4">
+                                    <div className="flex flex-wrap items-start justify-between gap-4">
+                                        <div>
+                                            <p className="font-medium">{inquiry.name}</p>
+                                            <p className="text-sm text-slate-400">{inquiry.email}</p>
+                                            {inquiry.phone && <p className="text-xs text-slate-500">{inquiry.phone}</p>}
+                                            {inquiry.createdAt && (
+                                                <p className="mt-1 text-xs text-slate-500">{formatDate(inquiry.createdAt)}</p>
+                                            )}
+                                        </div>
+                                        <select
+                                            className="input-dark w-auto"
+                                            value={inquiry.status}
+                                            onChange={(e) => setStatus(inquiry, e.target.value)}
+                                        >
+                                            <option value="new">New</option>
+                                            <option value="contacted">Contacted</option>
+                                            <option value="closed">Closed</option>
+                                        </select>
+                                    </div>
+                                    {inquiry.message && <p className="text-sm text-slate-300">{inquiry.message}</p>}
+                                    {inquiry.courseTitle && (
+                                        <p className="text-xs text-slate-500">Course: {inquiry.courseTitle}</p>
                                     )}
-                                </div>
-                                <select
-                                    className="input-dark w-auto"
-                                    value={inquiry.status}
-                                    onChange={(e) => setStatus(inquiry, e.target.value)}
-                                >
-                                    <option value="new">New</option>
-                                    <option value="contacted">Contacted</option>
-                                    <option value="closed">Closed</option>
-                                </select>
-                            </div>
-                            {inquiry.message && <p className="text-sm text-slate-300">{inquiry.message}</p>}
-                            {inquiry.courseTitle && (
-                                <p className="text-xs text-slate-500">Course: {inquiry.courseTitle}</p>
-                            )}
-                            <div className="flex flex-wrap gap-2 pt-1">
-                                <Link href={createUserUrl(inquiry)} className="btn-secondary text-sm">
-                                    Create user
-                                </Link>
-                                <Link href={enrollUrl(inquiry)} className="btn-primary text-sm">
-                                    Grant enrollment
-                                </Link>
-                            </div>
-                        </article>
-                    ))}
-                    {inquiries.length === 0 && <p className="text-sm text-slate-400">No inquiries yet.</p>}
+                                    <div className="flex flex-wrap gap-2 pt-1">
+                                        <Link href={createUserUrl(inquiry)} className="btn-secondary text-sm">
+                                            Create user
+                                        </Link>
+                                        <Link href={enrollUrl(inquiry)} className="btn-primary text-sm">
+                                            Grant enrollment
+                                        </Link>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </AdminShell>
