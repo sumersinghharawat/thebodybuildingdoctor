@@ -20,7 +20,9 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
         },
         onError: (err) => {
             if (err.message?.includes("can't be used on")) {
-                setRemoveError('Use http://localhost:8000 instead of 127.0.0.1 for face lock login in local development.');
+                setRemoveError(
+                    'Use http://localhost:8000 instead of 127.0.0.1 for face lock login in local development.',
+                );
             }
         },
     });
@@ -55,26 +57,29 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
     return (
         <section className={className}>
             <header className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                    <h2 className="text-lg font-semibold">Face lock login</h2>
-                    <p className="mt-1 text-sm text-muted">
-                        Sign in with Face ID, Touch ID, or your device passkey instead of typing your password.
+                <div className="space-y-2">
+                    <div className="pill w-fit">Sign-in</div>
+                    <h2 className="text-xl font-semibold text-foreground">Face lock login</h2>
+                    <p className="text-sm text-muted">
+                        Sign in with Face ID, Touch ID, or your device passkey instead of typing your
+                        password.
                     </p>
                 </div>
                 {items.length > 0 && (
-                    <span className="pill border-emerald-800/60 bg-emerald-950/40 text-emerald-300">
+                    <span className="pill border-emerald-300/70 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300">
                         Enabled
                     </span>
                 )}
             </header>
 
             {!isSupported ? (
-                <p className="mt-4 text-sm text-faint">
-                    Face lock login is not supported in this browser. Use a modern browser on a secure connection (HTTPS).
+                <p className="mt-6 rounded-lg border border-edge bg-background/60 px-4 py-3 text-sm text-faint">
+                    Face lock login is not supported in this browser. Use a modern browser on a secure
+                    connection (HTTPS).
                 </p>
             ) : (
                 <div className="mt-6 space-y-4">
-                    <div className="rounded-lg border border-edge bg-background/50 p-4">
+                    <div className="rounded-xl border border-edge bg-background/50 p-5">
                         <p className="text-sm text-muted">
                             {items.length === 0
                                 ? 'No face lock set up yet. Add this device to enable quick sign-in.'
@@ -106,21 +111,28 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
                         </div>
                     </div>
 
-                    {error && <p className="text-sm text-red-400">{error}</p>}
-                    {removeError && <p className="text-sm text-red-400">{removeError}</p>}
+                    {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+                    {removeError && (
+                        <p className="text-sm text-red-600 dark:text-red-400">{removeError}</p>
+                    )}
 
                     <p className="text-xs text-faint">
-                        After enabling, use &ldquo;Sign in with Face ID / passkey&rdquo; on the login page.
+                        After enabling, use “Sign in with Face ID / passkey” on the login page.
                     </p>
                 </div>
             )}
 
             {items.length > 0 && (
-                <ul className="mt-6 divide-y divide-edge rounded-lg border border-edge">
+                <ul className="mt-6 divide-y divide-edge overflow-hidden rounded-xl border border-edge">
                     {items.map((passkey) => (
-                        <li key={passkey.id} className="flex items-center justify-between gap-4 px-4 py-3">
-                            <div>
-                                <p className="text-sm font-medium text-foreground">{passkey.name}</p>
+                        <li
+                            key={passkey.id}
+                            className="flex items-center justify-between gap-4 bg-surface/40 px-4 py-3.5"
+                        >
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-medium text-foreground">
+                                    {passkey.name}
+                                </p>
                                 <p className="text-xs text-faint">
                                     {passkey.authenticator ? `${passkey.authenticator} · ` : ''}
                                     Added {new Date(passkey.createdAt).toLocaleDateString()}
@@ -131,7 +143,7 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
                             </div>
                             <button
                                 type="button"
-                                className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
+                                className="shrink-0 text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
                                 disabled={removingId === passkey.id}
                                 onClick={() => handleRemove(passkey.id)}
                             >

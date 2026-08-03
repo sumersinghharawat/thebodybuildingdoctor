@@ -22,14 +22,13 @@ export default function UpdateProfileInformation({
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-semibold">Profile information</h2>
-                <p className="mt-1 text-sm text-muted">
-                    Update your name and email address.
-                </p>
+            <header className="space-y-2">
+                <div className="pill w-fit">Details</div>
+                <h2 className="text-xl font-semibold text-foreground">Profile information</h2>
+                <p className="text-sm text-muted">Update your name and email address.</p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-4">
+            <form onSubmit={submit} className="mt-6 space-y-5">
                 <div>
                     <label htmlFor="name" className="label-dark">
                         Name
@@ -62,30 +61,30 @@ export default function UpdateProfileInformation({
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="text-sm text-muted">
+                    <div className="rounded-lg border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+                        <p>
                             Your email address is unverified.{' '}
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="text-amber-400 underline hover:text-amber-300"
+                                className="font-medium underline hover:opacity-80"
                             >
                                 Re-send verification email
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
-                            <p className="mt-2 text-sm font-medium text-emerald-400">
+                            <p className="mt-2 font-medium text-emerald-600 dark:text-emerald-400">
                                 A new verification link has been sent to your email address.
                             </p>
                         )}
                     </div>
                 )}
 
-                <div className="flex items-center gap-4 pt-2">
+                <div className="flex flex-wrap items-center gap-4 pt-1">
                     <button type="submit" className="btn-primary" disabled={processing}>
-                        Save changes
+                        {processing ? 'Saving…' : 'Save changes'}
                     </button>
 
                     <Transition
@@ -95,7 +94,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-emerald-400">Saved.</p>
+                        <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Saved.</p>
                     </Transition>
                 </div>
             </form>

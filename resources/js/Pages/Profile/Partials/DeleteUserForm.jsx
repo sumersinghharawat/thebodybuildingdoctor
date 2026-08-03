@@ -42,9 +42,12 @@ export default function DeleteUserForm({ className = '' }) {
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-semibold text-red-300">Delete account</h2>
-                <p className="mt-1 text-sm text-muted">
+            <header className="space-y-2">
+                <div className="pill border-red-300/70 bg-red-100 text-red-700 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-300">
+                    Danger zone
+                </div>
+                <h2 className="text-xl font-semibold text-red-700 dark:text-red-300">Delete account</h2>
+                <p className="text-sm text-muted">
                     Permanently delete your account and all associated data. This cannot be undone.
                 </p>
             </header>
@@ -52,7 +55,7 @@ export default function DeleteUserForm({ className = '' }) {
             <button
                 type="button"
                 onClick={confirmUserDeletion}
-                className="mt-6 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-2 text-sm font-semibold text-red-300 transition hover:bg-red-950/50"
+                className="mt-6 rounded-lg border border-red-400/70 bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-200 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-950/60"
             >
                 Delete account
             </button>
@@ -93,10 +96,10 @@ export default function DeleteUserForm({ className = '' }) {
                         </button>
                         <button
                             type="submit"
-                            className="rounded-lg border border-red-900/60 bg-red-950/40 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-950/60 disabled:opacity-50"
+                            className="rounded-lg border border-red-400/70 bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-200 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-950/60"
                             disabled={processing}
                         >
-                            Delete account
+                            {processing ? 'Deleting…' : 'Delete account'}
                         </button>
                     </div>
                 </form>

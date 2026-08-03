@@ -27,13 +27,13 @@ export default function UpdatePasswordForm({ className = '' }) {
         put(route('password.update'), {
             preserveScroll: true,
             onSuccess: () => reset(),
-            onError: (errors) => {
-                if (errors.password) {
+            onError: (formErrors) => {
+                if (formErrors.password) {
                     reset('password', 'password_confirmation');
                     passwordInput.current.focus();
                 }
 
-                if (errors.current_password) {
+                if (formErrors.current_password) {
                     reset('current_password');
                     currentPasswordInput.current.focus();
                 }
@@ -43,14 +43,15 @@ export default function UpdatePasswordForm({ className = '' }) {
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-semibold">Password</h2>
-                <p className="mt-1 text-sm text-muted">
-                    Use a long, random password to keep your account secure.
+            <header className="space-y-2">
+                <div className="pill w-fit">Security</div>
+                <h2 className="text-xl font-semibold text-foreground">Password</h2>
+                <p className="text-sm text-muted">
+                    Use a long, unique password to keep your account secure.
                 </p>
             </header>
 
-            <form onSubmit={updatePassword} className="mt-6 space-y-4">
+            <form onSubmit={updatePassword} className="mt-6 space-y-5">
                 <div>
                     <label htmlFor="current_password" className="label-dark">
                         Current password
@@ -67,40 +68,42 @@ export default function UpdatePasswordForm({ className = '' }) {
                     <InputError message={errors.current_password} className="mt-2" />
                 </div>
 
-                <div>
-                    <label htmlFor="password" className="label-dark">
-                        New password
-                    </label>
-                    <input
-                        id="password"
-                        ref={passwordInput}
-                        value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
-                        type="password"
-                        className="input-dark"
-                        autoComplete="new-password"
-                    />
-                    <InputError message={errors.password} className="mt-2" />
+                <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                        <label htmlFor="password" className="label-dark">
+                            New password
+                        </label>
+                        <input
+                            id="password"
+                            ref={passwordInput}
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            type="password"
+                            className="input-dark"
+                            autoComplete="new-password"
+                        />
+                        <InputError message={errors.password} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="password_confirmation" className="label-dark">
+                            Confirm new password
+                        </label>
+                        <input
+                            id="password_confirmation"
+                            value={data.password_confirmation}
+                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            type="password"
+                            className="input-dark"
+                            autoComplete="new-password"
+                        />
+                        <InputError message={errors.password_confirmation} className="mt-2" />
+                    </div>
                 </div>
 
-                <div>
-                    <label htmlFor="password_confirmation" className="label-dark">
-                        Confirm new password
-                    </label>
-                    <input
-                        id="password_confirmation"
-                        value={data.password_confirmation}
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                        type="password"
-                        className="input-dark"
-                        autoComplete="new-password"
-                    />
-                    <InputError message={errors.password_confirmation} className="mt-2" />
-                </div>
-
-                <div className="flex items-center gap-4 pt-2">
+                <div className="flex flex-wrap items-center gap-4 pt-1">
                     <button type="submit" className="btn-primary" disabled={processing}>
-                        Update password
+                        {processing ? 'Updating…' : 'Update password'}
                     </button>
 
                     <Transition
@@ -110,7 +113,9 @@ export default function UpdatePasswordForm({ className = '' }) {
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-emerald-400">Password updated.</p>
+                        <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                            Password updated.
+                        </p>
                     </Transition>
                 </div>
             </form>
