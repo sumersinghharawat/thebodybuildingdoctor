@@ -33,7 +33,7 @@ export default function CourseRequestButton({
     }
 
     const buttonClass = compact
-        ? 'inline-flex items-center justify-center rounded-full border border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white disabled:opacity-50'
+        ? 'inline-flex items-center justify-center rounded-full border border-edge px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-faint hover:text-foreground disabled:opacity-50'
         : 'inline-flex w-full items-center justify-center rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50';
 
     if (auth?.user) {

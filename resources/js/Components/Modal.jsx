@@ -11,7 +11,7 @@ export default function Modal({
     maxWidth = '2xl',
     closeable = true,
     onClose = () => {},
-    panelClassName = 'bg-white',
+    panelClassName = 'bg-surface text-foreground',
 }) {
     const close = () => {
         if (closeable) {

@@ -1,29 +1,28 @@
 export function setSiteCurrency(currencyCode) {
-    if (currencyCode) {
-        siteCurrency = currencyCode;
-    }
+    // Site is INR-only; ignore other codes.
+    siteCurrency = 'INR';
 }
 
 export function getSiteCurrency() {
     return siteCurrency;
 }
 
-let siteCurrency = 'EUR';
+let siteCurrency = 'INR';
 
-export function formatPrice(cents, currencyCode = siteCurrency) {
+export function formatPrice(cents, currencyCode = 'INR') {
     if (cents === 0) {
         return 'Free';
     }
 
     try {
-        return new Intl.NumberFormat('en', {
+        return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: currencyCode,
+            currency: 'INR',
             minimumFractionDigits: Number.isInteger(cents / 100) ? 0 : 2,
             maximumFractionDigits: 2,
         }).format(cents / 100);
     } catch {
-        return `${currencyCode} ${(cents / 100).toFixed(2)}`;
+        return `₹ ${(cents / 100).toFixed(2)}`;
     }
 }
 

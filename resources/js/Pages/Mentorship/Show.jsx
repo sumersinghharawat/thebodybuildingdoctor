@@ -10,7 +10,7 @@ export default function MentorshipShow({ mentorship }) {
         <AppLayout>
             <Head title={mentorship.title} />
             <article className="mx-auto max-w-3xl space-y-6 overflow-hidden p-6 md:p-8">
-                <Link href={route('dashboard')} className="text-sm text-slate-400 hover:text-white">
+                <Link href={route('dashboard')} className="text-sm text-muted hover:text-foreground">
                     ← Back to mentorship
                 </Link>
                 {mentorship.thumbnailUrl && (
@@ -18,7 +18,7 @@ export default function MentorshipShow({ mentorship }) {
                 )}
                 <header className="space-y-2">
                     <h1 className="text-3xl font-bold">{mentorship.title}</h1>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-muted">
                         {mentorship.authorName}
                         {mentorship.publishedAt ? ` · ${new Date(mentorship.publishedAt).toLocaleDateString()}` : ''}
                     </p>

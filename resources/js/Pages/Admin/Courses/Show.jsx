@@ -33,13 +33,13 @@ export default function CourseShow({ courseId }) {
                     <div className="card-surface p-6">
                         {course.descriptionHtml ? (
                             <div
-                                className="rich-content text-sm text-slate-400"
+                                className="rich-content text-sm text-muted"
                                 dangerouslySetInnerHTML={{ __html: course.descriptionHtml }}
                             />
                         ) : (
-                            <p className="text-sm text-slate-400">{course.description}</p>
+                            <p className="text-sm text-muted">{course.description}</p>
                         )}
-                        <p className="mt-3 text-xs text-slate-500">
+                        <p className="mt-3 text-xs text-faint">
                             {course.lessonCount} lessons · {formatDuration(course.totalDurationSec)} ·{' '}
                             {course.published ? 'Published' : 'Draft'}
                         </p>
@@ -52,7 +52,7 @@ export default function CourseShow({ courseId }) {
                                     <p className="font-medium">
                                         {index + 1}. {lesson.title}
                                     </p>
-                                    <p className="text-xs text-slate-400">
+                                    <p className="text-xs text-muted">
                                         {formatDuration(lesson.durationSec)}
                                         {lesson.freePreview ? ' · Preview' : ''}
                                     </p>

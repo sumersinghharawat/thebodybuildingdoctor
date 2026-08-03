@@ -11,7 +11,7 @@ export default function LearnLesson({ course, lesson, prevLesson, nextLesson }) 
             <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-6">
                 <Link
                     href={route('learn.courses.show', course.id)}
-                    className="text-sm text-slate-400 hover:text-slate-200"
+                    className="text-sm text-muted hover:text-foreground"
                 >
                     ← {course.title}
                 </Link>
@@ -26,29 +26,29 @@ export default function LearnLesson({ course, lesson, prevLesson, nextLesson }) 
                 {lesson.contentHtml && (
                     <RichContent
                         html={lesson.contentHtml}
-                        className="rounded-xl border border-slate-800 bg-slate-900 p-6"
+                        className="rounded-xl border border-edge bg-surface p-6"
                         embedPlaybackUrl={(slot) =>
                             route('learn.lessons.embed.playback', [course.id, lesson.id, slot])
                         }
                     />
                 )}
 
-                <nav className="flex gap-3 pt-4 border-t border-slate-800">
+                <nav className="flex gap-3 pt-4 border-t border-edge">
                     {prevLesson && (
                         <Link
                             href={route('learn.lessons.show', [course.id, prevLesson.id])}
-                            className="flex-1 rounded-xl border border-slate-800 p-4 hover:border-slate-600"
+                            className="flex-1 rounded-xl border border-edge p-4 hover:border-faint"
                         >
-                            <p className="text-xs text-slate-500">Previous</p>
+                            <p className="text-xs text-faint">Previous</p>
                             <p className="text-sm font-medium truncate">{prevLesson.title}</p>
                         </Link>
                     )}
                     {nextLesson && (
                         <Link
                             href={route('learn.lessons.show', [course.id, nextLesson.id])}
-                            className="flex-1 rounded-xl border border-slate-800 p-4 hover:border-slate-600 text-right"
+                            className="flex-1 rounded-xl border border-edge p-4 hover:border-faint text-right"
                         >
-                            <p className="text-xs text-slate-500">Next</p>
+                            <p className="text-xs text-faint">Next</p>
                             <p className="text-sm font-medium truncate">{nextLesson.title}</p>
                         </Link>
                     )}

@@ -45,7 +45,7 @@ export default function MentorshipAccessIndex() {
         >
             <Head title="Mentorship access" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <div className="space-y-4">
                     <input
@@ -58,7 +58,7 @@ export default function MentorshipAccessIndex() {
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-muted">
                             {query.trim() ? 'No access grants match your search.' : 'No mentorship access grants yet.'}
                         </p>
                     ) : (
@@ -70,8 +70,8 @@ export default function MentorshipAccessIndex() {
                                 >
                                     <div>
                                         <p className="font-medium">{users[grant.uid]?.name || grant.uid}</p>
-                                        <p className="text-sm text-slate-400">{users[grant.uid]?.email}</p>
-                                        <p className="text-xs text-slate-500">
+                                        <p className="text-sm text-muted">{users[grant.uid]?.email}</p>
+                                        <p className="text-xs text-faint">
                                             {grant.status} · {grant.note}
                                         </p>
                                     </div>

@@ -1,24 +1,25 @@
 import AdminShell from '@/Components/Admin/AdminShell';
-import { fetchGeneralSettings, updateGeneralSettings } from '@/lib/admin-api';
+import { fetchGeneralSettings, updateGeneralSettings, uploadThumbnail } from '@/lib/admin-api';
 import { formatPrice, setSiteCurrency } from '@/lib/format';
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 export default function GeneralSettingsAdmin() {
-    const [currency, setCurrency] = useState('EUR');
     const [notificationEmail, setNotificationEmail] = useState('');
-    const [supportedCurrencies, setSupportedCurrencies] = useState({});
+    const [paymentQrUrl, setPaymentQrUrl] = useState('');
+    const [paymentInstructions, setPaymentInstructions] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         fetchGeneralSettings()
             .then((settings) => {
-                setCurrency(settings.currency);
                 setNotificationEmail(settings.notificationEmail || '');
-                setSupportedCurrencies(settings.supportedCurrencies || {});
+                setPaymentQrUrl(settings.paymentQrUrl || '');
+                setPaymentInstructions(settings.paymentInstructions || '');
             })
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
@@ -31,11 +32,16 @@ export default function GeneralSettingsAdmin() {
         setSuccess(false);
 
         try {
-            const settings = await updateGeneralSettings({ currency, notificationEmail });
-            setCurrency(settings.currency);
+            const settings = await updateGeneralSettings({
+                currency: 'INR',
+                notificationEmail,
+                paymentQrUrl,
+                paymentInstructions,
+            });
             setNotificationEmail(settings.notificationEmail || '');
-            setSupportedCurrencies(settings.supportedCurrencies || {});
-            setSiteCurrency(settings.currency);
+            setPaymentQrUrl(settings.paymentQrUrl || '');
+            setPaymentInstructions(settings.paymentInstructions || '');
+            setSiteCurrency('INR');
             setSuccess(true);
         } catch (err) {
             setError(err.message);
@@ -44,24 +50,37 @@ export default function GeneralSettingsAdmin() {
         }
     }
 
+    async function handleQrUpload(file) {
+        setUploading(true);
+        setError(null);
+        try {
+            const { url } = await uploadThumbnail(file, 'marketing');
+            setPaymentQrUrl(url);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setUploading(false);
+        }
+    }
+
     return (
         <AdminShell title="General settings">
             <Head title="General settings" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <form onSubmit={handleSubmit} className="card-surface max-w-2xl space-y-6 p-6">
                     {error && <p className="text-sm text-red-300">{error}</p>}
                     {success && (
                         <p className="text-sm text-emerald-300">
-                            Settings saved. Course prices across the site will use the selected currency.
+                            Settings saved. Course/book prices and payment QR are updated across the site.
                         </p>
                     )}
 
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-100">Notifications</h2>
-                        <p className="mt-1 text-sm text-slate-400">
-                            Course access requests are saved in Inquiries and emailed to this address.
+                        <h2 className="text-lg font-semibold text-foreground">Notifications</h2>
+                        <p className="mt-1 text-sm text-muted">
+                            Access requests are saved in Inquiries and emailed to this address.
                         </p>
                     </div>
 
@@ -77,39 +96,64 @@ export default function GeneralSettingsAdmin() {
                             value={notificationEmail}
                             onChange={(e) => setNotificationEmail(e.target.value)}
                         />
-                        <p className="mt-2 text-xs text-slate-500">
-                            Leave blank to use ADMIN_NOTIFICATION_EMAIL or admin user emails.
+                    </div>
+
+                    <div>
+                        <h2 className="text-lg font-semibold text-foreground">Book payment QR</h2>
+                        <p className="mt-1 text-sm text-muted">
+                            Members scan this QR to pay for books. After payment they request access, then you approve
+                            under Book access.
                         </p>
                     </div>
 
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-100">Course pricing</h2>
-                        <p className="mt-1 text-sm text-slate-400">
-                            Choose the currency shown for course prices on the landing page, courses page, and admin.
-                        </p>
-                    </div>
-
-                    <div>
-                        <label className="label-dark" htmlFor="currency">
-                            Currency
-                        </label>
-                        <select
-                            id="currency"
+                        <label className="label-dark">Payment QR image</label>
+                        <input
                             className="input-dark"
-                            value={currency}
-                            onChange={(e) => setCurrency(e.target.value)}
-                        >
-                            {Object.entries(supportedCurrencies).map(([code, label]) => (
-                                <option key={code} value={code}>
-                                    {label}
-                                </option>
-                            ))}
-                        </select>
-                        <p className="mt-2 text-xs text-slate-500">
-                            Preview: {formatPrice(9900, currency)} · {formatPrice(0, currency)}
+                            value={paymentQrUrl}
+                            onChange={(e) => setPaymentQrUrl(e.target.value)}
+                            placeholder="Upload or paste image URL"
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="mt-2 text-sm"
+                            disabled={uploading}
+                            onChange={(e) => e.target.files?.[0] && handleQrUpload(e.target.files[0])}
+                        />
+                        {uploading && <p className="mt-1 text-xs text-muted">Uploading…</p>}
+                        {paymentQrUrl ? (
+                            <img
+                                src={paymentQrUrl}
+                                alt="Payment QR preview"
+                                className="mt-3 h-40 w-40 rounded-lg border border-edge bg-white object-contain p-2"
+                            />
+                        ) : null}
+                    </div>
+
+                    <div>
+                        <label className="label-dark" htmlFor="paymentInstructions">
+                            Payment instructions
+                        </label>
+                        <textarea
+                            id="paymentInstructions"
+                            className="input-dark min-h-[6rem]"
+                            value={paymentInstructions}
+                            onChange={(e) => setPaymentInstructions(e.target.value)}
+                            placeholder="e.g. Scan QR with your banking app, then tap “I have paid” on the book page."
+                        />
+                    </div>
+
+                    <div>
+                        <h2 className="text-lg font-semibold text-foreground">Pricing currency</h2>
+                        <p className="mt-1 text-sm text-muted">
+                            All prices on the site are shown in Indian Rupees (₹) only.
                         </p>
-                        <p className="mt-1 text-xs text-slate-500">
-                            Course prices are still stored in cents. Example: enter 9900 for {formatPrice(9900, currency)}.
+                        <p className="mt-2 text-xs text-faint">
+                            Preview: {formatPrice(9900, 'INR')} · {formatPrice(0, 'INR')}
+                        </p>
+                        <p className="mt-1 text-xs text-faint">
+                            Enter prices in paise/cents. Example: 9900 = {formatPrice(9900, 'INR')}.
                         </p>
                     </div>
 
@@ -117,7 +161,7 @@ export default function GeneralSettingsAdmin() {
                         <button type="submit" className="btn-primary" disabled={saving}>
                             {saving ? 'Saving…' : 'Save settings'}
                         </button>
-                        <Link href={route('admin.courses.index')} className="btn-secondary">
+                        <Link href={route('admin.books.index')} className="btn-secondary">
                             Cancel
                         </Link>
                     </div>

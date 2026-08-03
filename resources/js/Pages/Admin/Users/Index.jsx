@@ -40,7 +40,7 @@ export default function UsersIndex() {
         >
             <Head title="Users" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <div className="space-y-4">
                     <input
@@ -53,7 +53,7 @@ export default function UsersIndex() {
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-muted">
                             {query.trim() ? 'No users match your search.' : 'No users found.'}
                         </p>
                     ) : (
@@ -65,8 +65,8 @@ export default function UsersIndex() {
                                 >
                                     <div>
                                         <p className="font-medium">{user.name}</p>
-                                        <p className="text-sm text-slate-400">{user.email}</p>
-                                        <p className="text-xs text-slate-500">{user.roles?.join(', ')}</p>
+                                        <p className="text-sm text-muted">{user.email}</p>
+                                        <p className="text-xs text-faint">{user.roles?.join(', ')}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         <Link

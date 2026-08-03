@@ -34,7 +34,7 @@ export default function EmbeddedVideoSlot({ slot, playbackUrl, title = 'Embedded
 
     if (error) {
         return (
-            <div className="my-6 flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-400">
+            <div className="my-6 flex aspect-video items-center justify-center rounded-xl border border-edge bg-surface text-sm text-muted">
                 {error}
             </div>
         );
@@ -42,7 +42,7 @@ export default function EmbeddedVideoSlot({ slot, playbackUrl, title = 'Embedded
 
     if (!playback) {
         return (
-            <div className="my-6 flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-500">
+            <div className="my-6 flex aspect-video items-center justify-center rounded-xl border border-edge bg-surface text-sm text-faint">
                 Loading video…
             </div>
         );

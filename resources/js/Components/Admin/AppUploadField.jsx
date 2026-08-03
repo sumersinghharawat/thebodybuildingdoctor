@@ -39,7 +39,7 @@ export default function AppUploadField({ label = 'Android app (APK)', value = ''
                     e.target.value = '';
                 }}
             />
-            {uploading && <p className="mt-1 text-xs text-slate-400">Uploading APK… this may take a minute.</p>}
+            {uploading && <p className="mt-1 text-xs text-muted">Uploading APK… this may take a minute.</p>}
             {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
             {value && (
                 <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -51,8 +51,8 @@ export default function AppUploadField({ label = 'Android app (APK)', value = ''
                     </button>
                 </div>
             )}
-            <p className="mt-1 text-xs text-slate-500">
-                Upload the Android APK. Visitors download it from <code className="text-slate-400">/download/android</code> as a proper .apk file.
+            <p className="mt-1 text-xs text-faint">
+                Upload the Android APK. Visitors download it from <code className="text-muted">/download/android</code> as a proper .apk file.
             </p>
         </div>
     );

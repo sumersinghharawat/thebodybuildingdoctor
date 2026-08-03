@@ -1,24 +1,26 @@
-/* Matches app theme: slate background + burgundy accent (#5D1B1D) */
+/* Matches app theme: burgundy accent (#5D1B1D); follows site light/dark mode */
 
 .oil-calculator {
-  --bg: #020617;
   --accent: #5d1b1d;
   --accent-soft: #8b3436;
   --accent-light: #c45c5e;
-  --text: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-  --card: #0f172a;
-  --card-elevated: #1e293b;
-  --input-bg: #020617;
-  --border: #1e293b;
-  --border-strong: #334155;
   --border-focus: rgba(93, 27, 29, 0.55);
   --radius: 0.75rem;
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-accent: 0 8px 28px rgba(93, 27, 29, 0.35);
   --success: #22c55e;
+
+  /* Light mode defaults */
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+  --card: #ffffff;
+  --card-elevated: #f1f5f9;
+  --input-bg: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 4px 20px rgba(15, 23, 42, 0.06);
 
   min-height: 100%;
   padding: 1.5rem 1rem 2.5rem;
@@ -27,6 +29,20 @@
   line-height: 1.6;
   color: var(--text);
   background-color: var(--bg);
+}
+
+html.dark .oil-calculator {
+  --bg: #020617;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --card: #0f172a;
+  --card-elevated: #1e293b;
+  --input-bg: #020617;
+  --border: #1e293b;
+  --border-strong: #334155;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .oil-calculator,

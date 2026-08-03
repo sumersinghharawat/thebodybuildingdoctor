@@ -40,7 +40,7 @@ export default function MentorshipIndex() {
         >
             <Head title="Mentorship" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <div className="space-y-4">
                     <input
@@ -53,7 +53,7 @@ export default function MentorshipIndex() {
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-muted">
                             {query.trim() ? 'No mentorship content matches your search.' : 'No mentorship content yet.'}
                         </p>
                     ) : (
@@ -65,7 +65,7 @@ export default function MentorshipIndex() {
                                 >
                                     <div>
                                         <p className="font-medium">{item.title}</p>
-                                        <p className="text-xs text-slate-400">
+                                        <p className="text-xs text-muted">
                                             {item.published ? 'Published' : 'Draft'} · {item.authorName}
                                         </p>
                                     </div>

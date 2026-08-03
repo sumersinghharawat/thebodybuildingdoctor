@@ -22,7 +22,7 @@ class CourseAccessRequestTest extends TestCase
         SiteSetting::query()->create([
             'key' => GeneralSettings::SETTING_KEY,
             'value' => json_encode([
-                'currency' => 'EUR',
+                'currency' => 'INR',
                 'notificationEmail' => 'admin@example.com',
             ]),
         ]);

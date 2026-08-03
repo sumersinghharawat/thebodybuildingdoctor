@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 export default function CourseForm({ courseId }) {
     const { site } = usePage().props;
-    const currency = site?.currency || 'EUR';
+    const currency = site?.currency || 'INR';
     const isEdit = Boolean(courseId);
     const [loading, setLoading] = useState(isEdit);
     const [saving, setSaving] = useState(false);
@@ -100,7 +100,7 @@ export default function CourseForm({ courseId }) {
         <AdminShell title={isEdit ? 'Edit course' : 'New course'}>
             <Head title={isEdit ? 'Edit course' : 'New course'} />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <div className="space-y-8">
                     <form onSubmit={handleSave} className="card-surface space-y-4 p-6">
@@ -129,7 +129,7 @@ export default function CourseForm({ courseId }) {
                             <div>
                                 <label className="label-dark">Price (cents)</label>
                                 <input className="input-dark" type="number" value={form.priceCents} onChange={(e) => updateField('priceCents', Number(e.target.value))} />
-                                <p className="mt-1 text-xs text-slate-500">
+                                <p className="mt-1 text-xs text-faint">
                                     Displays as {formatPrice(form.priceCents, currency)} ({currency})
                                 </p>
                             </div>

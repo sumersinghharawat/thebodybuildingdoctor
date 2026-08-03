@@ -29,6 +29,15 @@ function enrollUrl(inquiry) {
     return `${route('admin.enrollments.create')}?${params}`;
 }
 
+function bookAccessUrl(inquiry) {
+    const params = new URLSearchParams();
+    if (inquiry.email) params.set('email', inquiry.email);
+    if (inquiry.courseId) params.set('bookId', inquiry.courseId);
+    params.set('returnTo', route('admin.inquiries.index'));
+
+    return `${route('admin.book-access.create')}?${params}`;
+}
+
 function createUserUrl(inquiry) {
     const params = new URLSearchParams();
     if (inquiry.email) params.set('email', inquiry.email);
@@ -74,7 +83,7 @@ export default function InquiriesIndex() {
         <AdminShell title="Inquiries">
             <Head title="Inquiries" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <div className="space-y-4">
                     <input
@@ -87,7 +96,7 @@ export default function InquiriesIndex() {
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-muted">
                             {query.trim() ? 'No inquiries match your search.' : 'No inquiries yet.'}
                         </p>
                     ) : (
@@ -97,10 +106,10 @@ export default function InquiriesIndex() {
                                     <div className="flex flex-wrap items-start justify-between gap-4">
                                         <div>
                                             <p className="font-medium">{inquiry.name}</p>
-                                            <p className="text-sm text-slate-400">{inquiry.email}</p>
-                                            {inquiry.phone && <p className="text-xs text-slate-500">{inquiry.phone}</p>}
+                                            <p className="text-sm text-muted">{inquiry.email}</p>
+                                            {inquiry.phone && <p className="text-xs text-faint">{inquiry.phone}</p>}
                                             {inquiry.createdAt && (
-                                                <p className="mt-1 text-xs text-slate-500">{formatDate(inquiry.createdAt)}</p>
+                                                <p className="mt-1 text-xs text-faint">{formatDate(inquiry.createdAt)}</p>
                                             )}
                                         </div>
                                         <select
@@ -113,17 +122,25 @@ export default function InquiriesIndex() {
                                             <option value="closed">Closed</option>
                                         </select>
                                     </div>
-                                    {inquiry.message && <p className="text-sm text-slate-300">{inquiry.message}</p>}
+                                    {inquiry.message && <p className="text-sm text-muted">{inquiry.message}</p>}
                                     {inquiry.courseTitle && (
-                                        <p className="text-xs text-slate-500">Course: {inquiry.courseTitle}</p>
+                                        <p className="text-xs text-faint">
+                                            {inquiry.type === 'books' ? 'Book' : 'Course'}: {inquiry.courseTitle}
+                                        </p>
                                     )}
                                     <div className="flex flex-wrap gap-2 pt-1">
                                         <Link href={createUserUrl(inquiry)} className="btn-secondary text-sm">
                                             Create user
                                         </Link>
-                                        <Link href={enrollUrl(inquiry)} className="btn-primary text-sm">
-                                            Grant enrollment
-                                        </Link>
+                                        {inquiry.type === 'books' ? (
+                                            <Link href={bookAccessUrl(inquiry)} className="btn-primary text-sm">
+                                                Grant book access
+                                            </Link>
+                                        ) : (
+                                            <Link href={enrollUrl(inquiry)} className="btn-primary text-sm">
+                                                Grant enrollment
+                                            </Link>
+                                        )}
                                     </div>
                                 </article>
                             ))}

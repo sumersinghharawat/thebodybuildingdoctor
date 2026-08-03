@@ -77,7 +77,7 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                     Train smarter. Prep harder.{' '}
                     <span className="text-accentSoft">Build your best physique.</span>
                 </h1>
-                <p className="mx-auto max-w-2xl text-slate-400">
+                <p className="mx-auto max-w-2xl text-muted">
                     Evidence-based bodybuilding coaching, online courses, mentorship, and a dedicated mobile app.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
@@ -86,13 +86,13 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                     </a>
                     <a
                         href="#courses"
-                        className="rounded-full border border-slate-700 px-6 py-2.5 text-sm font-semibold text-slate-200"
+                        className="rounded-full border border-edge px-6 py-2.5 text-sm font-semibold text-foreground"
                     >
                         Browse courses
                     </a>
                     <Link
                         href={route('login')}
-                        className="rounded-full border border-slate-700 px-6 py-2.5 text-sm font-semibold text-slate-200"
+                        className="rounded-full border border-edge px-6 py-2.5 text-sm font-semibold text-foreground"
                     >
                         Member login
                     </Link>
@@ -100,11 +100,11 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
             </section>
 
             {courses.length > 0 && (
-                <section id="courses" className="border-t border-slate-800 py-12 md:py-16">
+                <section id="courses" className="border-t border-edge py-12 md:py-16">
                     <div className="mb-8 space-y-2 text-center">
                         <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">Courses</p>
                         <h2 className="text-2xl font-bold md:text-3xl">Available courses</h2>
-                        <p className="mx-auto max-w-2xl text-sm text-slate-400">
+                        <p className="mx-auto max-w-2xl text-sm text-muted">
                             Structured programs with recorded lectures, case studies, and practical frameworks.
                         </p>
                     </div>
@@ -117,7 +117,7 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                         <div className="mt-8 text-center">
                             <Link
                                 href={route('courses.index')}
-                                className="inline-flex rounded-full border border-slate-700 px-6 py-2.5 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
+                                className="inline-flex rounded-full border border-edge px-6 py-2.5 text-sm font-semibold text-foreground transition hover:border-faint hover:text-foreground"
                             >
                                 View all {totalCourseCount} courses
                             </Link>
@@ -126,11 +126,11 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                 </section>
             )}
 
-            <section id="mentorship" className="border-t border-slate-800 py-12 md:py-16">
+            <section id="mentorship" className="border-t border-edge py-12 md:py-16">
                 <div className="mb-8 space-y-2 text-center">
                     <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">Mentorship</p>
                     <h2 className="text-2xl font-bold md:text-3xl">What you get with mentorship</h2>
-                    <p className="mx-auto max-w-2xl text-sm text-slate-400">
+                    <p className="mx-auto max-w-2xl text-sm text-muted">
                         Mentorship is for athletes and coaches who want deeper, real-world education — not surface-level
                         tips.
                     </p>
@@ -139,10 +139,10 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                     {MENTORSHIP_BENEFITS.map((benefit) => (
                         <article
                             key={benefit.title}
-                            className="rounded-xl border border-slate-800 bg-slate-900/60 p-5"
+                            className="rounded-xl border border-edge bg-surface/60 p-5"
                         >
-                            <h3 className="font-semibold text-slate-100">{benefit.title}</h3>
-                            <p className="mt-2 text-sm leading-relaxed text-slate-400">{benefit.description}</p>
+                            <h3 className="font-semibold text-foreground">{benefit.title}</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-muted">{benefit.description}</p>
                         </article>
                     ))}
                 </div>
@@ -157,13 +157,13 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
             </section>
 
             {appSection?.enabled !== false && (
-            <section id="app" className="border-t border-slate-800 py-12 md:py-16">
+            <section id="app" className="border-t border-edge py-12 md:py-16">
                 <div className="grid items-center gap-10 lg:grid-cols-2">
                     <div className="space-y-4">
                         <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">{appSection.eyebrow}</p>
                         <h2 className="text-2xl font-bold md:text-3xl">{appSection.title}</h2>
-                        <p className="text-slate-400">{appSection.description}</p>
-                        <ul className="space-y-2 text-sm text-slate-300">
+                        <p className="text-muted">{appSection.description}</p>
+                        <ul className="space-y-2 text-sm text-muted">
                             {appSection.features.map((feature) => (
                                 <li key={feature} className="flex items-start gap-2">
                                     <span className="mt-1 text-accentSoft">✓</span>
@@ -177,20 +177,20 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                                 {...(appSection.isPlayStore
                                     ? { target: '_blank', rel: 'noopener noreferrer' }
                                     : {})}
-                                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+                                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-surface-hover"
                             >
                                 <AndroidIcon />
                                 {appSection.buttonLabel}
                             </a>
                         ) : (
-                            <p className="inline-flex items-center rounded-full border border-slate-700 px-5 py-2.5 text-sm text-slate-400">
+                            <p className="inline-flex items-center rounded-full border border-edge px-5 py-2.5 text-sm text-muted">
                                 {appSection.comingSoonLabel}
                             </p>
                         )}
                     </div>
                     <div className="flex justify-center">
-                        <div className="relative w-full max-w-xs rounded-[2rem] border border-slate-700 bg-slate-900 p-3 shadow-2xl shadow-black/40">
-                            <div className="overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950">
+                        <div className="relative w-full max-w-xs rounded-[2rem] border border-edge bg-surface p-3 shadow-2xl shadow-black/40">
+                            <div className="overflow-hidden rounded-[1.5rem] border border-edge bg-background">
                                 {appSection.screenshotUrl ? (
                                     <img
                                         src={appSection.screenshotUrl}
@@ -199,16 +199,16 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                                     />
                                 ) : (
                                     <div className="p-6">
-                                        <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-slate-700" />
+                                        <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-edge" />
                                         <div className="space-y-3">
-                                            <div className="h-3 w-2/3 rounded bg-slate-800" />
-                                            <div className="h-24 rounded-lg bg-gradient-to-br from-accent/30 to-slate-800" />
-                                            <div className="h-2 w-full rounded bg-slate-800" />
-                                            <div className="h-2 w-5/6 rounded bg-slate-800" />
-                                            <div className="h-2 w-4/6 rounded bg-slate-800" />
+                                            <div className="h-3 w-2/3 rounded bg-surface-hover" />
+                                            <div className="h-24 rounded-lg bg-gradient-to-br from-accent/30 to-surface-hover" />
+                                            <div className="h-2 w-full rounded bg-surface-hover" />
+                                            <div className="h-2 w-5/6 rounded bg-surface-hover" />
+                                            <div className="h-2 w-4/6 rounded bg-surface-hover" />
                                         </div>
                                         {appSection.mockupLabel && (
-                                            <p className="mt-6 text-center text-xs font-medium text-slate-500">
+                                            <p className="mt-6 text-center text-xs font-medium text-faint">
                                                 {appSection.mockupLabel}
                                             </p>
                                         )}
@@ -221,10 +221,10 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
             </section>
             )}
 
-            <section id="apply" className="border-t border-slate-800 py-12 md:py-16">
+            <section id="apply" className="border-t border-edge py-12 md:py-16">
                 <div className="mx-auto max-w-lg">
                     <h2 className="mb-2 text-center text-xl font-bold">Request mentorship or course access</h2>
-                    <p className="mb-6 text-center text-sm text-slate-400">
+                    <p className="mb-6 text-center text-sm text-muted">
                         Tell us what you are looking for and we will get back to you.
                     </p>
                     {recentlySuccessful && (

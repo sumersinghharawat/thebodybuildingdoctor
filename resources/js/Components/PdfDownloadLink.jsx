@@ -8,7 +8,7 @@ export default function PdfDownloadLink({ url, label = 'Download PDF' }) {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:border-slate-500 hover:text-white"
+            className="inline-flex items-center gap-2 rounded-lg border border-edge bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-faint hover:text-foreground"
         >
             <PdfIcon />
             {label}

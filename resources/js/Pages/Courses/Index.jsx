@@ -11,7 +11,7 @@ export default function CoursesIndex({ courses = [], siteName, appSection }) {
                 <header className="space-y-3 text-center">
                     <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">Online learning</p>
                     <h1 className="text-3xl font-bold md:text-4xl">All courses</h1>
-                    <p className="mx-auto max-w-2xl text-slate-400">
+                    <p className="mx-auto max-w-2xl text-muted">
                         Evidence-based programs covering performance pharmacology, prep coaching, and real athlete
                         case breakdowns.
                     </p>
@@ -24,13 +24,13 @@ export default function CoursesIndex({ courses = [], siteName, appSection }) {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-sm text-slate-400">No courses published yet.</p>
+                    <p className="text-center text-sm text-muted">No courses published yet.</p>
                 )}
 
                 <div className="flex justify-center pt-4">
                     <Link
                         href={route('home')}
-                        className="rounded-full border border-slate-700 px-6 py-2.5 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+                        className="rounded-full border border-edge px-6 py-2.5 text-sm font-semibold text-foreground transition hover:border-faint"
                     >
                         ← Back to home
                     </Link>

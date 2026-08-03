@@ -51,7 +51,7 @@ export default function CoursesIndex() {
             }
         >
             <Head title="Courses" />
-            {loading && <p className="text-sm text-slate-400">Loading courses…</p>}
+            {loading && <p className="text-sm text-muted">Loading courses…</p>}
             {error && (
                 <div className="card-surface p-4 text-sm text-red-300">
                     {error}
@@ -72,7 +72,7 @@ export default function CoursesIndex() {
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-muted">
                             {query.trim() ? 'No courses match your search.' : 'No courses yet.'}
                         </p>
                     ) : (
@@ -84,7 +84,7 @@ export default function CoursesIndex() {
                                 >
                                     <div>
                                         <h3 className="font-semibold">{course.title}</h3>
-                                        <p className="mt-1 text-xs text-slate-400">
+                                        <p className="mt-1 text-xs text-muted">
                                             {course.lessonCount} lessons · {formatDuration(course.totalDurationSec)} ·{' '}
                                             {formatPrice(course.priceCents)} ·{' '}
                                             <span className={course.published ? 'text-emerald-400' : 'text-amber-400'}>

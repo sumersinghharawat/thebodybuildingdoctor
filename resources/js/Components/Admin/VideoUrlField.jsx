@@ -8,7 +8,7 @@ export default function VideoUrlField({ label = 'Video URL', value = '', onChang
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
             />
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-faint">
                 Paste a YouTube/Vimeo link or a direct link to an MP4/MOV file.
             </p>
         </div>

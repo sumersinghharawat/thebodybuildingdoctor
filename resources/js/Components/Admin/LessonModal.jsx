@@ -50,20 +50,20 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
             show={show}
             onClose={onClose}
             maxWidth="2xl"
-            panelClassName="border border-slate-700 bg-slate-900 text-slate-100"
+            panelClassName="border border-edge bg-surface text-foreground"
         >
             <form onSubmit={handleSubmit} className="space-y-4 p-6">
                 <div className="flex items-start justify-between gap-4">
                     <div>
                         <h3 className="text-lg font-semibold">{isEdit ? 'Edit lesson' : 'New lesson'}</h3>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="mt-1 text-sm text-muted">
                             Add video URL and optional written content for this lesson.
                         </p>
                     </div>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="rounded-lg border border-slate-700 px-2 py-1 text-sm text-slate-400 hover:text-white"
+                        className="rounded-lg border border-edge px-2 py-1 text-sm text-muted hover:text-foreground"
                     >
                         ✕
                     </button>
@@ -129,7 +129,7 @@ export default function LessonModal({ show, lesson, onClose, onSave, saving }) {
                     Free preview (visible without enrollment)
                 </label>
 
-                <div className="flex justify-end gap-3 border-t border-slate-800 pt-4">
+                <div className="flex justify-end gap-3 border-t border-edge pt-4">
                     <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>
                         Cancel
                     </button>

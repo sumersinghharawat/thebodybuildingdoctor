@@ -13,17 +13,17 @@ class GeneralSettings
      */
     public static function supportedCurrencies(): array
     {
-        return config('currencies.supported', ['EUR' => 'Euro (€)']);
+        return ['INR' => 'Indian Rupee (₹)'];
     }
 
     public static function defaultCurrency(): string
     {
-        return (string) config('currencies.default', 'EUR');
+        return 'INR';
     }
 
     public static function currency(): string
     {
-        return self::get()['currency'];
+        return 'INR';
     }
 
     public static function notificationEmail(): ?string
@@ -33,35 +33,51 @@ class GeneralSettings
         return filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : null;
     }
 
+    public static function paymentQrUrl(): string
+    {
+        return (string) (self::get()['paymentQrUrl'] ?? '');
+    }
+
+    public static function paymentInstructions(): string
+    {
+        return (string) (self::get()['paymentInstructions'] ?? '');
+    }
+
     /**
-     * @return array{currency: string, notificationEmail: string}
+     * @return array{currency: string, notificationEmail: string, paymentQrUrl: string, paymentInstructions: string}
      */
     public static function get(): array
     {
-        $currency = self::defaultCurrency();
         $notificationEmail = '';
+        $paymentQrUrl = '';
+        $paymentInstructions = '';
         $raw = SiteSetting::query()->find(self::SETTING_KEY)?->value;
 
         if ($raw) {
             $stored = json_decode($raw, true);
             if (is_array($stored)) {
-                if (isset($stored['currency'])) {
-                    $currency = (string) $stored['currency'];
-                }
                 if (isset($stored['notificationEmail'])) {
                     $notificationEmail = trim((string) $stored['notificationEmail']);
+                }
+                if (isset($stored['paymentQrUrl'])) {
+                    $paymentQrUrl = trim((string) $stored['paymentQrUrl']);
+                }
+                if (isset($stored['paymentInstructions'])) {
+                    $paymentInstructions = trim((string) $stored['paymentInstructions']);
                 }
             }
         }
 
         return [
-            'currency' => self::normalizeCurrency($currency),
+            'currency' => 'INR',
             'notificationEmail' => $notificationEmail,
+            'paymentQrUrl' => MediaUrl::resolve($paymentQrUrl) ?? '',
+            'paymentInstructions' => $paymentInstructions,
         ];
     }
 
     /**
-     * @return array{currency: string, notificationEmail: string, supportedCurrencies: array<string, string>}
+     * @return array{currency: string, notificationEmail: string, paymentQrUrl: string, paymentInstructions: string, supportedCurrencies: array<string, string>}
      */
     public static function forAdmin(): array
     {
@@ -73,7 +89,7 @@ class GeneralSettings
 
     /**
      * @param  array<string, mixed>  $input
-     * @return array{currency: string, notificationEmail: string, supportedCurrencies: array<string, string>}
+     * @return array{currency: string, notificationEmail: string, paymentQrUrl: string, paymentInstructions: string, supportedCurrencies: array<string, string>}
      */
     public static function save(array $input): array
     {
@@ -83,8 +99,10 @@ class GeneralSettings
         }
 
         $settings = [
-            'currency' => self::normalizeCurrency((string) ($input['currency'] ?? self::defaultCurrency())),
+            'currency' => 'INR',
             'notificationEmail' => $notificationEmail,
+            'paymentQrUrl' => MediaUrl::storagePath((string) ($input['paymentQrUrl'] ?? '')) ?: trim((string) ($input['paymentQrUrl'] ?? '')),
+            'paymentInstructions' => trim((string) ($input['paymentInstructions'] ?? '')),
         ];
 
         SiteSetting::query()->updateOrCreate(
@@ -97,13 +115,6 @@ class GeneralSettings
 
     public static function normalizeCurrency(string $currency): string
     {
-        $currency = strtoupper(trim($currency));
-        $supported = self::supportedCurrencies();
-
-        if (! array_key_exists($currency, $supported)) {
-            return self::defaultCurrency();
-        }
-
-        return $currency;
+        return 'INR';
     }
 }

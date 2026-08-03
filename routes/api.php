@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\Admin\BlogAccessController;
 use App\Http\Controllers\Api\Admin\BlogController;
+use App\Http\Controllers\Api\Admin\BookController;
+use App\Http\Controllers\Api\Admin\BookPurchaseController;
 use App\Http\Controllers\Api\Admin\CourseController;
 use App\Http\Controllers\Api\Admin\EnrollmentController;
 use App\Http\Controllers\Api\Admin\InquiryAdminController;
@@ -52,6 +54,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/enrollments/{uid}/{courseId}', [EnrollmentController::class, 'show']);
         Route::patch('/enrollments/{uid}/{courseId}', [EnrollmentController::class, 'update']);
         Route::delete('/enrollments/{uid}/{courseId}', [EnrollmentController::class, 'destroy']);
+
+        Route::get('/books', [BookController::class, 'index']);
+        Route::post('/books', [BookController::class, 'store']);
+        Route::get('/books/{id}', [BookController::class, 'show']);
+        Route::patch('/books/{id}', [BookController::class, 'update']);
+        Route::delete('/books/{id}', [BookController::class, 'destroy']);
+
+        Route::get('/book-purchases', [BookPurchaseController::class, 'index']);
+        Route::post('/book-purchases', [BookPurchaseController::class, 'store']);
+        Route::get('/book-purchases/{uid}/{bookId}', [BookPurchaseController::class, 'show']);
+        Route::patch('/book-purchases/{uid}/{bookId}', [BookPurchaseController::class, 'update']);
+        Route::delete('/book-purchases/{uid}/{bookId}', [BookPurchaseController::class, 'destroy']);
 
         Route::get('/mentorship', [BlogController::class, 'index']);
         Route::post('/mentorship', [BlogController::class, 'store']);

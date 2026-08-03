@@ -73,13 +73,14 @@ class EnrollmentController extends Controller
             'expiresAt' => ['nullable', 'date'],
         ]);
 
-        $enrollment->update([
+        $enrollment->fill([
             'source' => $data['source'] ?? $enrollment->source,
             'status' => $data['status'] ?? $enrollment->status,
             'expires_at' => array_key_exists('expiresAt', $data) ? $data['expiresAt'] : $enrollment->expires_at,
         ]);
+        $enrollment->save();
 
-        return response()->json(['enrollment' => $enrollment->fresh()->toPublicArray()]);
+        return response()->json(['enrollment' => $enrollment->toPublicArray()]);
     }
 
     public function destroy(string $uid, string $courseId)

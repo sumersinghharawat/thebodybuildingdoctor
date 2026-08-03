@@ -13,7 +13,7 @@ export default function Edit({ mustVerifyEmail, status, passkeys }) {
             <div className="mx-auto max-w-3xl space-y-6 p-6 md:p-8">
                 <header>
                     <h1 className="text-2xl font-bold">Profile</h1>
-                    <p className="mt-1 text-sm text-slate-400">
+                    <p className="mt-1 text-sm text-muted">
                         Manage your account, security, and sign-in options.
                     </p>
                 </header>

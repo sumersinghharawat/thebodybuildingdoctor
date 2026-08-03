@@ -48,7 +48,7 @@ export default function EnrollmentsIndex() {
         >
             <Head title="Enrollments" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <div className="space-y-4">
                     <input
@@ -61,7 +61,7 @@ export default function EnrollmentsIndex() {
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-muted">
                             {query.trim() ? 'No enrollments match your search.' : 'No enrollments yet.'}
                         </p>
                     ) : (
@@ -73,10 +73,10 @@ export default function EnrollmentsIndex() {
                                 >
                                     <div>
                                         <p className="font-medium">{users[enrollment.uid]?.name || enrollment.uid}</p>
-                                        <p className="text-sm text-slate-400">
+                                        <p className="text-sm text-muted">
                                             {courses[enrollment.courseId]?.title || enrollment.courseId}
                                         </p>
-                                        <p className="text-xs text-slate-500">
+                                        <p className="text-xs text-faint">
                                             {enrollment.status} · {enrollment.source}
                                         </p>
                                     </div>

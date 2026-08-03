@@ -38,7 +38,7 @@ export default function PdfUploadField({ label = 'PDF', value = '', onChange, fo
                     e.target.value = '';
                 }}
             />
-            {uploading && <p className="mt-1 text-xs text-slate-400">Uploading PDF…</p>}
+            {uploading && <p className="mt-1 text-xs text-muted">Uploading PDF…</p>}
             {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
             {value && (
                 <div className="mt-3 flex flex-wrap items-center gap-3">

@@ -55,14 +55,14 @@ export default function Login({ status, canResetPassword }) {
 
             <div className="mb-6 text-center">
                 <h1 className="text-xl font-semibold">Member login</h1>
-                <p className="mt-1 text-sm text-slate-400">Sign in to access courses and mentorship.</p>
+                <p className="mt-1 text-sm text-muted">Sign in to access courses and mentorship.</p>
             </div>
 
             {status && <div className="mb-4 text-sm font-medium text-emerald-400">{status}</div>}
 
             <form onSubmit={submit} className="space-y-4">
                 <div>
-                    <InputLabel htmlFor="email" value="Email" className="text-slate-300" />
+                    <InputLabel htmlFor="email" value="Email" className="text-muted" />
                     <TextInput
                         id="email"
                         type="email"
@@ -77,7 +77,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value="Password" className="text-slate-300" />
+                    <InputLabel htmlFor="password" value="Password" className="text-muted" />
                     <TextInput
                         id="password"
                         type="password"
@@ -90,7 +90,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <label className="flex items-center gap-2 text-sm text-slate-400">
+                <label className="flex items-center gap-2 text-sm text-muted">
                     <Checkbox
                         name="remember"
                         checked={data.remember}
@@ -106,10 +106,10 @@ export default function Login({ status, canResetPassword }) {
 
                     {passkeySupported && (
                         <>
-                            <div className="flex items-center gap-3 text-xs text-slate-500">
-                                <span className="h-px flex-1 bg-slate-700" />
+                            <div className="flex items-center gap-3 text-xs text-faint">
+                                <span className="h-px flex-1 bg-edge" />
                                 or
-                                <span className="h-px flex-1 bg-slate-700" />
+                                <span className="h-px flex-1 bg-edge" />
                             </div>
                             <button
                                 type="button"
@@ -125,11 +125,11 @@ export default function Login({ status, canResetPassword }) {
                     )}
 
                     {canResetPassword && (
-                        <Link href={route('password.request')} className="text-center text-sm text-slate-400 underline hover:text-white">
+                        <Link href={route('password.request')} className="text-center text-sm text-muted underline hover:text-foreground">
                             Forgot password?
                         </Link>
                     )}
-                    <p className="text-center text-xs text-slate-500">
+                    <p className="text-center text-xs text-faint">
                         New accounts are created by your administrator. Add a passkey from your profile after signing in.
                     </p>
                 </div>

@@ -45,7 +45,7 @@ export default function UpdatePasswordForm({ className = '' }) {
         <section className={className}>
             <header>
                 <h2 className="text-lg font-semibold">Password</h2>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-muted">
                     Use a long, random password to keep your account secure.
                 </p>
             </header>

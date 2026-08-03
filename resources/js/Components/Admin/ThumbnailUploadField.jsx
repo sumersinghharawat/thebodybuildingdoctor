@@ -38,7 +38,7 @@ export default function ThumbnailUploadField({ label = 'Thumbnail', value = '', 
                     e.target.value = '';
                 }}
             />
-            {uploading && <p className="mt-1 text-xs text-slate-400">Uploading image…</p>}
+            {uploading && <p className="mt-1 text-xs text-muted">Uploading image…</p>}
             {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
             {value && (
                 <div className="mt-3 flex flex-wrap items-center gap-3">

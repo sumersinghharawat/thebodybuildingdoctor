@@ -54,15 +54,15 @@ export default function RichTextEditor({
     if (!editor) {
         return (
             <div
-                className="rich-editor rounded-lg border border-slate-700 bg-slate-900/80"
+                className="rich-editor rounded-lg border border-edge bg-surface/80"
                 style={{ minHeight }}
             />
         );
     }
 
     return (
-        <div className="rich-editor rounded-lg border border-slate-700 bg-slate-900/80">
-            <div className="flex flex-wrap gap-1 border-b border-slate-800 p-2">
+        <div className="rich-editor rounded-lg border border-edge bg-surface/80">
+            <div className="flex flex-wrap gap-1 border-b border-edge p-2">
                 <ToolbarButton
                     active={editor.isActive('bold')}
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -145,7 +145,7 @@ export default function RichTextEditor({
                 <EditorContent editor={editor} />
             </div>
             {required && !htmlToPlainText(value) && (
-                <p className="border-t border-slate-800 px-3 py-2 text-xs text-slate-500">
+                <p className="border-t border-edge px-3 py-2 text-xs text-faint">
                     This field is required.
                 </p>
             )}
@@ -163,7 +163,7 @@ function ToolbarButton({ active, onClick, label, children }) {
             className={`rounded-md px-2 py-1 text-xs font-medium transition ${
                 active
                     ? 'bg-accent text-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    : 'text-muted hover:bg-surface-hover hover:text-foreground'
             }`}
         >
             {children}
@@ -172,5 +172,5 @@ function ToolbarButton({ active, onClick, label, children }) {
 }
 
 function ToolbarDivider() {
-    return <span className="mx-1 w-px self-stretch bg-slate-800" />;
+    return <span className="mx-1 w-px self-stretch bg-surface-hover" />;
 }

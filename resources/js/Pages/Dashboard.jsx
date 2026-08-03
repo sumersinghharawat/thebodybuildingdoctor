@@ -9,7 +9,7 @@ export default function Dashboard({ mentorship = [], isAdmin }) {
                 <header className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold">Mentorship</h1>
-                        <p className="mt-1 text-sm text-slate-400">Member mentorship lectures, case labs, and coaching content.</p>
+                        <p className="mt-1 text-sm text-muted">Member mentorship lectures, case labs, and coaching content.</p>
                     </div>
                     {isAdmin && (
                         <Link href={route('admin.mentorship.create')} className="btn-primary">
@@ -23,20 +23,20 @@ export default function Dashboard({ mentorship = [], isAdmin }) {
                         <Link
                             key={item.id}
                             href={route('mentorship.show', item.slug)}
-                            className="card-surface overflow-hidden transition hover:border-slate-600"
+                            className="card-surface overflow-hidden transition hover:border-faint"
                         >
                             {item.thumbnailUrl && (
                                 <img src={item.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
                             )}
                             <div className="p-4">
                                 <h2 className="font-semibold">{item.title}</h2>
-                                <p className="mt-2 line-clamp-3 text-xs text-slate-400">{item.excerpt}</p>
+                                <p className="mt-2 line-clamp-3 text-xs text-muted">{item.excerpt}</p>
                             </div>
                         </Link>
                     ))}
                 </div>
 
-                {mentorship.length === 0 && <p className="text-sm text-slate-400">No mentorship content published yet.</p>}
+                {mentorship.length === 0 && <p className="text-sm text-muted">No mentorship content published yet.</p>}
             </div>
         </AppLayout>
     );

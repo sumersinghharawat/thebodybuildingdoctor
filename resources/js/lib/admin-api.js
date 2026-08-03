@@ -259,6 +259,67 @@ export function updateInquiry(id, body) {
     });
 }
 
+export function fetchBooks() {
+    return adminFetch('/api/admin/books');
+}
+
+export async function fetchBook(id) {
+    const data = await adminFetch(`/api/admin/books/${id}`);
+    return data.book;
+}
+
+export async function createBook(body) {
+    const data = await adminFetch('/api/admin/books', {
+        method: 'POST',
+        body: JSON.stringify(body),
+    });
+    return data.book;
+}
+
+export function updateBook(id, body) {
+    return adminFetch(`/api/admin/books/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    }).then((data) => data.book);
+}
+
+export function deleteBook(id) {
+    return adminFetch(`/api/admin/books/${id}`, { method: 'DELETE' });
+}
+
+export function fetchBookPurchases(params = {}) {
+    const search = new URLSearchParams();
+    if (params.uid) search.set('uid', params.uid);
+    if (params.bookId) search.set('bookId', params.bookId);
+    if (params.status) search.set('status', params.status);
+    const qs = search.toString();
+    return adminFetch(`/api/admin/book-purchases${qs ? `?${qs}` : ''}`);
+}
+
+export function fetchBookPurchase(uid, bookId) {
+    return adminFetch(`/api/admin/book-purchases/${encodeURIComponent(uid)}/${encodeURIComponent(bookId)}`);
+}
+
+export function createBookPurchase(body) {
+    return adminFetch('/api/admin/book-purchases', {
+        method: 'POST',
+        body: JSON.stringify(body),
+    });
+}
+
+export function updateBookPurchase(uid, bookId, body) {
+    return adminFetch(`/api/admin/book-purchases/${encodeURIComponent(uid)}/${encodeURIComponent(bookId)}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    });
+}
+
+export function deleteBookPurchase(uid, bookId) {
+    return adminFetch(`/api/admin/book-purchases/${encodeURIComponent(uid)}/${encodeURIComponent(bookId)}`, {
+        method: 'DELETE',
+    });
+}
+
 export async function uploadPdf(file, folder) {
     const form = new FormData();
     form.append('file', file);

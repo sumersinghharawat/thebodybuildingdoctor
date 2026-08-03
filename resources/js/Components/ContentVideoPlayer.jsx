@@ -49,7 +49,7 @@ function VimeoEmbed({ vimeoId, title, className }) {
 
     return (
         <ProtectedVideoFrame
-            className={`aspect-video overflow-hidden rounded-xl border border-slate-800 bg-black ${className}`}
+            className={`aspect-video overflow-hidden rounded-xl border border-edge bg-black ${className}`}
             controls={
                 !started ? (
                     <button
@@ -94,7 +94,7 @@ export default function ContentVideoPlayer({ videoUrl, playback, title, classNam
             <YouTubeProtectedPlayer
                 videoId={resolved.videoId}
                 title={title}
-                className={`aspect-video overflow-hidden rounded-xl border border-slate-800 bg-black ${className}`}
+                className={`aspect-video overflow-hidden rounded-xl border border-edge bg-black ${className}`}
             />
         );
     }
@@ -105,7 +105,7 @@ export default function ContentVideoPlayer({ videoUrl, playback, title, classNam
 
     if (resolved.provider === 'file') {
         return (
-            <ProtectedVideoFrame className={`aspect-video overflow-hidden rounded-xl border border-slate-800 bg-black ${className}`}>
+            <ProtectedVideoFrame className={`aspect-video overflow-hidden rounded-xl border border-edge bg-black ${className}`}>
                 <video
                     className="h-full w-full"
                     controls
@@ -121,7 +121,7 @@ export default function ContentVideoPlayer({ videoUrl, playback, title, classNam
 
     return (
         <div
-            className={`flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-400 ${className}`}
+            className={`flex aspect-video items-center justify-center rounded-xl border border-edge bg-surface text-sm text-muted ${className}`}
         >
             Unsupported video provider
         </div>

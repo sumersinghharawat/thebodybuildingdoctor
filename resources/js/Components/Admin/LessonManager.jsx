@@ -136,7 +136,7 @@ export default function LessonManager({ courseId, lessons, onLessonsChange }) {
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h3 className="text-lg font-semibold">Lessons</h3>
-                    <p className="text-sm text-slate-400">Drag to reorder. Click a lesson to edit.</p>
+                    <p className="text-sm text-muted">Drag to reorder. Click a lesson to edit.</p>
                 </div>
                 <button type="button" className="btn-primary" onClick={openCreate}>
                     Add lesson
@@ -144,7 +144,7 @@ export default function LessonManager({ courseId, lessons, onLessonsChange }) {
             </div>
 
             {error && <p className="text-sm text-red-300">{error}</p>}
-            {reordering && <p className="text-sm text-slate-400">Saving lesson order…</p>}
+            {reordering && <p className="text-sm text-muted">Saving lesson order…</p>}
 
             <div className="space-y-2">
                 {sortedLessons.map((lesson, index) => {
@@ -166,7 +166,7 @@ export default function LessonManager({ courseId, lessons, onLessonsChange }) {
                         >
                             <button
                                 type="button"
-                                className="cursor-grab touch-none rounded-lg border border-slate-700 px-2 py-3 text-slate-400 hover:text-white active:cursor-grabbing"
+                                className="cursor-grab touch-none rounded-lg border border-edge px-2 py-3 text-muted hover:text-foreground active:cursor-grabbing"
                                 aria-label="Drag to reorder"
                                 onMouseDown={(event) => event.stopPropagation()}
                             >
@@ -175,7 +175,7 @@ export default function LessonManager({ courseId, lessons, onLessonsChange }) {
                                 </svg>
                             </button>
 
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-800 text-sm font-semibold">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-sm font-semibold">
                                 {index + 1}
                             </div>
 
@@ -185,7 +185,7 @@ export default function LessonManager({ courseId, lessons, onLessonsChange }) {
                                 className="min-w-0 flex-1 text-left"
                             >
                                 <p className="truncate font-medium">{lesson.title}</p>
-                                <p className="mt-0.5 text-xs text-slate-400">
+                                <p className="mt-0.5 text-xs text-muted">
                                     {formatDuration(lesson.durationSec ?? 0)}
                                     {lesson.freePreview ? ' · Preview' : ''}
                                     {lesson.videoUrl ? ' · Video' : ''}
@@ -204,7 +204,7 @@ export default function LessonManager({ courseId, lessons, onLessonsChange }) {
                 })}
 
                 {sortedLessons.length === 0 && (
-                    <p className="text-sm text-slate-400">No lessons yet. Add your first lesson.</p>
+                    <p className="text-sm text-muted">No lessons yet. Add your first lesson.</p>
                 )}
             </div>
 

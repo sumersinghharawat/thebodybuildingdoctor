@@ -24,7 +24,7 @@ export default function UpdateProfileInformation({
         <section className={className}>
             <header>
                 <h2 className="text-lg font-semibold">Profile information</h2>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-muted">
                     Update your name and email address.
                 </p>
             </header>
@@ -63,7 +63,7 @@ export default function UpdateProfileInformation({
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
-                        <p className="text-sm text-slate-300">
+                        <p className="text-sm text-muted">
                             Your email address is unverified.{' '}
                             <Link
                                 href={route('verification.send')}

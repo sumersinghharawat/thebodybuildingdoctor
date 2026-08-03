@@ -4,21 +4,41 @@
 
 @layer base {
     :root {
+        color-scheme: light;
+        --color-background: 248 250 252; /* slate-50 */
+        --color-surface: 255 255 255;
+        --color-surface-hover: 241 245 249; /* slate-100 */
+        --color-foreground: 15 23 42; /* slate-900 */
+        --color-muted: 71 85 105; /* slate-600 */
+        --color-faint: 100 116 139; /* slate-500 */
+        --color-edge: 226 232 240; /* slate-200 */
+        --color-glow: 93 27 29;
+    }
+
+    .dark {
         color-scheme: dark;
+        --color-background: 2 6 23; /* slate-950 */
+        --color-surface: 15 23 42; /* slate-900 */
+        --color-surface-hover: 30 41 59; /* slate-800 */
+        --color-foreground: 241 245 249; /* slate-100 */
+        --color-muted: 148 163 184; /* slate-400 */
+        --color-faint: 100 116 139; /* slate-500 */
+        --color-edge: 30 41 59; /* slate-800 */
+        --color-glow: 93 27 29;
     }
 
     body {
-        @apply bg-background text-slate-100 antialiased;
+        @apply bg-background text-foreground antialiased;
     }
 }
 
 @layer components {
     .card-surface {
-        @apply rounded-xl border border-slate-800 bg-slate-900/80;
+        @apply rounded-xl border border-edge bg-surface/80;
     }
 
     .pill {
-        @apply inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-300;
+        @apply inline-flex items-center rounded-full border border-edge bg-surface px-3 py-1 text-xs font-medium uppercase tracking-wide text-muted;
     }
 
     .btn-primary {
@@ -26,19 +46,19 @@
     }
 
     .btn-secondary {
-        @apply inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 disabled:opacity-50;
+        @apply inline-flex items-center justify-center rounded-lg border border-edge bg-surface px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-surface-hover disabled:opacity-50;
     }
 
     .input-dark {
-        @apply w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none;
+        @apply w-full rounded-lg border border-edge bg-surface/80 px-3 py-2 text-sm text-foreground placeholder:text-faint focus:border-accent focus:outline-none;
     }
 
     .label-dark {
-        @apply mb-1.5 block text-xs font-medium text-slate-400;
+        @apply mb-1.5 block text-xs font-medium text-muted;
     }
 
     .rich-editor__content {
-        @apply min-h-[10rem] text-sm text-slate-100;
+        @apply min-h-[10rem] text-sm text-foreground;
     }
 
     .rich-editor__content p {
@@ -46,11 +66,11 @@
     }
 
     .rich-editor__content h2 {
-        @apply mb-2 mt-4 text-xl font-semibold text-slate-100;
+        @apply mb-2 mt-4 text-xl font-semibold text-foreground;
     }
 
     .rich-editor__content h3 {
-        @apply mb-2 mt-3 text-lg font-semibold text-slate-100;
+        @apply mb-2 mt-3 text-lg font-semibold text-foreground;
     }
 
     .rich-editor__content ul {
@@ -62,18 +82,19 @@
     }
 
     .rich-editor__content a {
-        @apply text-amber-400 underline;
+        @apply text-amber-600 underline dark:text-amber-400;
     }
 
     .rich-editor__content p.is-editor-empty:first-child::before {
-        @apply pointer-events-none float-left h-0 text-slate-500;
+        @apply pointer-events-none float-left h-0 text-faint;
         content: attr(data-placeholder);
     }
 
   /* Rich HTML content (mentorship, lessons) — responsive embeds */
   .rich-content {
-        @apply prose prose-invert max-w-none break-words prose-a:text-amber-400;
+        @apply prose max-w-none break-words prose-a:text-amber-600 dark:prose-invert dark:prose-a:text-amber-400;
     }
+
 
     .rich-content iframe,
     .rich-content video,

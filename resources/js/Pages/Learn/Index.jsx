@@ -11,7 +11,7 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [], i
             <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-10">
                 <header>
                     <h1 className="text-2xl font-bold">My courses</h1>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-muted mt-1">
                         Enrollment is managed by an administrator.
                     </p>
                 </header>
@@ -25,7 +25,7 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [], i
                 <section className="space-y-4">
                     <h2 className="text-lg font-semibold">Continue learning</h2>
                     {enrolledCourses.length === 0 ? (
-                        <p className="text-slate-400 text-sm">No enrollments yet.</p>
+                        <p className="text-muted text-sm">No enrollments yet.</p>
                     ) : (
                         <CourseGrid courses={enrolledCourses} isAdmin={isAdmin} />
                     )}
@@ -48,7 +48,7 @@ function CourseGrid({ courses, showRequest = false, isAdmin = false }) {
             {courses.map((course) => (
                 <article
                     key={course.id}
-                    className="rounded-xl border border-slate-800 bg-slate-900 overflow-hidden hover:border-slate-600 transition flex flex-col"
+                    className="rounded-xl border border-edge bg-surface overflow-hidden hover:border-faint transition flex flex-col"
                 >
                     <Link href={route('learn.courses.show', course.id)} className="block">
                         {course.thumbnailUrl && (
@@ -63,7 +63,7 @@ function CourseGrid({ courses, showRequest = false, isAdmin = false }) {
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs text-slate-400 mt-1 line-clamp-2">{course.description}</p>
+                            <p className="text-xs text-muted mt-1 line-clamp-2">{course.description}</p>
                         </div>
                     </Link>
                     {showRequest && (

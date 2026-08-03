@@ -11,18 +11,18 @@ export default function LearnCourse({ course, enrolled, lessons }) {
         <AppLayout>
             <Head title={course.title} />
             <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-6">
-                <Link href={route('learn.index')} className="text-sm text-slate-400 hover:text-slate-200">
+                <Link href={route('learn.index')} className="text-sm text-muted hover:text-foreground">
                     ← All courses
                 </Link>
                 <h1 className="text-2xl font-bold">{course.title}</h1>
                 {course.descriptionHtml ? (
                     <RichContent
                         html={course.descriptionHtml}
-                        className="text-sm text-slate-400"
+                        className="text-sm text-muted"
                         embedPlaybackUrl={(slot) => route('learn.courses.embed.playback', [course.id, slot])}
                     />
                 ) : (
-                    <p className="text-sm text-slate-400">{course.description}</p>
+                    <p className="text-sm text-muted">{course.description}</p>
                 )}
 
                 {course.hasVideo && <CourseVideoPlayer courseId={course.id} title={course.title} />}
@@ -41,8 +41,8 @@ export default function LearnCourse({ course, enrolled, lessons }) {
                 )}
 
                 {!enrolled && (
-                    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-                        <p className="text-sm text-slate-400">
+                    <div className="rounded-xl border border-edge bg-surface/60 p-4">
+                        <p className="text-sm text-muted">
                             Enrollment is managed by an administrator. Request access to this course below.
                         </p>
                         <div className="mt-3 max-w-xs">
@@ -51,23 +51,23 @@ export default function LearnCourse({ course, enrolled, lessons }) {
                     </div>
                 )}
 
-                <ol className="divide-y divide-slate-800 rounded-xl border border-slate-800">
+                <ol className="divide-y divide-edge rounded-xl border border-edge">
                     {lessons.map((lesson, index) => (
                         <li key={lesson.id}>
                             {lesson.locked ? (
                                 <div className="flex items-center gap-3 p-4 opacity-50">
-                                    <span className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs">
+                                    <span className="w-8 h-8 rounded-full bg-surface-hover flex items-center justify-center text-xs">
                                         {index + 1}
                                     </span>
                                     <span>{lesson.title}</span>
-                                    <span className="ml-auto text-xs text-slate-500">Locked</span>
+                                    <span className="ml-auto text-xs text-faint">Locked</span>
                                 </div>
                             ) : (
                                 <Link
                                     href={route('learn.lessons.show', [course.id, lesson.id])}
-                                    className="flex items-center gap-3 p-4 hover:bg-slate-900/50"
+                                    className="flex items-center gap-3 p-4 hover:bg-surface/50"
                                 >
-                                    <span className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs">
+                                    <span className="w-8 h-8 rounded-full bg-surface-hover flex items-center justify-center text-xs">
                                         {index + 1}
                                     </span>
                                     <span>{lesson.title}</span>

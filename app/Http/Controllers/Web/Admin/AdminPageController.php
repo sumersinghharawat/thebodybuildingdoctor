@@ -28,6 +28,41 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/Courses/Show', ['courseId' => $id]);
     }
 
+    public function booksIndex()
+    {
+        return Inertia::render('Admin/Books/Index');
+    }
+
+    public function booksCreate()
+    {
+        return Inertia::render('Admin/Books/Form', ['bookId' => null]);
+    }
+
+    public function booksEdit(string $id)
+    {
+        return Inertia::render('Admin/Books/Form', ['bookId' => $id]);
+    }
+
+    public function bookAccessIndex()
+    {
+        return Inertia::render('Admin/BookAccess/Index');
+    }
+
+    public function bookAccessCreate(Request $request)
+    {
+        return Inertia::render('Admin/BookAccess/Form', [
+            'uid' => null,
+            'bookId' => $request->query('bookId'),
+            'prefillEmail' => $request->query('email'),
+            'returnTo' => $request->query('returnTo'),
+        ]);
+    }
+
+    public function bookAccessEdit(string $uid, string $bookId)
+    {
+        return Inertia::render('Admin/BookAccess/Form', ['uid' => $uid, 'bookId' => $bookId]);
+    }
+
     public function inquiriesIndex()
     {
         return Inertia::render('Admin/Inquiries/Index');

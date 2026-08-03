@@ -57,7 +57,7 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
             <header className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                     <h2 className="text-lg font-semibold">Face lock login</h2>
-                    <p className="mt-1 text-sm text-slate-400">
+                    <p className="mt-1 text-sm text-muted">
                         Sign in with Face ID, Touch ID, or your device passkey instead of typing your password.
                     </p>
                 </div>
@@ -69,13 +69,13 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
             </header>
 
             {!isSupported ? (
-                <p className="mt-4 text-sm text-slate-500">
+                <p className="mt-4 text-sm text-faint">
                     Face lock login is not supported in this browser. Use a modern browser on a secure connection (HTTPS).
                 </p>
             ) : (
                 <div className="mt-6 space-y-4">
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-4">
-                        <p className="text-sm text-slate-300">
+                    <div className="rounded-lg border border-edge bg-background/50 p-4">
+                        <p className="text-sm text-muted">
                             {items.length === 0
                                 ? 'No face lock set up yet. Add this device to enable quick sign-in.'
                                 : 'Add another device if you sign in from multiple phones or computers.'}
@@ -109,19 +109,19 @@ export default function ManagePasskeysForm({ passkeys = [], className = '' }) {
                     {error && <p className="text-sm text-red-400">{error}</p>}
                     {removeError && <p className="text-sm text-red-400">{removeError}</p>}
 
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-faint">
                         After enabling, use &ldquo;Sign in with Face ID / passkey&rdquo; on the login page.
                     </p>
                 </div>
             )}
 
             {items.length > 0 && (
-                <ul className="mt-6 divide-y divide-slate-800 rounded-lg border border-slate-800">
+                <ul className="mt-6 divide-y divide-edge rounded-lg border border-edge">
                     {items.map((passkey) => (
                         <li key={passkey.id} className="flex items-center justify-between gap-4 px-4 py-3">
                             <div>
-                                <p className="text-sm font-medium text-slate-100">{passkey.name}</p>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-sm font-medium text-foreground">{passkey.name}</p>
+                                <p className="text-xs text-faint">
                                     {passkey.authenticator ? `${passkey.authenticator} · ` : ''}
                                     Added {new Date(passkey.createdAt).toLocaleDateString()}
                                     {passkey.lastUsedAt

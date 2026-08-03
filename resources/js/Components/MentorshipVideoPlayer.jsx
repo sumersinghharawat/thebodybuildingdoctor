@@ -37,7 +37,7 @@ export default function MentorshipVideoPlayer({ mentorshipId, title }) {
 
     if (error) {
         return (
-            <div className="flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-400">
+            <div className="flex aspect-video items-center justify-center rounded-xl border border-edge bg-surface text-sm text-muted">
                 {error}
             </div>
         );
@@ -45,7 +45,7 @@ export default function MentorshipVideoPlayer({ mentorshipId, title }) {
 
     if (!playback) {
         return (
-            <div className="flex aspect-video items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-500">
+            <div className="flex aspect-video items-center justify-center rounded-xl border border-edge bg-surface text-sm text-faint">
                 Loading video…
             </div>
         );

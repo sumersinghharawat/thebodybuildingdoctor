@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AdminPageController;
+use App\Http\Controllers\Web\BooksPageController;
 use App\Http\Controllers\Web\CalculatorPageController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\CourseRequestController;
@@ -35,6 +36,12 @@ Route::middleware(['auth', 'app.access'])->group(function () {
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}', [LearnPageController::class, 'showLesson'])->name('learn.lessons.show');
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}/playback', [LearnPageController::class, 'lessonPlayback'])->name('learn.lessons.playback');
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}/embed/{slot}/playback', [LearnPageController::class, 'lessonEmbedPlayback'])->name('learn.lessons.embed.playback');
+
+    Route::get('/books', [BooksPageController::class, 'index'])->name('books.index');
+    Route::get('/books/{bookId}', [BooksPageController::class, 'show'])->name('books.show');
+    Route::post('/books/{bookId}/request', [BooksPageController::class, 'requestAccess'])->name('books.request');
+    Route::get('/books/{bookId}/read', [BooksPageController::class, 'read'])->name('books.read');
+    Route::get('/books/{bookId}/pdf', [BooksPageController::class, 'streamPdf'])->name('books.pdf');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group(function () {
@@ -42,6 +49,14 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group
     Route::get('/courses/new', [AdminPageController::class, 'coursesCreate'])->name('courses.create');
     Route::get('/courses/{id}', [AdminPageController::class, 'coursesShow'])->name('courses.show');
     Route::get('/courses/{id}/edit', [AdminPageController::class, 'coursesEdit'])->name('courses.edit');
+
+    Route::get('/books', [AdminPageController::class, 'booksIndex'])->name('books.index');
+    Route::get('/books/new', [AdminPageController::class, 'booksCreate'])->name('books.create');
+    Route::get('/books/{id}/edit', [AdminPageController::class, 'booksEdit'])->name('books.edit');
+
+    Route::get('/book-access', [AdminPageController::class, 'bookAccessIndex'])->name('book-access.index');
+    Route::get('/book-access/new', [AdminPageController::class, 'bookAccessCreate'])->name('book-access.create');
+    Route::get('/book-access/{uid}/{bookId}', [AdminPageController::class, 'bookAccessEdit'])->name('book-access.edit');
 
     Route::get('/inquiries', [AdminPageController::class, 'inquiriesIndex'])->name('inquiries.index');
 

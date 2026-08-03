@@ -44,7 +44,7 @@ export default function DeleteUserForm({ className = '' }) {
         <section className={className}>
             <header>
                 <h2 className="text-lg font-semibold text-red-300">Delete account</h2>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-muted">
                     Permanently delete your account and all associated data. This cannot be undone.
                 </p>
             </header>
@@ -60,12 +60,12 @@ export default function DeleteUserForm({ className = '' }) {
             <Modal
                 show={confirmingUserDeletion}
                 onClose={closeModal}
-                panelClassName="border border-slate-700 bg-slate-900 text-slate-100"
+                panelClassName="border border-edge bg-surface text-foreground"
             >
                 <form onSubmit={deleteUser} className="p-6">
                     <h2 className="text-lg font-semibold">Delete your account?</h2>
 
-                    <p className="mt-2 text-sm text-slate-400">
+                    <p className="mt-2 text-sm text-muted">
                         Enter your password to confirm. All of your data will be permanently removed.
                     </p>
 

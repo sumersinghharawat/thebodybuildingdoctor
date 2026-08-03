@@ -14,7 +14,7 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'file' => ['required', 'file'],
-            'folder' => ['required', Rule::in(['courses', 'lessons', 'mentorship', 'blogs', 'marketing', 'documents', 'apps'])],
+            'folder' => ['required', Rule::in(['courses', 'lessons', 'mentorship', 'blogs', 'marketing', 'documents', 'apps', 'books'])],
         ]);
 
         $file = $data['file'];
@@ -57,6 +57,16 @@ class UploadController extends Controller
             'documents' => 'documents',
             default => $data['folder'],
         };
+
+        // Book PDFs stay on the private disk and are streamed only to entitled users.
+        if ($data['folder'] === 'books' && $isPdf) {
+            $path = $file->store('books', 'local');
+
+            return response()->json([
+                'path' => $path,
+                'url' => '',
+            ]);
+        }
 
         if ($isApk) {
             $path = $file->storeAs($folder, Str::random(40).'.apk', 'public');

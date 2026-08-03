@@ -127,7 +127,7 @@ export default function LandingAppSectionAdmin() {
         >
             <Head title="Landing app section" />
             {loading ? (
-                <p className="text-sm text-slate-400">Loading…</p>
+                <p className="text-sm text-muted">Loading…</p>
             ) : (
                 <form onSubmit={handleSubmit} className="card-surface max-w-3xl space-y-4 p-6">
                     {error && <p className="text-sm text-red-300">{error}</p>}
@@ -200,7 +200,7 @@ export default function LandingAppSectionAdmin() {
                             onChange={(e) => updateField('playStoreUrl', e.target.value)}
                             placeholder="https://play.google.com/store/apps/details?id=..."
                         />
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-faint">
                             Add this later when the app goes live on Google Play. It takes priority over the uploaded APK.
                         </p>
                     </div>
@@ -230,11 +230,11 @@ export default function LandingAppSectionAdmin() {
                                 e.target.value = '';
                             }}
                         />
-                        {uploading && <p className="mt-2 text-xs text-slate-400">Uploading image…</p>}
+                        {uploading && <p className="mt-2 text-xs text-muted">Uploading image…</p>}
                         {form.screenshotUrl && (
                             <div className="mt-4 space-y-3">
-                                <p className="text-xs text-slate-500">Preview</p>
-                                <div className="inline-block max-w-xs rounded-[1.5rem] border border-slate-700 bg-slate-950 p-3">
+                                <p className="text-xs text-faint">Preview</p>
+                                <div className="inline-block max-w-xs rounded-[1.5rem] border border-edge bg-background p-3">
                                     <img
                                         src={form.screenshotUrl}
                                         alt="App screenshot preview"
