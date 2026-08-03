@@ -1,6 +1,7 @@
 import CourseCard from '@/Components/Marketing/CourseCard';
 import MarketingLayout from '@/Layouts/MarketingLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { formatPrice } from '@/lib/format';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 const MENTORSHIP_BENEFITS = [
@@ -30,7 +31,16 @@ const MENTORSHIP_BENEFITS = [
     },
 ];
 
-export default function Landing({ courses = [], totalCourseCount = 0, siteName, appSection }) {
+export default function Landing({
+    courses = [],
+    totalCourseCount = 0,
+    books = [],
+    siteName,
+    appSection,
+}) {
+    const { site } = usePage().props;
+    const currency = site?.currency || 'INR';
+
     const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
         name: '',
         email: '',
@@ -50,23 +60,40 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
         const params = new URLSearchParams(window.location.search);
         const courseId = params.get('courseId') || '';
         const courseTitle = params.get('courseTitle') || '';
+        const interest = params.get('type') || '';
 
-        if (!courseId && !courseTitle) {
+        if (!courseId && !courseTitle && interest !== 'books') {
             return;
         }
 
         setData((current) => ({
             ...current,
-            type: 'courses',
+            type: interest === 'books' ? 'books' : 'courses',
             courseId,
             courseTitle,
-            message: courseTitle
-                ? `I would like access to the course "${courseTitle}".`
-                : 'I would like access to a course.',
+            message:
+                interest === 'books'
+                    ? courseTitle
+                        ? `I would like access to the book "${courseTitle}".`
+                        : 'I would like access to the books library.'
+                    : courseTitle
+                      ? `I would like access to the course "${courseTitle}".`
+                      : 'I would like access to a course.',
         }));
     }, [setData]);
 
     const showViewMore = totalCourseCount > courses.length;
+
+    function requestBook(book) {
+        setData((current) => ({
+            ...current,
+            type: 'books',
+            courseId: book.id,
+            courseTitle: book.title,
+            message: `I would like access to the book "${book.title}".`,
+        }));
+        document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' });
+    }
 
     return (
         <MarketingLayout showAppLink={appSection?.enabled !== false}>
@@ -78,7 +105,7 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                     <span className="text-accentSoft">Build your best physique.</span>
                 </h1>
                 <p className="mx-auto max-w-2xl text-muted">
-                    Evidence-based bodybuilding coaching, online courses, mentorship, and a dedicated mobile app.
+                    Evidence-based bodybuilding coaching, online courses, books, mentorship, and a dedicated mobile app.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
                     <a href="#apply" className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white">
@@ -125,6 +152,71 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
                     )}
                 </section>
             )}
+
+            <section id="books" className="border-t border-edge py-12 md:py-16">
+                <div className="mb-8 space-y-2 text-center">
+                    <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">Books</p>
+                    <h2 className="text-2xl font-bold md:text-3xl">Read on the website</h2>
+                    <p className="mx-auto max-w-2xl text-sm text-muted">
+                        Member books with QR payment and in-browser reading after approval — no downloads.
+                    </p>
+                </div>
+
+                {books.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {books.map((book) => (
+                            <article
+                                key={book.id}
+                                className="flex h-full flex-col overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-faint"
+                            >
+                                {book.thumbnailUrl ? (
+                                    <img
+                                        src={book.thumbnailUrl}
+                                        alt=""
+                                        className="aspect-[4/3] w-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex aspect-[4/3] w-full items-center justify-center bg-surface-hover text-faint">
+                                        Book
+                                    </div>
+                                )}
+                                <div className="flex flex-1 flex-col p-4">
+                                    <h3 className="font-semibold leading-snug">{book.title}</h3>
+                                    <p className="mt-2 line-clamp-3 flex-1 text-xs text-muted">
+                                        {book.description}
+                                    </p>
+                                    <div className="mt-4 flex items-center justify-between gap-3 border-t border-edge pt-3">
+                                        <span className="text-sm font-semibold text-accentSoft">
+                                            {formatPrice(book.priceCents, currency)}
+                                        </span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="btn-primary mt-3 w-full"
+                                        onClick={() => requestBook(book)}
+                                    >
+                                        Request access
+                                    </button>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mx-auto max-w-lg text-center">
+                        <p className="text-sm text-muted">
+                            Books are available to members after login. Request access and we will help you get started.
+                        </p>
+                        <div className="mt-6 flex flex-wrap justify-center gap-3">
+                            <a href="#apply" className="btn-primary">
+                                Request book access
+                            </a>
+                            <Link href={route('login')} className="btn-secondary">
+                                Member login
+                            </Link>
+                        </div>
+                    </div>
+                )}
+            </section>
 
             <section id="mentorship" className="border-t border-edge py-12 md:py-16">
                 <div className="mb-8 space-y-2 text-center">
@@ -223,7 +315,7 @@ export default function Landing({ courses = [], totalCourseCount = 0, siteName, 
 
             <section id="apply" className="border-t border-edge py-12 md:py-16">
                 <div className="mx-auto max-w-lg">
-                    <h2 className="mb-2 text-center text-xl font-bold">Request mentorship or course access</h2>
+                    <h2 className="mb-2 text-center text-xl font-bold">Request mentorship, course, or book access</h2>
                     <p className="mb-6 text-center text-sm text-muted">
                         Tell us what you are looking for and we will get back to you.
                     </p>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Book;
 use App\Models\Course;
 use App\Services\InquiryService;
 use App\Support\LandingAppSection;
@@ -21,9 +22,18 @@ class LandingController extends Controller
             ->get()
             ->map->toPublicArray();
 
+        $books = Book::query()
+            ->where('published', true)
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->limit(6)
+            ->get()
+            ->map(fn (Book $book) => $book->toPublicArray());
+
         return Inertia::render('Landing', [
             'courses' => $courses,
             'totalCourseCount' => $totalCourseCount,
+            'books' => $books,
             'siteName' => config('app.name', 'The Bodybuilding Doctor'),
             'appSection' => LandingAppSection::get(),
         ]);
@@ -35,7 +45,7 @@ class LandingController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email'],
             'phone' => ['nullable', 'string', 'max:40'],
-            'type' => ['required', 'in:mentorship,courses,both'],
+            'type' => ['required', 'in:mentorship,courses,both,books'],
             'courseId' => ['nullable', 'string'],
             'courseTitle' => ['nullable', 'string'],
             'message' => ['nullable', 'string', 'max:5000'],
