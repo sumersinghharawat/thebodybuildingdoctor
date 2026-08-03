@@ -16,9 +16,13 @@ Route::get('/download/android', App\Http\Controllers\Web\AppDownloadController::
 Route::get('/courses', CoursesPageController::class)->name('courses.index');
 Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inquiries.store');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/calculator', CalculatorPageController::class)->name('calculator');
+});
+
 Route::middleware(['auth', 'app.access'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::get('/calculator', CalculatorPageController::class)->name('calculator');
+    // Route::get('/calculator', CalculatorPageController::class)->name('calculator');
     Route::get('/mentorship/{id}/embed/{slot}/playback', [MentorshipPageController::class, 'embedPlayback'])->name('mentorship.embed.playback');
     Route::get('/mentorship/{id}/playback', [MentorshipPageController::class, 'playback'])->name('mentorship.playback');
     Route::get('/mentorship/{slug}', [MentorshipPageController::class, 'show'])->name('mentorship.show');
