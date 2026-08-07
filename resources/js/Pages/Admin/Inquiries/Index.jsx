@@ -1,16 +1,14 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import { AdminListToolbar, EmptyState, StatusBadge } from '@/Components/Admin/AdminListControls';
 import { fetchInquiries, updateInquiry } from '@/lib/admin-api';
 import { Head, Link } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 function sortInquiries(items) {
     return [...items].sort((a, b) => {
         const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        if (bTime !== aTime) {
-            return bTime - aTime;
-        }
-
+        if (bTime !== aTime) return bTime - aTime;
         return String(b.id).localeCompare(String(a.id));
     });
 }
@@ -25,7 +23,6 @@ function enrollUrl(inquiry) {
     if (inquiry.email) params.set('email', inquiry.email);
     if (inquiry.courseId) params.set('courseId', inquiry.courseId);
     params.set('returnTo', route('admin.inquiries.index'));
-
     return `${route('admin.enrollments.create')}?${params}`;
 }
 
@@ -34,7 +31,6 @@ function bookAccessUrl(inquiry) {
     if (inquiry.email) params.set('email', inquiry.email);
     if (inquiry.courseId) params.set('bookId', inquiry.courseId);
     params.set('returnTo', route('admin.inquiries.index'));
-
     return `${route('admin.book-access.create')}?${params}`;
 }
 
@@ -56,6 +52,7 @@ export default function InquiriesIndex() {
     const [inquiries, setInquiries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('new');
 
     useEffect(() => {
         fetchInquiries()
@@ -70,43 +67,67 @@ export default function InquiriesIndex() {
         );
     }
 
-    const q = query.trim().toLowerCase();
-    const filtered = !q
-        ? inquiries
-        : inquiries.filter((inquiry) =>
-              [inquiry.name, inquiry.email, inquiry.phone, inquiry.message, inquiry.courseTitle, inquiry.status]
-                  .filter(Boolean)
-                  .some((value) => String(value).toLowerCase().includes(q)),
-          );
+    const counts = useMemo(() => ({
+        all: inquiries.length,
+        new: inquiries.filter((item) => item.status === 'new').length,
+        contacted: inquiries.filter((item) => item.status === 'contacted').length,
+        closed: inquiries.filter((item) => item.status === 'closed').length,
+    }), [inquiries]);
+
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        return inquiries.filter((inquiry) => {
+            if (statusFilter !== 'all' && inquiry.status !== statusFilter) return false;
+            if (!q) return true;
+            return [inquiry.name, inquiry.email, inquiry.phone, inquiry.message, inquiry.courseTitle, inquiry.status, inquiry.type]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(q));
+        });
+    }, [inquiries, query, statusFilter]);
 
     return (
-        <AdminShell title="Inquiries">
+        <AdminShell title="Inquiries" description="Triage landing-page requests, then create users or grant access.">
             <Head title="Inquiries" />
             {loading ? (
                 <p className="text-sm text-muted">Loading…</p>
             ) : (
-                <div className="space-y-4">
-                    <input
-                        type="search"
-                        className="input-dark max-w-md"
-                        placeholder="Search by name, email, course, or status…"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        aria-label="Search inquiries"
+                <div className="space-y-5">
+                    <AdminListToolbar
+                        query={query}
+                        onQueryChange={setQuery}
+                        placeholder="Search by name, email, course, or message…"
+                        filter={statusFilter}
+                        onFilterChange={setStatusFilter}
+                        filterOptions={[
+                            { value: 'new', label: 'New', count: counts.new },
+                            { value: 'contacted', label: 'Contacted', count: counts.contacted },
+                            { value: 'closed', label: 'Closed', count: counts.closed },
+                            { value: 'all', label: 'All', count: counts.all },
+                        ]}
+                        resultLabel={`${filtered.length} inquir${filtered.length === 1 ? 'y' : 'ies'}`}
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-muted">
-                            {query.trim() ? 'No inquiries match your search.' : 'No inquiries yet.'}
-                        </p>
+                        <EmptyState
+                            title={query.trim() || statusFilter !== 'all' ? 'No inquiries match' : 'No inquiries yet'}
+                            description="New access requests from the landing page will show up here."
+                        />
                     ) : (
                         <div className="space-y-3">
                             {filtered.map((inquiry) => (
                                 <article key={inquiry.id} className="card-surface space-y-3 p-4">
                                     <div className="flex flex-wrap items-start justify-between gap-4">
-                                        <div>
-                                            <p className="font-medium">{inquiry.name}</p>
-                                            <p className="text-sm text-muted">{inquiry.email}</p>
+                                        <div className="min-w-0">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <p className="font-semibold">{inquiry.name}</p>
+                                                <StatusBadge status={inquiry.status} />
+                                                {inquiry.type && (
+                                                    <span className="pill normal-case tracking-normal">
+                                                        {inquiry.type === 'books' ? 'Book' : 'Course'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="mt-1 text-sm text-muted">{inquiry.email}</p>
                                             {inquiry.phone && <p className="text-xs text-faint">{inquiry.phone}</p>}
                                             {inquiry.createdAt && (
                                                 <p className="mt-1 text-xs text-faint">{formatDate(inquiry.createdAt)}</p>
@@ -116,6 +137,7 @@ export default function InquiriesIndex() {
                                             className="input-dark w-auto"
                                             value={inquiry.status}
                                             onChange={(e) => setStatus(inquiry, e.target.value)}
+                                            aria-label="Inquiry status"
                                         >
                                             <option value="new">New</option>
                                             <option value="contacted">Contacted</option>

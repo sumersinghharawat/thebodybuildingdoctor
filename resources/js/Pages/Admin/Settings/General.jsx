@@ -64,7 +64,7 @@ export default function GeneralSettingsAdmin() {
     }
 
     return (
-        <AdminShell title="General settings">
+        <AdminShell title="General settings" description="Currency, notifications, and book payment QR.">
             <Head title="General settings" />
             {loading ? (
                 <p className="text-sm text-muted">Loading…</p>

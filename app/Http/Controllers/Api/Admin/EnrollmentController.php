@@ -11,7 +11,7 @@ class EnrollmentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Enrollment::query()->with('course');
+        $query = Enrollment::query()->with(['course', 'user']);
         if ($request->filled('uid')) {
             $query->where('user_id', $request->string('uid'));
         }
@@ -20,7 +20,14 @@ class EnrollmentController extends Controller
         }
 
         return response()->json([
-            'enrollments' => $query->orderByDesc('enrolled_at')->get()->map->toPublicArray(),
+            'enrollments' => $query->orderByDesc('enrolled_at')->get()->map(function (Enrollment $enrollment) {
+                return [
+                    ...$enrollment->toPublicArray(),
+                    'userName' => $enrollment->user?->name,
+                    'userEmail' => $enrollment->user?->email,
+                    'courseTitle' => $enrollment->course?->title,
+                ];
+            }),
         ]);
     }
 

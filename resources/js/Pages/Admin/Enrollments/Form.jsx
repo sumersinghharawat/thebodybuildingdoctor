@@ -1,4 +1,5 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import AdminUserPicker from '@/Components/Admin/AdminUserPicker';
 import {
     createEnrollment,
     fetchCourses,
@@ -9,11 +10,23 @@ import {
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-export default function EnrollmentForm({ uid, courseId, prefillEmail = '', returnTo = null }) {
+export default function EnrollmentForm({
+    uid,
+    courseId,
+    prefillUid = '',
+    prefillEmail = '',
+    returnTo = null,
+}) {
     const isEdit = Boolean(uid && courseId);
     const [users, setUsers] = useState([]);
     const [courses, setCourses] = useState([]);
-    const [form, setForm] = useState({ uid: uid || '', courseId: courseId || '', status: 'active', source: 'admin', expiresAt: '' });
+    const [form, setForm] = useState({
+        uid: uid || prefillUid || '',
+        courseId: courseId || '',
+        status: 'active',
+        source: 'admin',
+        expiresAt: '',
+    });
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
 
@@ -22,7 +35,7 @@ export default function EnrollmentForm({ uid, courseId, prefillEmail = '', retur
             setUsers(userData.users);
             setCourses(courseData.courses);
 
-            if (!isEdit && prefillEmail) {
+            if (!isEdit && !prefillUid && prefillEmail) {
                 const match = userData.users.find(
                     (user) => user.email.toLowerCase() === prefillEmail.toLowerCase(),
                 );
@@ -42,7 +55,7 @@ export default function EnrollmentForm({ uid, courseId, prefillEmail = '', retur
                 });
             });
         }
-    }, [uid, courseId, isEdit, prefillEmail]);
+    }, [uid, courseId, isEdit, prefillUid, prefillEmail]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -67,24 +80,28 @@ export default function EnrollmentForm({ uid, courseId, prefillEmail = '', retur
     }
 
     return (
-        <AdminShell title={isEdit ? 'Edit enrollment' : 'Grant enrollment'}>
+        <AdminShell
+            title={isEdit ? 'Edit enrollment' : 'Grant enrollment'}
+            description={isEdit ? 'Update status or expiry for this course enrollment.' : 'Pick a member, then choose the course to grant.'}
+        >
             <Head title="Enrollment" />
             <form onSubmit={handleSubmit} className="card-surface max-w-xl space-y-4 p-6">
-                {error && <p className="text-sm text-red-300">{error}</p>}
-                <div>
-                    <label className="label-dark">User</label>
-                    <select className="input-dark" value={form.uid} onChange={(e) => setForm((p) => ({ ...p, uid: e.target.value }))} required disabled={isEdit}>
-                        <option value="">Select user</option>
-                        {users.map((user) => (
-                            <option key={user.uid} value={user.uid}>
-                                {user.name} ({user.email})
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {error && <p className="text-sm text-red-600 dark:text-red-300">{error}</p>}
+                <AdminUserPicker
+                    users={users}
+                    value={form.uid}
+                    onChange={(next) => setForm((p) => ({ ...p, uid: next }))}
+                    disabled={isEdit}
+                />
                 <div>
                     <label className="label-dark">Course</label>
-                    <select className="input-dark" value={form.courseId} onChange={(e) => setForm((p) => ({ ...p, courseId: e.target.value }))} required disabled={isEdit}>
+                    <select
+                        className="input-dark"
+                        value={form.courseId}
+                        onChange={(e) => setForm((p) => ({ ...p, courseId: e.target.value }))}
+                        required
+                        disabled={isEdit}
+                    >
                         <option value="">Select course</option>
                         {courses.map((course) => (
                             <option key={course.id} value={course.id}>
@@ -95,7 +112,11 @@ export default function EnrollmentForm({ uid, courseId, prefillEmail = '', retur
                 </div>
                 <div>
                     <label className="label-dark">Status</label>
-                    <select className="input-dark" value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}>
+                    <select
+                        className="input-dark"
+                        value={form.status}
+                        onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
+                    >
                         <option value="active">Active</option>
                         <option value="expired">Expired</option>
                         <option value="revoked">Revoked</option>
@@ -103,7 +124,12 @@ export default function EnrollmentForm({ uid, courseId, prefillEmail = '', retur
                 </div>
                 <div>
                     <label className="label-dark">Expires at</label>
-                    <input className="input-dark" type="date" value={form.expiresAt} onChange={(e) => setForm((p) => ({ ...p, expiresAt: e.target.value }))} />
+                    <input
+                        className="input-dark"
+                        type="date"
+                        value={form.expiresAt}
+                        onChange={(e) => setForm((p) => ({ ...p, expiresAt: e.target.value }))}
+                    />
                 </div>
                 <div className="flex gap-3">
                     <button type="submit" className="btn-primary" disabled={saving}>

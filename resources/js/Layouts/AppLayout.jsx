@@ -2,6 +2,18 @@ import ThemeToggle from '@/Components/ThemeToggle';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
+function pathOf() {
+    return typeof window !== 'undefined' ? window.location.pathname : '';
+}
+
+function isActive(href, exact = false) {
+    const path = pathOf();
+    if (exact) {
+        return path === href;
+    }
+    return path === href || path.startsWith(`${href}/`);
+}
+
 export default function AppLayout({ children }) {
     const { auth } = usePage().props;
     const user = auth?.user;
@@ -19,18 +31,16 @@ export default function AppLayout({ children }) {
                 </div>
                 {user && (
                     <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4 text-sm">
-                        <NavItem href="/dashboard" label="Mentorship" />
+                        <NavItem href="/dashboard" label="Mentorship" exact />
                         <NavItem href="/learn" label="Courses" />
                         <NavItem href="/books" label="Books" />
                         <NavItem href="/calculator" label="Calculator" />
                         {isAdmin && (
                             <>
                                 <p className="px-3 pb-2 pt-4 text-xs uppercase text-faint">Admin</p>
-                                <NavItem href="/dashboard/courses" label="Manage courses" />
-                                <NavItem href="/dashboard/books" label="Manage books" />
-                                <NavItem href="/dashboard/book-access" label="Book access" />
+                                <NavItem href="/dashboard/admin" label="Admin dashboard" />
                                 <NavItem href="/dashboard/inquiries" label="Inquiries" />
-                                <NavItem href="/dashboard/enrollments" label="Enrollments" />
+                                <NavItem href="/dashboard/courses" label="Manage courses" />
                                 <NavItem href="/dashboard/users" label="Users" />
                             </>
                         )}
@@ -74,12 +84,16 @@ export default function AppLayout({ children }) {
                 </header>
                 {mobileOpen && (
                     <nav className="space-y-1 border-b border-edge p-4 text-sm md:hidden">
-                        <NavItem href="/dashboard" label="Mentorship" onNavigate={() => setMobileOpen(false)} />
+                        <NavItem href="/dashboard" label="Mentorship" exact onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/learn" label="Courses" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/books" label="Books" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/calculator" label="Calculator" onNavigate={() => setMobileOpen(false)} />
                         {isAdmin && (
-                            <NavItem href="/dashboard/courses" label="Admin" onNavigate={() => setMobileOpen(false)} />
+                            <NavItem
+                                href="/dashboard/admin"
+                                label="Admin dashboard"
+                                onNavigate={() => setMobileOpen(false)}
+                            />
                         )}
                     </nav>
                 )}
@@ -89,8 +103,8 @@ export default function AppLayout({ children }) {
     );
 }
 
-function NavItem({ href, label, onNavigate }) {
-    const active = typeof window !== 'undefined' && window.location.pathname.startsWith(href);
+function NavItem({ href, label, onNavigate, exact = false }) {
+    const active = isActive(href, exact);
 
     return (
         <Link

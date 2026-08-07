@@ -119,6 +119,7 @@ export default function LandingAppSectionAdmin() {
     return (
         <AdminShell
             title="Landing app section"
+            description="Edit the mobile app download block shown on the public landing page."
             actions={
                 <Link href={route('home')} className="btn-secondary" target="_blank">
                     View landing page

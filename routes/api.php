@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\StatsController;
 use App\Http\Controllers\Api\Admin\BlogAccessController;
 use App\Http\Controllers\Api\Admin\BlogController;
 use App\Http\Controllers\Api\Admin\BookController;
@@ -38,6 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/stats', StatsController::class);
+
         Route::get('/courses', [CourseController::class, 'index']);
         Route::post('/courses', [CourseController::class, 'store']);
         Route::get('/courses/{id}', [CourseController::class, 'show']);

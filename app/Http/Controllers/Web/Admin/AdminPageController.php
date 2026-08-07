@@ -8,6 +8,11 @@ use Inertia\Inertia;
 
 class AdminPageController extends Controller
 {
+    public function dashboard()
+    {
+        return Inertia::render('Admin/Dashboard');
+    }
+
     public function coursesIndex()
     {
         return Inertia::render('Admin/Courses/Index');
@@ -53,6 +58,7 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/BookAccess/Form', [
             'uid' => null,
             'bookId' => $request->query('bookId'),
+            'prefillUid' => $request->query('uid'),
             'prefillEmail' => $request->query('email'),
             'returnTo' => $request->query('returnTo'),
         ]);
@@ -78,6 +84,7 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/Enrollments/Form', [
             'uid' => null,
             'courseId' => $request->query('courseId'),
+            'prefillUid' => $request->query('uid'),
             'prefillEmail' => $request->query('email'),
             'returnTo' => $request->query('returnTo'),
         ]);

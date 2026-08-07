@@ -43,6 +43,10 @@ export function formatDuration(seconds) {
 
 export { formatPrice } from '@/lib/format';
 
+export function fetchAdminStats() {
+    return adminFetch('/api/admin/stats');
+}
+
 export function fetchCourses() {
     return adminFetch('/api/admin/courses');
 }

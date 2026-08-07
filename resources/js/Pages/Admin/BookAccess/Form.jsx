@@ -1,4 +1,5 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import AdminUserPicker from '@/Components/Admin/AdminUserPicker';
 import {
     createBookPurchase,
     fetchBookPurchase,
@@ -9,12 +10,18 @@ import {
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-export default function BookAccessForm({ uid, bookId, prefillEmail = '', returnTo = null }) {
+export default function BookAccessForm({
+    uid,
+    bookId,
+    prefillUid = '',
+    prefillEmail = '',
+    returnTo = null,
+}) {
     const isEdit = Boolean(uid && bookId);
     const [users, setUsers] = useState([]);
     const [books, setBooks] = useState([]);
     const [form, setForm] = useState({
-        uid: uid || '',
+        uid: uid || prefillUid || '',
         bookId: bookId || '',
         status: 'active',
         source: 'admin',
@@ -28,8 +35,10 @@ export default function BookAccessForm({ uid, bookId, prefillEmail = '', returnT
             setUsers(userData.users);
             setBooks(bookData.books);
 
-            if (!isEdit && prefillEmail) {
-                const match = userData.users.find((user) => user.email.toLowerCase() === prefillEmail.toLowerCase());
+            if (!isEdit && !prefillUid && prefillEmail) {
+                const match = userData.users.find(
+                    (user) => user.email.toLowerCase() === prefillEmail.toLowerCase(),
+                );
                 if (match) {
                     setForm((prev) => ({ ...prev, uid: match.uid }));
                 }
@@ -47,7 +56,7 @@ export default function BookAccessForm({ uid, bookId, prefillEmail = '', returnT
                 });
             });
         }
-    }, [uid, bookId, isEdit, prefillEmail]);
+    }, [uid, bookId, isEdit, prefillUid, prefillEmail]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -68,27 +77,19 @@ export default function BookAccessForm({ uid, bookId, prefillEmail = '', returnT
     }
 
     return (
-        <AdminShell title={isEdit ? 'Edit book access' : 'Grant book access'}>
+        <AdminShell
+            title={isEdit ? 'Edit book access' : 'Grant book access'}
+            description={isEdit ? 'Update status or notes for this book grant.' : 'Pick a member, then choose the book to grant.'}
+        >
             <Head title="Book access" />
             <form onSubmit={handleSubmit} className="card-surface max-w-xl space-y-4 p-6">
-                {error && <p className="text-sm text-red-300">{error}</p>}
-                <div>
-                    <label className="label-dark">User</label>
-                    <select
-                        className="input-dark"
-                        value={form.uid}
-                        onChange={(e) => setForm((p) => ({ ...p, uid: e.target.value }))}
-                        required
-                        disabled={isEdit}
-                    >
-                        <option value="">Select user</option>
-                        {users.map((user) => (
-                            <option key={user.uid} value={user.uid}>
-                                {user.name} ({user.email})
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {error && <p className="text-sm text-red-600 dark:text-red-300">{error}</p>}
+                <AdminUserPicker
+                    users={users}
+                    value={form.uid}
+                    onChange={(next) => setForm((p) => ({ ...p, uid: next }))}
+                    disabled={isEdit}
+                />
                 <div>
                     <label className="label-dark">Book</label>
                     <select
@@ -141,7 +142,7 @@ export default function BookAccessForm({ uid, bookId, prefillEmail = '', returnT
                     <button type="submit" className="btn-primary" disabled={saving}>
                         {saving ? 'Saving…' : 'Save'}
                     </button>
-                    <Link href={route('admin.book-access.index')} className="btn-secondary">
+                    <Link href={returnTo || route('admin.book-access.index')} className="btn-secondary">
                         Cancel
                     </Link>
                 </div>

@@ -45,6 +45,7 @@ Route::middleware(['auth', 'app.access'])->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group(function () {
+    Route::get('/admin', [AdminPageController::class, 'dashboard'])->name('dashboard');
     Route::get('/courses', [AdminPageController::class, 'coursesIndex'])->name('courses.index');
     Route::get('/courses/new', [AdminPageController::class, 'coursesCreate'])->name('courses.create');
     Route::get('/courses/{id}', [AdminPageController::class, 'coursesShow'])->name('courses.show');
