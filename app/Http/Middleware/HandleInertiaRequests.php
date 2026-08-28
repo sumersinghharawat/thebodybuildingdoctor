@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\RecaptchaService;
 use App\Support\GeneralSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -40,6 +41,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'site' => fn () => GeneralSettings::get(),
+            'recaptcha' => fn () => app(RecaptchaService::class)->clientConfig(),
             'csrf_token' => fn () => csrf_token(),
         ];
     }

@@ -1,8 +1,9 @@
 import CourseCard from '@/Components/Marketing/CourseCard';
 import MarketingLayout from '@/Layouts/MarketingLayout';
 import { formatPrice } from '@/lib/format';
+import { executeRecaptcha } from '@/lib/recaptcha';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const MENTORSHIP_BENEFITS = [
     {
@@ -38,10 +39,12 @@ export default function Landing({
     siteName,
     appSection,
 }) {
-    const { site } = usePage().props;
+    const { site, recaptcha } = usePage().props;
     const currency = site?.currency || 'INR';
+    const recaptchaEnabled = Boolean(recaptcha?.enabled && recaptcha?.siteKey);
+    const [recaptchaError, setRecaptchaError] = useState(null);
 
-    const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
+    const { data, setData, transform, post, processing, errors, recentlySuccessful, reset } = useForm({
         name: '',
         email: '',
         phone: '',
@@ -49,11 +52,28 @@ export default function Landing({
         courseId: '',
         courseTitle: '',
         message: '',
+        recaptchaToken: '',
     });
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
-        post(route('inquiries.store'));
+        setRecaptchaError(null);
+
+        try {
+            if (recaptchaEnabled) {
+                const token = await executeRecaptcha(recaptcha.siteKey, 'inquiry');
+                transform((form) => ({ ...form, recaptchaToken: token }));
+            } else {
+                transform((form) => ({ ...form, recaptchaToken: '' }));
+            }
+
+            post(route('inquiries.store'), {
+                preserveScroll: true,
+                onSuccess: () => reset(),
+            });
+        } catch {
+            setRecaptchaError('Could not verify reCAPTCHA. Please refresh and try again.');
+        }
     };
 
     useEffect(() => {
@@ -340,11 +360,13 @@ export default function Landing({
                         {errors.email && <p className="text-xs text-red-400">{errors.email}</p>}
                         <input
                             className="input-dark w-full"
-                            placeholder="Phone (optional)"
+                            placeholder="Phone"
                             type="tel"
+                            required
                             value={data.phone}
                             onChange={(e) => setData('phone', e.target.value)}
                         />
+                        {errors.phone && <p className="text-xs text-red-400">{errors.phone}</p>}
                         <textarea
                             className="input-dark w-full"
                             placeholder="Message"
@@ -352,13 +374,40 @@ export default function Landing({
                             value={data.message}
                             onChange={(e) => setData('message', e.target.value)}
                         />
+                        {errors.message && <p className="text-xs text-red-400">{errors.message}</p>}
+                        {(recaptchaError || errors.recaptchaToken) && (
+                            <p className="text-xs text-red-400">{recaptchaError || errors.recaptchaToken}</p>
+                        )}
                         <button
                             type="submit"
                             disabled={processing}
                             className="w-full rounded-full bg-accent py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                         >
-                            Submit request
+                            {processing ? 'Submitting…' : 'Submit request'}
                         </button>
+                        {recaptchaEnabled && (
+                            <p className="text-center text-[11px] leading-relaxed text-faint">
+                                Protected by reCAPTCHA. Google{' '}
+                                <a
+                                    href="https://policies.google.com/privacy"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline hover:text-muted"
+                                >
+                                    Privacy Policy
+                                </a>{' '}
+                                and{' '}
+                                <a
+                                    href="https://policies.google.com/terms"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline hover:text-muted"
+                                >
+                                    Terms of Service
+                                </a>{' '}
+                                apply.
+                            </p>
+                        )}
                     </form>
                 </div>
             </section>

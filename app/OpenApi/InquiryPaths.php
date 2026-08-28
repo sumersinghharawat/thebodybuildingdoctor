@@ -11,10 +11,10 @@ class InquiryPaths
         operationId: 'inquiriesStore',
         summary: 'Submit a course or mentorship inquiry',
         tags: ['Inquiries'],
-        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(required: ['name', 'email', 'type'], properties: [
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(required: ['name', 'email', 'phone', 'type'], properties: [
             new OA\Property(property: 'name', type: 'string', maxLength: 120),
             new OA\Property(property: 'email', type: 'string', format: 'email'),
-            new OA\Property(property: 'phone', type: 'string', nullable: true),
+            new OA\Property(property: 'phone', type: 'string', maxLength: 40),
             new OA\Property(property: 'type', type: 'string', enum: ['mentorship', 'courses', 'both']),
             new OA\Property(property: 'courseId', type: 'string', nullable: true),
             new OA\Property(property: 'courseTitle', type: 'string', nullable: true),

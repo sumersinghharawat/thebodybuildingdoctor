@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Course;
+use App\Rules\Recaptcha;
 use App\Services\InquiryService;
 use App\Support\LandingAppSection;
 use Illuminate\Http\Request;
@@ -44,17 +45,18 @@ class LandingController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email'],
-            'phone' => ['nullable', 'string', 'max:40'],
+            'phone' => ['required', 'string', 'max:40'],
             'type' => ['required', 'in:mentorship,courses,both,books'],
             'courseId' => ['nullable', 'string'],
             'courseTitle' => ['nullable', 'string'],
             'message' => ['nullable', 'string', 'max:5000'],
+            'recaptchaToken' => ['nullable', 'string', new Recaptcha('inquiry')],
         ]);
 
         InquiryService::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
+            'phone' => $data['phone'],
             'type' => $data['type'],
             'courseId' => $data['courseId'] ?? null,
             'courseTitle' => $data['courseTitle'] ?? null,
