@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 function roleBucket(roles = []) {
     if (roles.some((r) => ['administrator', 'admin', 'lms_manager'].includes(r))) return 'admin';
-    if (roles.includes('media_channel')) return 'member';
+    if (roles.includes('media_channel') || roles.includes('subscriber')) return 'member';
     return 'other';
 }
 

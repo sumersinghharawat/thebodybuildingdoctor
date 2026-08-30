@@ -151,7 +151,7 @@ export async function createUser(body) {
             email: body.email,
             password: body.password,
             name: body.name || body.displayName,
-            roles: body.roles || (body.role ? [body.role] : ['media_channel']),
+            roles: body.roles || (body.role ? [body.role] : ['subscriber']),
         }),
     });
     return data.user;

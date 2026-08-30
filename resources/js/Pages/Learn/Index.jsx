@@ -3,7 +3,8 @@ import CourseRequestButton from '@/Components/CourseRequestButton';
 import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function LearnIndex({ enrolledCourses = [], browseCourses = [], isAdmin = false }) {
-    const { flash } = usePage().props;
+    const { flash, auth } = usePage().props;
+    const canBrowseCatalog = Boolean(auth?.user?.canBrowseCatalog);
 
     return (
         <AppLayout>
@@ -12,7 +13,9 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [], i
                 <header>
                     <h1 className="text-2xl font-bold">My courses</h1>
                     <p className="text-sm text-muted mt-1">
-                        Enrollment is managed by an administrator.
+                        {canBrowseCatalog
+                            ? 'Enrollment is managed by an administrator.'
+                            : 'Courses an administrator has granted you access to.'}
                     </p>
                 </header>
 
@@ -25,7 +28,11 @@ export default function LearnIndex({ enrolledCourses = [], browseCourses = [], i
                 <section className="space-y-4">
                     <h2 className="text-lg font-semibold">Continue learning</h2>
                     {enrolledCourses.length === 0 ? (
-                        <p className="text-muted text-sm">No enrollments yet.</p>
+                        <p className="text-muted text-sm">
+                            {canBrowseCatalog
+                                ? 'No enrollments yet.'
+                                : 'You do not have access to any courses yet.'}
+                        </p>
                     ) : (
                         <CourseGrid courses={enrolledCourses} isAdmin={isAdmin} />
                     )}

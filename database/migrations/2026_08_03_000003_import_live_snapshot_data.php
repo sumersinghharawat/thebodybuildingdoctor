@@ -24,6 +24,10 @@ return new class extends Migration
             return;
         }
 
+        if (app()->environment('testing') || Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $path = database_path('data/live_snapshot.sql');
 
         if (! File::exists($path)) {

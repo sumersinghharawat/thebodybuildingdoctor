@@ -14,7 +14,7 @@ class LessonAccessService
             return true;
         }
 
-        if ($lesson->free_preview) {
+        if ($lesson->free_preview && $user->canBrowseCatalog()) {
             return true;
         }
 

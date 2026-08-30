@@ -36,9 +36,13 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         if ($user->isAdmin()) {
             return redirect()->intended(route('admin.dashboard', absolute: false));
-        }else{
-            return redirect()->intended(route('dashboard', absolute: false));
         }
+
+        if (! $user->canAccessMentorship()) {
+            return redirect()->intended(route('learn.index', absolute: false));
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false));
 
     }
 

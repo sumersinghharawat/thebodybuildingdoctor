@@ -8,6 +8,8 @@ class Roles
 
     public const MEDIA_CHANNEL = ['media_channel'];
 
+    public const SUBSCRIBER = ['subscriber'];
+
     public static function parse(mixed $raw): array
     {
         if (! $raw) {
@@ -38,7 +40,22 @@ class Roles
         return self::isMediaChannel($roles) && ! self::isAdmin($roles);
     }
 
+    public static function isSubscriber(array $roles): bool
+    {
+        return (bool) array_intersect($roles, self::SUBSCRIBER);
+    }
+
     public static function hasAppAccess(array $roles): bool
+    {
+        return self::isAdmin($roles) || self::isMediaChannel($roles) || self::isSubscriber($roles);
+    }
+
+    public static function canBrowseCatalog(array $roles): bool
+    {
+        return self::isAdmin($roles) || self::isMediaChannel($roles);
+    }
+
+    public static function canAccessMentorship(array $roles): bool
     {
         return self::isAdmin($roles) || self::isMediaChannel($roles);
     }
@@ -51,6 +68,10 @@ class Roles
             }
         }
 
-        return self::isMediaChannel($roles) ? 'media_channel' : null;
+        if (self::isMediaChannel($roles)) {
+            return 'media_channel';
+        }
+
+        return self::isSubscriber($roles) ? 'subscriber' : null;
     }
 }

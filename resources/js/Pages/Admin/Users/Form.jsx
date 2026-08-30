@@ -3,7 +3,7 @@ import { createUser, fetchUser, updateUser } from '@/lib/admin-api';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-const ROLE_OPTIONS = ['administrator', 'lms_manager', 'media_channel'];
+const ROLE_OPTIONS = ['administrator', 'lms_manager', 'media_channel', 'subscriber'];
 
 export default function UserForm({ uid, prefill = {}, returnTo = null, afterCreate = null }) {
     const isEdit = Boolean(uid);
@@ -11,7 +11,7 @@ export default function UserForm({ uid, prefill = {}, returnTo = null, afterCrea
         name: prefill.name || '',
         email: prefill.email || '',
         password: '',
-        roles: ['media_channel'],
+        roles: ['subscriber'],
     });
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ export default function UserForm({ uid, prefill = {}, returnTo = null, afterCrea
                 name: user.name,
                 email: user.email,
                 password: '',
-                roles: user.roles || ['media_channel'],
+                roles: user.roles || ['subscriber'],
             });
         });
     }, [uid]);

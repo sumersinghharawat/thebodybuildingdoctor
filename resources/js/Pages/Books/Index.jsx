@@ -2,7 +2,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import { formatPrice } from '@/lib/format';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function BooksIndex({ books = [], paymentQrUrl = '', paymentInstructions = '' }) {
+export default function BooksIndex({ books = [], paymentQrUrl = '', paymentInstructions = '', canBrowseCatalog = true }) {
     const { site, flash } = usePage().props;
     const currency = site?.currency || 'INR';
 
@@ -13,7 +13,9 @@ export default function BooksIndex({ books = [], paymentQrUrl = '', paymentInstr
                 <header className="space-y-2">
                     <h1 className="text-2xl font-bold">Books</h1>
                     <p className="text-sm text-muted">
-                        Purchase via QR payment. After admin approval, read books only on this website.
+                        {canBrowseCatalog
+                            ? 'Purchase via QR payment. After admin approval, read books only on this website.'
+                            : 'Books an administrator has granted you access to.'}
                     </p>
                 </header>
 
@@ -48,7 +50,9 @@ export default function BooksIndex({ books = [], paymentQrUrl = '', paymentInstr
                 )}
 
                 {books.length === 0 ? (
-                    <p className="text-sm text-muted">No books published yet.</p>
+                    <p className="text-sm text-muted">
+                        {canBrowseCatalog ? 'No books published yet.' : 'You do not have access to any books yet.'}
+                    </p>
                 ) : (
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {books.map((book) => (

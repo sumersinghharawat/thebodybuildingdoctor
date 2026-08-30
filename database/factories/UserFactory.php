@@ -43,4 +43,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function subscriber(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'roles' => ['subscriber'],
+        ]);
+    }
 }

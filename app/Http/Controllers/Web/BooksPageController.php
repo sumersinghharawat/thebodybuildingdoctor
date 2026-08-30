@@ -34,12 +34,18 @@ class BooksPageController extends Controller
                 );
             });
 
+        if (! $user->canBrowseCatalog()) {
+            $books = $books->filter(fn (array $book) => $book['hasAccess'])->values();
+        }
+
         $settings = GeneralSettings::get();
+        $canBrowse = $user->canBrowseCatalog();
 
         return Inertia::render('Books/Index', [
             'books' => $books,
-            'paymentQrUrl' => $settings['paymentQrUrl'],
-            'paymentInstructions' => $settings['paymentInstructions'],
+            'canBrowseCatalog' => $canBrowse,
+            'paymentQrUrl' => $canBrowse ? $settings['paymentQrUrl'] : '',
+            'paymentInstructions' => $canBrowse ? $settings['paymentInstructions'] : '',
         ]);
     }
 
@@ -49,6 +55,8 @@ class BooksPageController extends Controller
         $user = $request->user();
         $status = $this->access->accessStatus($user, $book->id);
         $hasAccess = $status === 'active';
+
+        abort_unless($hasAccess || $user->canBrowseCatalog(), 404);
 
         return Inertia::render('Books/Show', [
             'book' => $book->toPublicArray(hasAccess: $hasAccess, accessStatus: $status),
@@ -62,6 +70,8 @@ class BooksPageController extends Controller
     {
         $book = Book::query()->where('published', true)->findOrFail($bookId);
         $user = $request->user();
+
+        abort_unless($user->canBrowseCatalog(), 403);
 
         if ($this->access->canRead($user, $book)) {
             return back()->with('error', 'You already have access to this book.');

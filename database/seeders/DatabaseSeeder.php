@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->seedDevUser('admin@thebodybuildingdoctor.test', 'Administrator', ['administrator']);
         $this->seedDevUser('member@thebodybuildingdoctor.test', 'Media Channel Member', ['media_channel']);
+        $this->seedDevUser('subscriber@thebodybuildingdoctor.test', 'Subscriber', ['subscriber']);
 
         $this->call(AppContentSeeder::class);
     }

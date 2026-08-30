@@ -16,7 +16,7 @@ function initials(name = '') {
 
 function hasAppAccess(roles = []) {
     return roles.some((r) =>
-        ['administrator', 'admin', 'lms_manager', 'media_channel'].includes(r),
+        ['administrator', 'admin', 'lms_manager', 'media_channel', 'subscriber'].includes(r),
     );
 }
 
@@ -26,6 +26,9 @@ function roleLabel(roles = []) {
     }
     if (roles.includes('media_channel')) {
         return 'Member';
+    }
+    if (roles.includes('subscriber')) {
+        return 'Subscriber';
     }
     return roles[0] || 'Member';
 }

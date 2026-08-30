@@ -17,6 +17,8 @@ class CourseRequestController extends Controller
         $course = Course::query()->where('published', true)->findOrFail($courseId);
         $user = $request->user();
 
+        abort_unless($user->canBrowseCatalog(), 403);
+
         if ($this->access->isEnrolled($user, $courseId)) {
             return back()->with('error', 'You are already enrolled in this course.');
         }

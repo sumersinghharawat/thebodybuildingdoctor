@@ -14,6 +14,10 @@ class DashboardController extends Controller
         $user = auth()->user();
         $roles = $user->roleList();
 
+        if (! Roles::canAccessMentorship($roles)) {
+            return redirect()->route('learn.index');
+        }
+
         $mentorship = Blog::query()
             ->where('published', true)
             ->orderBy('sort_order')

@@ -131,10 +131,12 @@ class BlogAccessController extends Controller
 
         // Keep admin accounts intact; only remove the member mentorship role.
         if (Roles::isMediaChannel($roles) && ! Roles::isAdmin($roles)) {
-            $user->roles = array_values(array_filter(
+            $remaining = array_values(array_filter(
                 $roles,
                 fn (string $role) => $role !== 'media_channel',
             ));
+
+            $user->roles = Roles::hasAppAccess($remaining) ? $remaining : ['subscriber'];
             $user->save();
         }
     }

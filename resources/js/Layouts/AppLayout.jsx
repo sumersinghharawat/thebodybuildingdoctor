@@ -19,6 +19,7 @@ export default function AppLayout({ children }) {
     const user = auth?.user;
     const [mobileOpen, setMobileOpen] = useState(false);
     const isAdmin = user?.roles?.some((r) => ['administrator', 'admin', 'lms_manager'].includes(r));
+    const canAccessMentorship = Boolean(user?.canAccessMentorship);
 
     return (
         <div className="flex min-h-screen bg-background text-foreground">
@@ -31,7 +32,7 @@ export default function AppLayout({ children }) {
                 </div>
                 {user && (
                     <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4 text-sm">
-                        <NavItem href="/dashboard" label="Mentorship" exact />
+                        {canAccessMentorship && <NavItem href="/dashboard" label="Mentorship" exact />}
                         <NavItem href="/learn" label="Courses" />
                         <NavItem href="/books" label="Books" />
                         <NavItem href="/calculator" label="Calculator" />
@@ -68,7 +69,7 @@ export default function AppLayout({ children }) {
 
             <div className="flex min-w-0 flex-1 flex-col">
                 <header className="flex items-center justify-between border-b border-edge px-4 py-3 md:hidden">
-                    <Link href="/dashboard" className="font-semibold">
+                    <Link href={user?.canAccessMentorship ? '/dashboard' : '/learn'} className="font-semibold">
                         {import.meta.env.VITE_APP_NAME || 'TBBD'}
                     </Link>
                     <div className="flex items-center gap-2">
@@ -84,7 +85,9 @@ export default function AppLayout({ children }) {
                 </header>
                 {mobileOpen && (
                     <nav className="space-y-1 border-b border-edge p-4 text-sm md:hidden">
-                        <NavItem href="/dashboard" label="Mentorship" exact onNavigate={() => setMobileOpen(false)} />
+                        {canAccessMentorship && (
+                            <NavItem href="/dashboard" label="Mentorship" exact onNavigate={() => setMobileOpen(false)} />
+                        )}
                         <NavItem href="/learn" label="Courses" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/books" label="Books" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/calculator" label="Calculator" onNavigate={() => setMobileOpen(false)} />

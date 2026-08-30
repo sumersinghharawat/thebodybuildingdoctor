@@ -30,15 +30,18 @@ class LearnController extends Controller
             ->get()
             ->map->toPublicArray();
 
-        $browseQuery = Course::query()
-            ->whereNotIn('id', $enrolledIds)
-            ->orderBy('sort_order');
+        $browse = [];
+        if ($user->canBrowseCatalog()) {
+            $browseQuery = Course::query()
+                ->whereNotIn('id', $enrolledIds)
+                ->orderBy('sort_order');
 
-        if (! $user->isAdmin()) {
-            $browseQuery->where('published', true);
+            if (! $user->isAdmin()) {
+                $browseQuery->where('published', true);
+            }
+
+            $browse = $browseQuery->get()->map->toPublicArray();
         }
-
-        $browse = $browseQuery->get()->map->toPublicArray();
 
         return response()->json([
             'enrolledCourses' => $enrolled,
@@ -54,6 +57,8 @@ class LearnController extends Controller
             ->when(! $user->isAdmin(), fn ($query) => $query->where('published', true))
             ->findOrFail($courseId);
         $enrolled = $this->access->isEnrolled($user, $courseId);
+
+        abort_unless($enrolled || $user->canBrowseCatalog(), 404);
 
         $lessons = $course->lessons->map(function (Lesson $lesson) use ($enrolled) {
             $row = $lesson->toLearnerArray(false);
@@ -71,9 +76,13 @@ class LearnController extends Controller
 
     public function coursePlayback(Request $request, string $courseId)
     {
+        $user = $request->user();
         $course = Course::query()
-            ->when(! $request->user()?->isAdmin(), fn ($query) => $query->where('published', true))
+            ->when(! $user?->isAdmin(), fn ($query) => $query->where('published', true))
             ->findOrFail($courseId);
+
+        abort_unless($this->access->isEnrolled($user, $courseId) || $user->canBrowseCatalog(), 403);
+
         $streamPath = URL::to("/api/learn/courses/{$courseId}/lessons/placeholder/stream");
         $playback = PlaybackService::resolve($course->video_url, $streamPath);
 
@@ -86,6 +95,8 @@ class LearnController extends Controller
 
     public function mentorshipPlayback(Request $request, string $id)
     {
+        abort_unless($request->user()?->canAccessMentorship(), 403);
+
         $mentorship = Blog::query()->where('published', true)->findOrFail($id);
         $playback = PlaybackService::resolve($mentorship->video_url, '');
 
@@ -174,6 +185,8 @@ class LearnController extends Controller
 
     public function mentorship(Request $request)
     {
+        abort_unless($request->user()?->canAccessMentorship(), 403);
+
         $mentorship = Blog::query()
             ->where('published', true)
             ->orderBy('sort_order')

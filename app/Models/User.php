@@ -59,6 +59,16 @@ class User extends Authenticatable implements PasskeyUser
         return Roles::isAdmin($this->roleList());
     }
 
+    public function canBrowseCatalog(): bool
+    {
+        return Roles::canBrowseCatalog($this->roleList());
+    }
+
+    public function canAccessMentorship(): bool
+    {
+        return Roles::canAccessMentorship($this->roleList());
+    }
+
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class);
@@ -76,6 +86,8 @@ class User extends Authenticatable implements PasskeyUser
             'username' => $this->email,
             'roles' => $roles,
             'role' => Roles::primary($roles),
+            'canBrowseCatalog' => Roles::canBrowseCatalog($roles),
+            'canAccessMentorship' => Roles::canAccessMentorship($roles),
         ];
     }
 }
