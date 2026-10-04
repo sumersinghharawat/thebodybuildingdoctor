@@ -28,6 +28,16 @@ class SupportTicketNotificationService
 
     public static function notifyUser(SupportTicket $ticket, SupportTicketReply $reply): void
     {
-        Mail::to($ticket->email)->queue(new SupportTicketReplyMail($ticket, $reply));
+        $email = trim((string) $ticket->email);
+
+        if ($email === '' || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Log::warning('Support ticket reply was not queued because the ticket has no valid address.', [
+                'ticket_id' => $ticket->id,
+            ]);
+
+            return;
+        }
+
+        Mail::to($email)->queue(new SupportTicketReplyMail($ticket, $reply));
     }
 }

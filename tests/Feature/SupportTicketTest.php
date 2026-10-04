@@ -95,6 +95,57 @@ class SupportTicketTest extends TestCase
         Mail::assertQueued(SupportTicketReplyMail::class);
     }
 
+    public function test_reply_email_is_stored_in_the_jobs_table(): void
+    {
+        config(['queue.default' => 'database']);
+
+        $admin = User::factory()->create([
+            'roles' => ['administrator'],
+        ]);
+
+        $this->post(route('support.store'), [
+            'name' => 'Alex Member',
+            'email' => 'alex@example.com',
+            'subject' => 'Cannot login',
+            'message' => 'Password reset never arrives.',
+        ])->assertRedirect();
+
+        $this->assertDatabaseCount('jobs', 1);
+        $this->assertStringContainsString(
+            'SupportTicketReceivedMail',
+            (string) \Illuminate\Support\Facades\DB::table('jobs')->value('payload'),
+        );
+
+        $ticket = SupportTicket::query()->firstOrFail();
+
+        $this->actingAs($admin)
+            ->post(route('admin.support.reply', $ticket->id), [
+                'body' => 'Please check your spam folder, then try again.',
+                'status' => 'resolved',
+            ])
+            ->assertRedirect();
+
+        $payloads = \Illuminate\Support\Facades\DB::table('jobs')->pluck('payload')->implode(' ');
+        $this->assertDatabaseCount('jobs', 2);
+        $this->assertStringContainsString('SupportTicketReplyMail', $payloads);
+
+        $this->artisan('queue:work', [
+            '--stop-when-empty' => true,
+            '--tries' => 1,
+        ])->assertSuccessful();
+
+        $this->assertDatabaseCount('jobs', 0);
+    }
+
+    public function test_scheduler_lists_the_queue_worker(): void
+    {
+        config(['queue.default' => 'database']);
+
+        $this->artisan('schedule:list')
+            ->expectsOutputToContain('queue:work')
+            ->assertSuccessful();
+    }
+
     public function test_member_cannot_open_admin_support_inbox(): void
     {
         $member = User::factory()->create([
