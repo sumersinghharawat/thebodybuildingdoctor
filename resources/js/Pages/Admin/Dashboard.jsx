@@ -54,6 +54,12 @@ export default function AdminDashboard() {
                             accent
                         />
                         <StatCard
+                            label="Open support tickets"
+                            value={stats.supportTicketsOpen}
+                            hint={`${stats.supportTickets || 0} total`}
+                            href={route('admin.support.index')}
+                        />
+                        <StatCard
                             label="Pending book access"
                             value={stats.bookPurchasesPending}
                             hint={`${stats.bookPurchasesActive} active`}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AdminPageController;
+use App\Http\Controllers\Web\Admin\SupportTicketAdminController;
 use App\Http\Controllers\Web\BooksPageController;
 use App\Http\Controllers\Web\CalculatorPageController;
 use App\Http\Controllers\Web\DashboardController;
@@ -10,12 +11,15 @@ use App\Http\Controllers\Web\CoursesPageController;
 use App\Http\Controllers\Web\LandingController;
 use App\Http\Controllers\Web\LearnPageController;
 use App\Http\Controllers\Web\MentorshipPageController;
+use App\Http\Controllers\Web\SupportPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
 Route::get('/download/android', App\Http\Controllers\Web\AppDownloadController::class)->name('app.download');
 Route::get('/courses', CoursesPageController::class)->name('courses.index');
 Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inquiries.store');
+Route::get('/support', [SupportPageController::class, 'create'])->name('support.create');
+Route::post('/support', [SupportPageController::class, 'store'])->name('support.store');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/calculator', CalculatorPageController::class)->name('calculator');
@@ -60,6 +64,11 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group
     Route::get('/book-access/{uid}/{bookId}', [AdminPageController::class, 'bookAccessEdit'])->name('book-access.edit');
 
     Route::get('/inquiries', [AdminPageController::class, 'inquiriesIndex'])->name('inquiries.index');
+
+    Route::get('/support', [SupportTicketAdminController::class, 'index'])->name('support.index');
+    Route::get('/support/{id}', [SupportTicketAdminController::class, 'show'])->name('support.show');
+    Route::patch('/support/{id}', [SupportTicketAdminController::class, 'update'])->name('support.update');
+    Route::post('/support/{id}/replies', [SupportTicketAdminController::class, 'reply'])->name('support.reply');
 
     Route::get('/enrollments', [AdminPageController::class, 'enrollmentsIndex'])->name('enrollments.index');
     Route::get('/enrollments/new', [AdminPageController::class, 'enrollmentsCreate'])->name('enrollments.create');

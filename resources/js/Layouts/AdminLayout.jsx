@@ -9,7 +9,10 @@ const NAV_GROUPS = [
     },
     {
         label: 'Inbox',
-        items: [{ href: '/dashboard/inquiries', label: 'Inquiries' }],
+        items: [
+            { href: '/dashboard/inquiries', label: 'Inquiries' },
+            { href: '/dashboard/support', label: 'Support tickets' },
+        ],
     },
     {
         label: 'Content',

@@ -36,11 +36,13 @@ export default function AppLayout({ children }) {
                         <NavItem href="/learn" label="Courses" />
                         <NavItem href="/books" label="Books" />
                         <NavItem href="/calculator" label="Calculator" />
+                        <NavItem href="/support" label="Technical support" />
                         {isAdmin && (
                             <>
                                 <p className="px-3 pb-2 pt-4 text-xs uppercase text-faint">Admin</p>
                                 <NavItem href="/dashboard/admin" label="Admin dashboard" />
                                 <NavItem href="/dashboard/inquiries" label="Inquiries" />
+                                <NavItem href="/dashboard/support" label="Support tickets" />
                                 <NavItem href="/dashboard/courses" label="Manage courses" />
                                 <NavItem href="/dashboard/users" label="Users" />
                             </>
@@ -91,6 +93,7 @@ export default function AppLayout({ children }) {
                         <NavItem href="/learn" label="Courses" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/books" label="Books" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/calculator" label="Calculator" onNavigate={() => setMobileOpen(false)} />
+                        <NavItem href="/support" label="Technical support" onNavigate={() => setMobileOpen(false)} />
                         {isAdmin && (
                             <NavItem
                                 href="/dashboard/admin"

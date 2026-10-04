@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Inquiry;
 use App\Models\Lesson;
+use App\Models\SupportTicket;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,11 @@ class StatsController extends Controller
     public function __invoke()
     {
         $inquiryStatuses = Inquiry::query()
+            ->select('status', DB::raw('count(*) as aggregate'))
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
+        $supportStatuses = SupportTicket::query()
             ->select('status', DB::raw('count(*) as aggregate'))
             ->groupBy('status')
             ->pluck('aggregate', 'status');
@@ -64,6 +70,9 @@ class StatsController extends Controller
                 'inquiriesNew' => (int) ($inquiryStatuses['new'] ?? 0),
                 'inquiriesContacted' => (int) ($inquiryStatuses['contacted'] ?? 0),
                 'inquiriesClosed' => (int) ($inquiryStatuses['closed'] ?? 0),
+                'supportTickets' => SupportTicket::query()->count(),
+                'supportTicketsOpen' => (int) ($supportStatuses['open'] ?? 0),
+                'supportTicketsInProgress' => (int) ($supportStatuses['in_progress'] ?? 0),
             ],
             'recentInquiries' => $recentInquiries,
         ]);

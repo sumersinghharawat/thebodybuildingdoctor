@@ -29,6 +29,9 @@ export default function MarketingLayout({ children, showAppLink = true }) {
                         <a href={`${home}#apply`} className="text-muted hover:text-foreground">
                             Apply
                         </a>
+                        <Link href={route('support.create')} className="text-muted hover:text-foreground">
+                            Technical support
+                        </Link>
                         <ThemeToggle />
                         <Link
                             href={route('login')}
@@ -38,6 +41,9 @@ export default function MarketingLayout({ children, showAppLink = true }) {
                         </Link>
                     </nav>
                     <div className="flex items-center gap-2 sm:hidden">
+                        <Link href={route('support.create')} className="text-sm text-muted">
+                            Support
+                        </Link>
                         <ThemeToggle />
                         <Link
                             href={route('login')}
