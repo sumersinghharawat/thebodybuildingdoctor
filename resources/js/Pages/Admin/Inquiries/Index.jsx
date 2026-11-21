@@ -34,16 +34,41 @@ function bookAccessUrl(inquiry) {
     return `${route('admin.book-access.create')}?${params}`;
 }
 
+function vaultAccessUrl(inquiry) {
+    const params = new URLSearchParams();
+    if (inquiry.email) params.set('email', inquiry.email);
+    if (inquiry.courseId) params.set('videoId', inquiry.courseId);
+    params.set('returnTo', route('admin.inquiries.index'));
+    return `${route('admin.vault-access.create')}?${params}`;
+}
+
+function inquiryLabel(type) {
+    if (type === 'books') return 'Book';
+    if (type === 'vault') return 'Vault video';
+    if (type === 'mentorship') return 'Mentorship';
+    return 'Course';
+}
+
 function createUserUrl(inquiry) {
     const params = new URLSearchParams();
     if (inquiry.email) params.set('email', inquiry.email);
     if (inquiry.name) params.set('name', inquiry.name);
     params.set('returnTo', route('admin.inquiries.index'));
 
-    const enrollParams = new URLSearchParams();
-    if (inquiry.email) enrollParams.set('email', inquiry.email);
-    if (inquiry.courseId) enrollParams.set('courseId', inquiry.courseId);
-    params.set('afterCreate', `${route('admin.enrollments.create')}?${enrollParams}`);
+    const next = new URLSearchParams();
+    if (inquiry.email) next.set('email', inquiry.email);
+    next.set('returnTo', route('admin.inquiries.index'));
+
+    if (inquiry.type === 'vault') {
+        if (inquiry.courseId) next.set('videoId', inquiry.courseId);
+        params.set('afterCreate', `${route('admin.vault-access.create')}?${next}`);
+    } else if (inquiry.type === 'books') {
+        if (inquiry.courseId) next.set('bookId', inquiry.courseId);
+        params.set('afterCreate', `${route('admin.book-access.create')}?${next}`);
+    } else {
+        if (inquiry.courseId) next.set('courseId', inquiry.courseId);
+        params.set('afterCreate', `${route('admin.enrollments.create')}?${next}`);
+    }
 
     return `${route('admin.users.create')}?${params}`;
 }
@@ -123,7 +148,7 @@ export default function InquiriesIndex() {
                                                 <StatusBadge status={inquiry.status} />
                                                 {inquiry.type && (
                                                     <span className="pill normal-case tracking-normal">
-                                                        {inquiry.type === 'books' ? 'Book' : 'Course'}
+                                                        {inquiryLabel(inquiry.type)}
                                                     </span>
                                                 )}
                                             </div>
@@ -147,7 +172,7 @@ export default function InquiriesIndex() {
                                     {inquiry.message && <p className="text-sm text-muted">{inquiry.message}</p>}
                                     {inquiry.courseTitle && (
                                         <p className="text-xs text-faint">
-                                            {inquiry.type === 'books' ? 'Book' : 'Course'}: {inquiry.courseTitle}
+                                            {inquiryLabel(inquiry.type)}: {inquiry.courseTitle}
                                         </p>
                                     )}
                                     <div className="flex flex-wrap gap-2 pt-1">
@@ -157,6 +182,10 @@ export default function InquiriesIndex() {
                                         {inquiry.type === 'books' ? (
                                             <Link href={bookAccessUrl(inquiry)} className="btn-primary text-sm">
                                                 Grant book access
+                                            </Link>
+                                        ) : inquiry.type === 'vault' ? (
+                                            <Link href={vaultAccessUrl(inquiry)} className="btn-primary text-sm">
+                                                Grant vault access
                                             </Link>
                                         ) : (
                                             <Link href={enrollUrl(inquiry)} className="btn-primary text-sm">

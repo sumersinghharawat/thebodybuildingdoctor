@@ -18,6 +18,7 @@ const NAV_GROUPS = [
         label: 'Content',
         items: [
             { href: '/dashboard/courses', label: 'Courses' },
+            { href: '/dashboard/vault', label: 'Vault videos' },
             { href: '/dashboard/books', label: 'Books' },
             { href: '/dashboard/mentorship', label: 'Mentorship' },
         ],
@@ -26,6 +27,7 @@ const NAV_GROUPS = [
         label: 'Access',
         items: [
             { href: '/dashboard/enrollments', label: 'Enrollments' },
+            { href: '/dashboard/vault-access', label: 'Vault access' },
             { href: '/dashboard/book-access', label: 'Book access' },
             { href: '/dashboard/mentorship-access', label: 'Mentorship access' },
         ],

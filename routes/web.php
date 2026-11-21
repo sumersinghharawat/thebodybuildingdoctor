@@ -12,9 +12,12 @@ use App\Http\Controllers\Web\LandingController;
 use App\Http\Controllers\Web\LearnPageController;
 use App\Http\Controllers\Web\MentorshipPageController;
 use App\Http\Controllers\Web\SupportPageController;
+use App\Http\Controllers\Web\VaultPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
+Route::get('/vault/{id}/purchase', [VaultPageController::class, 'purchaseIntent'])->name('vault.purchase');
+Route::get('/vault/{id}', [VaultPageController::class, 'show'])->name('vault.show');
 Route::get('/download/android', App\Http\Controllers\Web\AppDownloadController::class)->name('app.download');
 Route::get('/courses', CoursesPageController::class)->name('courses.index');
 Route::post('/inquiries', [LandingController::class, 'storeInquiry'])->name('inquiries.store');
@@ -41,6 +44,9 @@ Route::middleware(['auth', 'app.access'])->group(function () {
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}/playback', [LearnPageController::class, 'lessonPlayback'])->name('learn.lessons.playback');
     Route::get('/learn/courses/{courseId}/lessons/{lessonId}/embed/{slot}/playback', [LearnPageController::class, 'lessonEmbedPlayback'])->name('learn.lessons.embed.playback');
 
+    Route::get('/vault', [VaultPageController::class, 'index'])->name('vault.index');
+    Route::post('/vault/{id}/request', [VaultPageController::class, 'requestAccess'])->name('vault.request');
+
     Route::get('/books', [BooksPageController::class, 'index'])->name('books.index');
     Route::get('/books/{bookId}', [BooksPageController::class, 'show'])->name('books.show');
     Route::post('/books/{bookId}/request', [BooksPageController::class, 'requestAccess'])->name('books.request');
@@ -54,6 +60,14 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->name('admin.')->group
     Route::get('/courses/new', [AdminPageController::class, 'coursesCreate'])->name('courses.create');
     Route::get('/courses/{id}', [AdminPageController::class, 'coursesShow'])->name('courses.show');
     Route::get('/courses/{id}/edit', [AdminPageController::class, 'coursesEdit'])->name('courses.edit');
+
+    Route::get('/vault', [AdminPageController::class, 'vaultIndex'])->name('vault.index');
+    Route::get('/vault/new', [AdminPageController::class, 'vaultCreate'])->name('vault.create');
+    Route::get('/vault/{id}/edit', [AdminPageController::class, 'vaultEdit'])->name('vault.edit');
+
+    Route::get('/vault-access', [AdminPageController::class, 'vaultAccessIndex'])->name('vault-access.index');
+    Route::get('/vault-access/new', [AdminPageController::class, 'vaultAccessCreate'])->name('vault-access.create');
+    Route::get('/vault-access/{uid}/{videoId}', [AdminPageController::class, 'vaultAccessEdit'])->name('vault-access.edit');
 
     Route::get('/books', [AdminPageController::class, 'booksIndex'])->name('books.index');
     Route::get('/books/new', [AdminPageController::class, 'booksCreate'])->name('books.create');

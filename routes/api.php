@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\Admin\LessonController;
 use App\Http\Controllers\Api\Admin\SiteSettingsController;
 use App\Http\Controllers\Api\Admin\UploadController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\VaultPurchaseController;
+use App\Http\Controllers\Api\Admin\VaultVideoController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InquiryController;
 use App\Http\Controllers\Api\LearnController;
@@ -63,6 +65,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/books/{id}', [BookController::class, 'show']);
         Route::patch('/books/{id}', [BookController::class, 'update']);
         Route::delete('/books/{id}', [BookController::class, 'destroy']);
+
+        Route::get('/vault-videos', [VaultVideoController::class, 'index']);
+        Route::post('/vault-videos', [VaultVideoController::class, 'store']);
+        Route::get('/vault-videos/{id}', [VaultVideoController::class, 'show']);
+        Route::patch('/vault-videos/{id}', [VaultVideoController::class, 'update']);
+        Route::delete('/vault-videos/{id}', [VaultVideoController::class, 'destroy']);
+
+        Route::get('/vault-purchases', [VaultPurchaseController::class, 'index']);
+        Route::post('/vault-purchases', [VaultPurchaseController::class, 'store']);
+        Route::get('/vault-purchases/{uid}/{videoId}', [VaultPurchaseController::class, 'show']);
+        Route::patch('/vault-purchases/{uid}/{videoId}', [VaultPurchaseController::class, 'update']);
+        Route::delete('/vault-purchases/{uid}/{videoId}', [VaultPurchaseController::class, 'destroy']);
 
         Route::get('/book-purchases', [BookPurchaseController::class, 'index']);
         Route::post('/book-purchases', [BookPurchaseController::class, 'store']);

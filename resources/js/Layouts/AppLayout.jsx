@@ -34,6 +34,7 @@ export default function AppLayout({ children }) {
                     <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4 text-sm">
                         {canAccessMentorship && <NavItem href="/dashboard" label="Mentorship" exact />}
                         <NavItem href="/learn" label="Courses" />
+                        <NavItem href="/vault" label="Vault" />
                         <NavItem href="/books" label="Books" />
                         <NavItem href="/calculator" label="Calculator" />
                         <NavItem href="/support" label="Technical support" />
@@ -91,6 +92,7 @@ export default function AppLayout({ children }) {
                             <NavItem href="/dashboard" label="Mentorship" exact onNavigate={() => setMobileOpen(false)} />
                         )}
                         <NavItem href="/learn" label="Courses" onNavigate={() => setMobileOpen(false)} />
+                        <NavItem href="/vault" label="Vault" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/books" label="Books" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/calculator" label="Calculator" onNavigate={() => setMobileOpen(false)} />
                         <NavItem href="/support" label="Technical support" onNavigate={() => setMobileOpen(false)} />

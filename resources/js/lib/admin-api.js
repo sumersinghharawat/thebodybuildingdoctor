@@ -324,6 +324,67 @@ export function deleteBookPurchase(uid, bookId) {
     });
 }
 
+export function fetchVaultVideos() {
+    return adminFetch('/api/admin/vault-videos');
+}
+
+export async function fetchVaultVideo(id) {
+    const data = await adminFetch(`/api/admin/vault-videos/${id}`);
+    return data.video;
+}
+
+export async function createVaultVideo(body) {
+    const data = await adminFetch('/api/admin/vault-videos', {
+        method: 'POST',
+        body: JSON.stringify(body),
+    });
+    return data.video;
+}
+
+export function updateVaultVideo(id, body) {
+    return adminFetch(`/api/admin/vault-videos/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    }).then((data) => data.video);
+}
+
+export function deleteVaultVideo(id) {
+    return adminFetch(`/api/admin/vault-videos/${id}`, { method: 'DELETE' });
+}
+
+export function fetchVaultPurchases(params = {}) {
+    const search = new URLSearchParams();
+    if (params.uid) search.set('uid', params.uid);
+    if (params.videoId) search.set('videoId', params.videoId);
+    if (params.status) search.set('status', params.status);
+    const qs = search.toString();
+    return adminFetch(`/api/admin/vault-purchases${qs ? `?${qs}` : ''}`);
+}
+
+export function fetchVaultPurchase(uid, videoId) {
+    return adminFetch(`/api/admin/vault-purchases/${encodeURIComponent(uid)}/${encodeURIComponent(videoId)}`);
+}
+
+export function createVaultPurchase(body) {
+    return adminFetch('/api/admin/vault-purchases', {
+        method: 'POST',
+        body: JSON.stringify(body),
+    });
+}
+
+export function updateVaultPurchase(uid, videoId, body) {
+    return adminFetch(`/api/admin/vault-purchases/${encodeURIComponent(uid)}/${encodeURIComponent(videoId)}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    });
+}
+
+export function deleteVaultPurchase(uid, videoId) {
+    return adminFetch(`/api/admin/vault-purchases/${encodeURIComponent(uid)}/${encodeURIComponent(videoId)}`, {
+        method: 'DELETE',
+    });
+}
+
 export async function uploadPdf(file, folder) {
     const form = new FormData();
     form.append('file', file);

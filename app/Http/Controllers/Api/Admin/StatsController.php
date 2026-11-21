@@ -13,6 +13,8 @@ use App\Models\Inquiry;
 use App\Models\Lesson;
 use App\Models\SupportTicket;
 use App\Models\User;
+use App\Models\VaultPurchase;
+use App\Models\VaultVideo;
 use Illuminate\Support\Facades\DB;
 
 class StatsController extends Controller
@@ -25,6 +27,11 @@ class StatsController extends Controller
             ->pluck('aggregate', 'status');
 
         $supportStatuses = SupportTicket::query()
+            ->select('status', DB::raw('count(*) as aggregate'))
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
+        $vaultPurchaseStatuses = VaultPurchase::query()
             ->select('status', DB::raw('count(*) as aggregate'))
             ->groupBy('status')
             ->pluck('aggregate', 'status');
@@ -52,6 +59,12 @@ class StatsController extends Controller
                 'coursesPublished' => Course::query()->where('published', true)->count(),
                 'coursesDraft' => Course::query()->where('published', false)->count(),
                 'lessons' => Lesson::query()->count(),
+                'vaultVideos' => VaultVideo::query()->count(),
+                'vaultVideosPublished' => VaultVideo::query()->where('published', true)->count(),
+                'vaultVideosDraft' => VaultVideo::query()->where('published', false)->count(),
+                'vaultPurchases' => VaultPurchase::query()->count(),
+                'vaultPurchasesPending' => (int) ($vaultPurchaseStatuses['pending'] ?? 0),
+                'vaultPurchasesActive' => (int) ($vaultPurchaseStatuses['active'] ?? 0),
                 'books' => Book::query()->count(),
                 'booksPublished' => Book::query()->where('published', true)->count(),
                 'booksDraft' => Book::query()->where('published', false)->count(),

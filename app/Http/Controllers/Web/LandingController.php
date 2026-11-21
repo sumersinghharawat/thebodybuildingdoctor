@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Course;
+use App\Models\VaultVideo;
 use App\Rules\Recaptcha;
 use App\Services\InquiryService;
 use App\Support\LandingAppSection;
@@ -23,6 +24,13 @@ class LandingController extends Controller
             ->get()
             ->map->toPublicArray();
 
+        $vaultQuery = VaultVideo::query()->where('published', true)->orderBy('sort_order')->orderBy('title');
+        $totalVaultCount = (clone $vaultQuery)->count();
+        $vaultVideos = $vaultQuery
+            ->limit(6)
+            ->get()
+            ->map(fn (VaultVideo $video) => $video->toPublicArray());
+
         $books = Book::query()
             ->where('published', true)
             ->orderBy('sort_order')
@@ -34,6 +42,8 @@ class LandingController extends Controller
         return Inertia::render('Landing', [
             'courses' => $courses,
             'totalCourseCount' => $totalCourseCount,
+            'vaultVideos' => $vaultVideos,
+            'totalVaultCount' => $totalVaultCount,
             'books' => $books,
             'siteName' => config('app.name', 'The Bodybuilding Doctor'),
             'appSection' => LandingAppSection::get(),

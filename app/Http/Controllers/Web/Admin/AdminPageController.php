@@ -33,6 +33,42 @@ class AdminPageController extends Controller
         return Inertia::render('Admin/Courses/Show', ['courseId' => $id]);
     }
 
+    public function vaultIndex()
+    {
+        return Inertia::render('Admin/Vault/Index');
+    }
+
+    public function vaultCreate()
+    {
+        return Inertia::render('Admin/Vault/Form', ['videoId' => null]);
+    }
+
+    public function vaultEdit(string $id)
+    {
+        return Inertia::render('Admin/Vault/Form', ['videoId' => $id]);
+    }
+
+    public function vaultAccessIndex()
+    {
+        return Inertia::render('Admin/VaultAccess/Index');
+    }
+
+    public function vaultAccessCreate(Request $request)
+    {
+        return Inertia::render('Admin/VaultAccess/Form', [
+            'uid' => null,
+            'videoId' => $request->query('videoId'),
+            'prefillUid' => $request->query('uid'),
+            'prefillEmail' => $request->query('email'),
+            'returnTo' => $request->query('returnTo'),
+        ]);
+    }
+
+    public function vaultAccessEdit(string $uid, string $videoId)
+    {
+        return Inertia::render('Admin/VaultAccess/Form', ['uid' => $uid, 'videoId' => $videoId]);
+    }
+
     public function booksIndex()
     {
         return Inertia::render('Admin/Books/Index');

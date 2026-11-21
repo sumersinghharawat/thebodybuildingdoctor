@@ -60,6 +60,12 @@ export default function AdminDashboard() {
                             href={route('admin.support.index')}
                         />
                         <StatCard
+                            label="Pending vault access"
+                            value={stats.vaultPurchasesPending}
+                            hint={`${stats.vaultPurchasesActive} active`}
+                            href={route('admin.vault-access.index')}
+                        />
+                        <StatCard
                             label="Pending book access"
                             value={stats.bookPurchasesPending}
                             hint={`${stats.bookPurchasesActive} active`}
@@ -79,7 +85,18 @@ export default function AdminDashboard() {
                         />
                     </section>
 
-                    <section className="grid gap-4 lg:grid-cols-3">
+                    <section className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+                        <ContentCard
+                            title="Vault"
+                            href={route('admin.vault.index')}
+                            createHref={route('admin.vault.create')}
+                            total={stats.vaultVideos}
+                            rows={[
+                                ['Published', stats.vaultVideosPublished],
+                                ['Draft', stats.vaultVideosDraft],
+                                ['Purchases', stats.vaultPurchases],
+                            ]}
+                        />
                         <ContentCard
                             title="Courses"
                             href={route('admin.courses.index')}
@@ -165,6 +182,9 @@ export default function AdminDashboard() {
                             <div className="grid grid-cols-2 gap-2 pt-2">
                                 <Link href={route('admin.enrollments.create')} className="btn-secondary text-center">
                                     Grant enrollment
+                                </Link>
+                                <Link href={route('admin.vault-access.create')} className="btn-secondary text-center">
+                                    Grant vault access
                                 </Link>
                                 <Link href={route('admin.book-access.create')} className="btn-secondary text-center">
                                     Grant book access

@@ -35,6 +35,8 @@ const MENTORSHIP_BENEFITS = [
 export default function Landing({
     courses = [],
     totalCourseCount = 0,
+    vaultVideos = [],
+    totalVaultCount = 0,
     books = [],
     siteName,
     appSection,
@@ -103,6 +105,7 @@ export default function Landing({
     }, [setData]);
 
     const showViewMore = totalCourseCount > courses.length;
+    const showAllVault = totalVaultCount > vaultVideos.length;
 
     function requestBook(book) {
         setData((current) => ({
@@ -125,17 +128,17 @@ export default function Landing({
                     <span className="text-accentSoft">Build your best physique.</span>
                 </h1>
                 <p className="mx-auto max-w-2xl text-muted">
-                    Evidence-based bodybuilding coaching, online courses, books, mentorship, and a dedicated mobile app.
+                    Evidence-based bodybuilding coaching, online courses, the Bodybuilding Vault, books, mentorship, and a dedicated mobile app.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
                     <a href="#apply" className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white">
                         Request access
                     </a>
                     <a
-                        href="#courses"
+                        href="#vault"
                         className="rounded-full border border-edge px-6 py-2.5 text-sm font-semibold text-foreground"
                     >
-                        Browse courses
+                        Bodybuilding Vault
                     </a>
                     <Link
                         href={route('login')}
@@ -172,6 +175,73 @@ export default function Landing({
                     )}
                 </section>
             )}
+
+            <section id="vault" className="border-t border-edge py-12 md:py-16">
+                <div className="mb-8 space-y-2 text-center">
+                    <p className="text-sm font-medium uppercase tracking-widest text-accentSoft">Bodybuilding Vault</p>
+                    <h2 className="text-2xl font-bold md:text-3xl">Paid video library</h2>
+                    <p className="mx-auto max-w-2xl text-sm text-muted">
+                        Each video has its own price. Watch the first 30 seconds free, then pay to unlock the full video.
+                        Access is allocated after payment is confirmed.
+                    </p>
+                </div>
+
+                {vaultVideos.length > 0 ? (
+                    <>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {vaultVideos.map((video) => (
+                                <article
+                                    key={video.id}
+                                    className="flex h-full flex-col overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-faint"
+                                >
+                                    <Link href={route('vault.show', video.id)} className="flex h-full flex-col">
+                                        {video.thumbnailUrl ? (
+                                            <img
+                                                src={video.thumbnailUrl}
+                                                alt=""
+                                                className="aspect-video w-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="flex aspect-video w-full items-center justify-center bg-surface-hover text-faint">
+                                                Video
+                                            </div>
+                                        )}
+                                        <div className="flex flex-1 flex-col p-4">
+                                            <h3 className="font-semibold leading-snug">{video.title}</h3>
+                                            <p className="mt-2 line-clamp-3 flex-1 text-xs text-muted">
+                                                {video.description}
+                                            </p>
+                                            <div className="mt-4 flex items-center justify-between gap-3 border-t border-edge pt-3">
+                                                <span className="text-sm font-semibold text-accentSoft">
+                                                    {video.isFree ? 'Free' : formatPrice(video.priceCents, currency)}
+                                                </span>
+                                                <span className="text-xs text-faint">{video.previewSeconds}s preview</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </article>
+                            ))}
+                        </div>
+                        {showAllVault && (
+                            <div className="mt-8 text-center">
+                                <Link
+                                    href={route('vault.index')}
+                                    className="inline-flex rounded-full border border-edge px-6 py-2.5 text-sm font-semibold text-foreground transition hover:border-faint hover:text-foreground"
+                                >
+                                    View all {totalVaultCount} videos
+                                </Link>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="mx-auto max-w-lg text-center">
+                        <p className="text-sm text-muted">
+                            Vault videos are added by the coaching team. Each one can be previewed for 30 seconds, then
+                            purchased for full playback.
+                        </p>
+                    </div>
+                )}
+            </section>
 
             <section id="books" className="border-t border-edge py-12 md:py-16">
                 <div className="mb-8 space-y-2 text-center">

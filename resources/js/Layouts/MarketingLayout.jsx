@@ -15,6 +15,9 @@ export default function MarketingLayout({ children, showAppLink = true }) {
                         <a href={`${home}#courses`} className="text-muted hover:text-foreground">
                             Courses
                         </a>
+                        <a href={`${home}#vault`} className="text-muted hover:text-foreground">
+                            Vault
+                        </a>
                         <a href={`${home}#books`} className="text-muted hover:text-foreground">
                             Books
                         </a>

@@ -20,12 +20,20 @@ function SkipIcon({ direction }) {
     );
 }
 
-export default function YouTubeProtectedPlayer({ videoId, title, className = '' }) {
+export default function YouTubeProtectedPlayer({
+    videoId,
+    title,
+    className = '',
+    maxSeconds = null,
+    onPreviewLimit = null,
+}) {
     const mountRef = useRef(null);
     const playerRef = useRef(null);
     const hideControlsTimer = useRef(null);
     const progressTimer = useRef(null);
     const playingRef = useRef(false);
+    const maxSecondsRef = useRef(maxSeconds);
+    const onPreviewLimitRef = useRef(onPreviewLimit);
     const { containerRef, isFullscreen, toggleFullscreen } = useFullscreen();
 
     const [ready, setReady] = useState(false);
@@ -40,8 +48,21 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
             return;
         }
 
-        const nextTime = player.getCurrentTime() || 0;
+        let nextTime = player.getCurrentTime() || 0;
         const nextDuration = player.getDuration() || 0;
+        const limit = maxSecondsRef.current;
+
+        if (limit != null && nextTime >= limit - 0.05) {
+            player.pauseVideo?.();
+            if (nextTime > limit) {
+                player.seekTo?.(limit, true);
+            }
+            nextTime = limit;
+            playingRef.current = false;
+            setPlaying(false);
+            onPreviewLimitRef.current?.();
+        }
+
         setCurrentTime(nextTime);
         setDuration(nextDuration);
     }, []);
@@ -58,6 +79,13 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
     }, []);
 
     const playVideo = useCallback(() => {
+        const limit = maxSecondsRef.current;
+        const current = playerRef.current?.getCurrentTime?.() ?? 0;
+        if (limit != null && current >= limit - 0.05) {
+            onPreviewLimitRef.current?.();
+            return;
+        }
+
         playerRef.current?.playVideo?.();
         revealControls(true);
     }, [revealControls]);
@@ -92,9 +120,11 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
                 return;
             }
 
+            const limit = maxSecondsRef.current;
             const current = player.getCurrentTime?.() ?? currentTime;
             const total = player.getDuration?.() ?? duration;
-            const next = Math.max(0, Math.min(total || Number.MAX_SAFE_INTEGER, current + delta));
+            const cap = limit == null ? total || Number.MAX_SAFE_INTEGER : Math.min(limit, total || limit);
+            const next = Math.max(0, Math.min(cap, current + delta));
 
             player.seekTo(next, true);
             setCurrentTime(next);
@@ -118,13 +148,16 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
                 return;
             }
 
-            const next = Number(value);
+            const limit = maxSecondsRef.current;
+            const total = player.getDuration?.() ?? duration;
+            const cap = limit == null ? total || Number.MAX_SAFE_INTEGER : Math.min(limit, total || limit);
+            const next = Math.max(0, Math.min(cap, Number(value)));
             player.seekTo(next, true);
             setCurrentTime(next);
             revealControls(true);
             window.setTimeout(syncProgress, 150);
         },
-        [revealControls, syncProgress],
+        [duration, revealControls, syncProgress],
     );
 
     useEffect(() => {
@@ -137,6 +170,8 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
     useEffect(() => {
         syncProgressRef.current = syncProgress;
         revealControlsRef.current = revealControls;
+        maxSecondsRef.current = maxSeconds;
+        onPreviewLimitRef.current = onPreviewLimit;
     });
 
     useEffect(() => {
@@ -222,7 +257,8 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
         return () => window.clearInterval(progressTimer.current);
     }, [playing, ready, syncProgress]);
 
-    const progressPercent = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
+    const timelineDuration = maxSeconds != null ? Math.min(maxSeconds, duration || maxSeconds) : duration;
+    const progressPercent = timelineDuration > 0 ? Math.min(100, (currentTime / timelineDuration) * 100) : 0;
 
     return (
         <div
@@ -272,10 +308,10 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
                     <input
                         type="range"
                         min={0}
-                        max={duration || 0}
+                        max={timelineDuration || 0}
                         step={0.1}
-                        value={Math.min(currentTime, duration || 0)}
-                        disabled={!ready || duration <= 0}
+                        value={Math.min(currentTime, timelineDuration || 0)}
+                        disabled={!ready || timelineDuration <= 0}
                         onChange={(event) => seekTo(event.target.value, event)}
                         className="stream-player__progress-input"
                     />
@@ -330,7 +366,7 @@ export default function YouTubeProtectedPlayer({ videoId, title, className = '' 
 
                     <div className="stream-player__toolbar-group stream-player__toolbar-group--end">
                         <span className="stream-player__time">
-                            {formatPlaybackTime(currentTime)} / {formatPlaybackTime(duration)}
+                            {formatPlaybackTime(currentTime)} / {formatPlaybackTime(timelineDuration)}
                         </span>
                         <VideoFullscreenButton
                             isFullscreen={isFullscreen}
