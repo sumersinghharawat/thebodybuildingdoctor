@@ -55,7 +55,7 @@ class Book extends Model
             'slug' => $this->slug,
             'description' => $this->description,
             'descriptionHtml' => $this->description_html,
-            'thumbnailUrl' => MediaUrl::resolve($this->thumbnail_url) ?? '',
+            'thumbnailUrl' => MediaUrl::card($this->thumbnail_url),
             'priceCents' => $this->price_cents,
             'published' => $this->published,
             'order' => $this->sort_order,

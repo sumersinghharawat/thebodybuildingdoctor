@@ -37,8 +37,8 @@ function ProtectedVideoFrame({ children, className = '', controls = null, showFu
     );
 }
 
-function VimeoEmbed({ vimeoId, title, className }) {
-    const [started, setStarted] = useState(false);
+function VimeoEmbed({ vimeoId, title, className, autoPlay = false }) {
+    const [started, setStarted] = useState(autoPlay);
     const embedSrc =
         `https://player.vimeo.com/video/${vimeoId}?title=0&byline=0&portrait=0&dnt=1` +
         (started ? '&autoplay=1' : '');
@@ -82,7 +82,7 @@ function VimeoEmbed({ vimeoId, title, className }) {
     );
 }
 
-export default function ContentVideoPlayer({ videoUrl, playback, title, className = '' }) {
+export default function ContentVideoPlayer({ videoUrl, playback, title, className = '', autoPlay = false }) {
     const resolved = playback ?? resolveVideoPlayback(videoUrl);
 
     if (!resolved) {
@@ -94,13 +94,14 @@ export default function ContentVideoPlayer({ videoUrl, playback, title, classNam
             <YouTubeProtectedPlayer
                 videoId={resolved.videoId}
                 title={title}
+                autoPlay={autoPlay}
                 className={`aspect-video overflow-hidden rounded-xl border border-edge bg-black ${className}`}
             />
         );
     }
 
     if (resolved.provider === 'vimeo') {
-        return <VimeoEmbed vimeoId={resolved.vimeoId} title={title} className={className} />;
+        return <VimeoEmbed vimeoId={resolved.vimeoId} title={title} className={className} autoPlay={autoPlay} />;
     }
 
     if (resolved.provider === 'file') {
@@ -109,6 +110,7 @@ export default function ContentVideoPlayer({ videoUrl, playback, title, classNam
                 <video
                     className="h-full w-full"
                     controls
+                    autoPlay={autoPlay}
                     controlsList="nodownload noplaybackrate"
                     disablePictureInPicture
                     onContextMenu={blockMediaInteraction}

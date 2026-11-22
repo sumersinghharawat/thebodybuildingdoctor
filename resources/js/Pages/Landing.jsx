@@ -199,6 +199,8 @@ export default function Landing({
                                             <img
                                                 src={video.thumbnailUrl}
                                                 alt=""
+                                                loading="lazy"
+                                                decoding="async"
                                                 className="aspect-video w-full object-cover"
                                             />
                                         ) : (
@@ -263,6 +265,8 @@ export default function Landing({
                                     <img
                                         src={book.thumbnailUrl}
                                         alt=""
+                                        loading="lazy"
+                                        decoding="async"
                                         className="aspect-[4/3] w-full object-cover"
                                     />
                                 ) : (
@@ -377,6 +381,8 @@ export default function Landing({
                                     <img
                                         src={appSection.screenshotUrl}
                                         alt={appSection.title}
+                                        loading="lazy"
+                                        decoding="async"
                                         className="aspect-[9/16] w-full object-cover"
                                     />
                                 ) : (

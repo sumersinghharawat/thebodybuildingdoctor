@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\SiteSetting;
+use App\Support\MediaUrl;
 
 class LandingAppSection
 {
@@ -113,7 +114,7 @@ class LandingAppSection
             'isPlayStore' => self::isPlayStoreDownload($settings),
             'buttonLabel' => (string) ($settings['buttonLabel'] ?? 'Download Android app'),
             'comingSoonLabel' => (string) ($settings['comingSoonLabel'] ?? 'Android app coming soon'),
-            'screenshotUrl' => (string) ($settings['screenshotUrl'] ?? ''),
+            'screenshotUrl' => MediaUrl::card((string) ($settings['screenshotUrl'] ?? ''), 640),
             'mockupLabel' => (string) ($settings['mockupLabel'] ?? ''),
         ];
     }

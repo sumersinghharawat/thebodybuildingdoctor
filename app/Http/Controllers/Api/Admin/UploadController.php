@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\ImageOptimizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -14,7 +15,7 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'file' => ['required', 'file'],
-            'folder' => ['required', Rule::in(['courses', 'lessons', 'mentorship', 'blogs', 'marketing', 'documents', 'apps', 'books'])],
+            'folder' => ['required', Rule::in(['courses', 'lessons', 'mentorship', 'blogs', 'marketing', 'documents', 'apps', 'books', 'vault'])],
         ]);
 
         $file = $data['file'];
@@ -70,8 +71,10 @@ class UploadController extends Controller
 
         if ($isApk) {
             $path = $file->storeAs($folder, Str::random(40).'.apk', 'public');
-        } else {
+        } elseif ($isPdf) {
             $path = $file->store($folder, 'public');
+        } else {
+            $path = ImageOptimizer::storeUpload($file, $folder);
         }
 
         $url = Storage::disk('public')->url($path);

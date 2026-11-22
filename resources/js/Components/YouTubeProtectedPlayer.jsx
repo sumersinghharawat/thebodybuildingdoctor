@@ -26,6 +26,7 @@ export default function YouTubeProtectedPlayer({
     className = '',
     maxSeconds = null,
     onPreviewLimit = null,
+    autoPlay = false,
 }) {
     const mountRef = useRef(null);
     const playerRef = useRef(null);
@@ -34,6 +35,7 @@ export default function YouTubeProtectedPlayer({
     const playingRef = useRef(false);
     const maxSecondsRef = useRef(maxSeconds);
     const onPreviewLimitRef = useRef(onPreviewLimit);
+    const autoPlayRef = useRef(autoPlay);
     const { containerRef, isFullscreen, toggleFullscreen } = useFullscreen();
 
     const [ready, setReady] = useState(false);
@@ -172,6 +174,7 @@ export default function YouTubeProtectedPlayer({
         revealControlsRef.current = revealControls;
         maxSecondsRef.current = maxSeconds;
         onPreviewLimitRef.current = onPreviewLimit;
+        autoPlayRef.current = autoPlay;
     });
 
     useEffect(() => {
@@ -192,7 +195,7 @@ export default function YouTubeProtectedPlayer({
                 host: 'https://www.youtube-nocookie.com',
                 videoId,
                 playerVars: {
-                    autoplay: 0,
+                    autoplay: autoPlay ? 1 : 0,
                     controls: 0,
                     modestbranding: 1,
                     rel: 0,
@@ -212,6 +215,9 @@ export default function YouTubeProtectedPlayer({
                         playerRef.current = event.target;
                         setReady(true);
                         syncProgressRef.current();
+                        if (autoPlayRef.current) {
+                            event.target.playVideo?.();
+                        }
                     },
                     onStateChange: (event) => {
                         if (cancelled) {
@@ -243,7 +249,7 @@ export default function YouTubeProtectedPlayer({
             playerRef.current?.destroy?.();
             playerRef.current = null;
         };
-    }, [videoId]);
+    }, [autoPlay, videoId]);
 
     useEffect(() => {
         window.clearInterval(progressTimer.current);

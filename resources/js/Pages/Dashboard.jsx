@@ -26,7 +26,13 @@ export default function Dashboard({ mentorship = [], isAdmin }) {
                             className="card-surface overflow-hidden transition hover:border-faint"
                         >
                             {item.thumbnailUrl && (
-                                <img src={item.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
+                                <img
+                                    src={item.thumbnailUrl}
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="aspect-video w-full object-cover"
+                                />
                             )}
                             <div className="p-4">
                                 <h2 className="font-semibold">{item.title}</h2>

@@ -66,6 +66,7 @@ class Lesson extends Model
     public function toLearnerArray(bool $includeVideo = false): array
     {
         $data = $this->toAdminArray();
+        $data['thumbnailUrl'] = MediaUrl::card($data['thumbnailUrl']);
         $data['contentHtml'] = ContentProtectionService::sanitizeHtml($data['contentHtml']);
         $data['hasVideo'] = trim((string) $this->video_url) !== '';
         $data['hasEmbeddedVideo'] = ContentProtectionService::htmlHasEmbeddableVideo($this->content_html);

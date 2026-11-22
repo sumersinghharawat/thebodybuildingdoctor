@@ -39,6 +39,7 @@ class Blog extends Model
     public function toPublicArray(): array
     {
         $data = $this->toAdminArray();
+        $data['thumbnailUrl'] = MediaUrl::card($data['thumbnailUrl']);
         $data['contentHtml'] = ContentProtectionService::sanitizeHtml($data['contentHtml']);
         $data['videoUrl'] = ContentProtectionService::publicVideoUrl($this->video_url);
         $data['hasVideo'] = trim((string) $this->video_url) !== '';

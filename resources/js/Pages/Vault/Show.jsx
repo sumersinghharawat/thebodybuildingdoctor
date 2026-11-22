@@ -58,6 +58,7 @@ export default function VaultShow({
                 <div className="relative">
                     <VaultVideoPlayer
                         videoUrl={video.videoUrl}
+                        thumbnailUrl={video.thumbnailUrl}
                         title={video.title}
                         previewSeconds={video.hasAccess ? null : video.previewSeconds}
                         onPreviewLimit={() => setPreviewEnded(true)}

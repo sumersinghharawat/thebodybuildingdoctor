@@ -5,7 +5,7 @@ export default function CourseCard({ course, showRequest = true }) {
     return (
         <article className="flex h-full flex-col overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-faint">
             {course.thumbnailUrl ? (
-                <img src={course.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
+                <img src={course.thumbnailUrl} alt="" loading="lazy" decoding="async" className="aspect-video w-full object-cover" />
             ) : (
                 <div className="aspect-video w-full bg-surface-hover" />
             )}

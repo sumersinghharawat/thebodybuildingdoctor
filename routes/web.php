@@ -12,10 +12,15 @@ use App\Http\Controllers\Web\LandingController;
 use App\Http\Controllers\Web\LearnPageController;
 use App\Http\Controllers\Web\MentorshipPageController;
 use App\Http\Controllers\Web\SupportPageController;
+use App\Http\Controllers\Web\ImageCardController;
 use App\Http\Controllers\Web\VaultPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
+Route::get('/media/card/{width}/{path}', ImageCardController::class)
+    ->where('width', '480|640|960|1280')
+    ->where('path', '.*')
+    ->name('media.card');
 Route::get('/vault/{id}/purchase', [VaultPageController::class, 'purchaseIntent'])->name('vault.purchase');
 Route::get('/vault/{id}', [VaultPageController::class, 'show'])->name('vault.show');
 Route::get('/download/android', App\Http\Controllers\Web\AppDownloadController::class)->name('app.download');

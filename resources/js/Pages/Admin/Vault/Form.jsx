@@ -1,7 +1,8 @@
 import AdminShell from '@/Components/Admin/AdminShell';
+import ThumbnailUploadField from '@/Components/Admin/ThumbnailUploadField';
 import VideoUrlField from '@/Components/Admin/VideoUrlField';
 import RichTextEditor, { htmlToPlainText } from '@/Components/RichTextEditor';
-import { createVaultVideo, fetchVaultVideo, updateVaultVideo, uploadThumbnail } from '@/lib/admin-api';
+import { createVaultVideo, fetchVaultVideo, updateVaultVideo } from '@/lib/admin-api';
 import { formatPrice } from '@/lib/format';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -79,11 +80,6 @@ export default function VaultForm({ videoId }) {
         } finally {
             setSaving(false);
         }
-    }
-
-    async function handleThumbnail(file) {
-        const { url } = await uploadThumbnail(file, 'marketing');
-        updateField('thumbnailUrl', url);
     }
 
     return (
@@ -164,20 +160,15 @@ export default function VaultForm({ videoId }) {
                         />
                     </div>
                     <VideoUrlField value={form.videoUrl} onChange={(value) => updateField('videoUrl', value)} />
-                    <div>
-                        <label className="label-dark">Thumbnail URL</label>
-                        <input
-                            className="input-dark"
-                            value={form.thumbnailUrl}
-                            onChange={(e) => updateField('thumbnailUrl', e.target.value)}
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="mt-2 text-sm"
-                            onChange={(e) => e.target.files?.[0] && handleThumbnail(e.target.files[0])}
-                        />
-                    </div>
+                    <ThumbnailUploadField
+                        label="Video thumbnail"
+                        folder="vault"
+                        value={form.thumbnailUrl}
+                        onChange={(value) => updateField('thumbnailUrl', value)}
+                    />
+                    <p className="-mt-2 text-xs text-faint">
+                        This image shows on the Vault cards and on the video before playback starts.
+                    </p>
                     <div className="flex gap-3">
                         <button type="submit" className="btn-primary" disabled={saving}>
                             {saving ? 'Saving…' : isEdit ? 'Save video' : 'Create video'}

@@ -56,7 +56,7 @@ class VaultVideo extends Model
             'slug' => $this->slug,
             'description' => $this->description,
             'descriptionHtml' => $this->description_html,
-            'thumbnailUrl' => MediaUrl::resolve($this->thumbnail_url) ?? '',
+            'thumbnailUrl' => MediaUrl::card($this->thumbnail_url),
             'videoUrl' => $includePlayback ? (MediaUrl::resolve($this->video_url) ?? '') : '',
             'priceCents' => $this->price_cents,
             'previewSeconds' => $this->preview_seconds ?: 30,

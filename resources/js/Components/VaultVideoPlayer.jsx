@@ -35,9 +35,15 @@ function blockMediaInteraction(event) {
     event.stopPropagation();
 }
 
-function FilePreview({ src, title, maxSeconds, onPreviewLimit }) {
+function FilePreview({ src, title, maxSeconds, onPreviewLimit, autoPlay = false }) {
     const videoRef = useRef(null);
     const lockedRef = useRef(false);
+
+    useEffect(() => {
+        if (autoPlay) {
+            videoRef.current?.play?.().catch(() => {});
+        }
+    }, [autoPlay]);
 
     function clampPlayback() {
         const video = videoRef.current;
@@ -63,6 +69,8 @@ function FilePreview({ src, title, maxSeconds, onPreviewLimit }) {
             ref={videoRef}
             className="h-full w-full"
             controls
+            autoPlay={autoPlay}
+            preload={autoPlay ? 'metadata' : 'none'}
             playsInline
             controlsList="nodownload noplaybackrate"
             disablePictureInPicture
@@ -75,7 +83,7 @@ function FilePreview({ src, title, maxSeconds, onPreviewLimit }) {
     );
 }
 
-function VimeoPreview({ vimeoId, title, maxSeconds, onPreviewLimit }) {
+function VimeoPreview({ vimeoId, title, maxSeconds, onPreviewLimit, autoPlay = false }) {
     const iframeRef = useRef(null);
     const playerRef = useRef(null);
     const lockedRef = useRef(false);
@@ -99,6 +107,9 @@ function VimeoPreview({ vimeoId, title, maxSeconds, onPreviewLimit }) {
 
                 const player = new Vimeo.Player(iframeRef.current);
                 playerRef.current = player;
+                if (autoPlay) {
+                    player.play().catch(() => {});
+                }
                 player.on('timeupdate', (data) => {
                     if (data.seconds < maxSeconds) {
                         lockedRef.current = false;
@@ -124,7 +135,7 @@ function VimeoPreview({ vimeoId, title, maxSeconds, onPreviewLimit }) {
             playerRef.current?.unload?.().catch(() => {});
             playerRef.current = null;
         };
-    }, [vimeoId, maxSeconds]);
+    }, [autoPlay, vimeoId, maxSeconds]);
 
     function play() {
         setStarted(true);
@@ -179,7 +190,34 @@ function VimeoPreview({ vimeoId, title, maxSeconds, onPreviewLimit }) {
     );
 }
 
-export default function VaultVideoPlayer({ videoUrl, title, previewSeconds = null, onPreviewLimit }) {
+function VideoPoster({ thumbnailUrl, title, onPlay }) {
+    return (
+        <button
+            type="button"
+            className="relative block aspect-video w-full overflow-hidden rounded-xl border border-edge bg-black"
+            onClick={onPlay}
+            aria-label={`Play ${title}`}
+        >
+            {thumbnailUrl ? (
+                <img src={thumbnailUrl} alt="" className="h-full w-full object-cover" />
+            ) : null}
+            <span className="absolute inset-0 flex items-center justify-center bg-black/30">
+                <svg viewBox="0 0 24 24" className="h-16 w-16 fill-white" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+            </span>
+        </button>
+    );
+}
+
+export default function VaultVideoPlayer({
+    videoUrl,
+    title,
+    thumbnailUrl = '',
+    previewSeconds = null,
+    onPreviewLimit,
+}) {
+    const [started, setStarted] = useState(false);
     const playback = resolveVideoPlayback(videoUrl);
 
     if (!playback) {
@@ -190,8 +228,12 @@ export default function VaultVideoPlayer({ videoUrl, title, previewSeconds = nul
         );
     }
 
+    if (!started) {
+        return <VideoPoster thumbnailUrl={thumbnailUrl} title={title} onPlay={() => setStarted(true)} />;
+    }
+
     if (previewSeconds == null) {
-        return <ContentVideoPlayer videoUrl={videoUrl} title={title} />;
+        return <ContentVideoPlayer videoUrl={videoUrl} title={title} autoPlay />;
     }
 
     if (playback.provider === 'youtube') {
@@ -201,6 +243,7 @@ export default function VaultVideoPlayer({ videoUrl, title, previewSeconds = nul
                 title={title}
                 maxSeconds={previewSeconds}
                 onPreviewLimit={onPreviewLimit}
+                autoPlay
                 className="aspect-video overflow-hidden rounded-xl border border-edge bg-black"
             />
         );
@@ -217,6 +260,7 @@ export default function VaultVideoPlayer({ videoUrl, title, previewSeconds = nul
                     title={title}
                     maxSeconds={previewSeconds}
                     onPreviewLimit={onPreviewLimit}
+                    autoPlay
                 />
             ) : (
                 <FilePreview
@@ -224,6 +268,7 @@ export default function VaultVideoPlayer({ videoUrl, title, previewSeconds = nul
                     title={title}
                     maxSeconds={previewSeconds}
                     onPreviewLimit={onPreviewLimit}
+                    autoPlay
                 />
             )}
         </div>

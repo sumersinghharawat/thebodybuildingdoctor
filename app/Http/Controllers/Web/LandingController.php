@@ -22,7 +22,13 @@ class LandingController extends Controller
         $courses = $query
             ->limit(6)
             ->get()
-            ->map->toPublicArray();
+            ->map(function (Course $course) {
+                $card = $course->toPublicArray();
+                unset($card['descriptionHtml'], $card['videoUrl'], $card['pdfUrl']);
+                $card['description'] = mb_substr((string) ($card['description'] ?? ''), 0, 280);
+
+                return $card;
+            });
 
         $vaultQuery = VaultVideo::query()->where('published', true)->orderBy('sort_order')->orderBy('title');
         $totalVaultCount = (clone $vaultQuery)->count();

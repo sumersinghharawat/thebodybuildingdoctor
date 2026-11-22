@@ -62,6 +62,8 @@ export default function BooksIndex({ books = [], paymentQrUrl = '', paymentInstr
                                         <img
                                             src={book.thumbnailUrl}
                                             alt=""
+                                            loading="lazy"
+                                            decoding="async"
                                             className="aspect-[4/3] w-full object-cover"
                                         />
                                     ) : (

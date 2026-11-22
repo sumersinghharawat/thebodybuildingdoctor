@@ -51,6 +51,7 @@ class Course extends Model
     public function toPublicArray(): array
     {
         $data = $this->toAdminArray();
+        $data['thumbnailUrl'] = MediaUrl::card($data['thumbnailUrl']);
         $data['descriptionHtml'] = ContentProtectionService::sanitizeHtml($data['descriptionHtml']);
         $data['videoUrl'] = ContentProtectionService::publicVideoUrl($this->video_url);
         $data['hasVideo'] = trim((string) $this->video_url) !== '';

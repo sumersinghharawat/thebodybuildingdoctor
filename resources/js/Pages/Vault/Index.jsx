@@ -65,7 +65,13 @@ export default function VaultIndex({
                             <article key={video.id} className="card-surface overflow-hidden">
                                 <Link href={route('vault.show', video.id)} className="block">
                                     {video.thumbnailUrl ? (
-                                        <img src={video.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
+                                        <img
+                                            src={video.thumbnailUrl}
+                                            alt=""
+                                            loading="lazy"
+                                            decoding="async"
+                                            className="aspect-video w-full object-cover"
+                                        />
                                     ) : (
                                         <div className="flex aspect-video items-center justify-center bg-surface text-faint">
                                             Video
